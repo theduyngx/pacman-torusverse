@@ -42,14 +42,12 @@ public class GridView extends JPanel implements PropertyChangeListener {
 	/**
 	 * Creates a grid panel.
 	 * @param guiInformation Information from the GUI that the grid requires.
-	 * @param grid The camera that should be represented graphically in the GridView.
 	 * @param tiles List of available tiles.
 	 */
 	public GridView(GUIInformation guiInformation, Camera camera, List<? extends Tile> tiles) {
 		super(new GridLayout(camera.getHeight(), camera.getWidth()));
 		
 		this.tiles = tiles;
-		
 		this.camera = camera;
 		this.camera.addPropertyChangeListener(this);
 		GridController controller = new GridController(camera, guiInformation);
@@ -58,6 +56,10 @@ public class GridView extends JPanel implements PropertyChangeListener {
 		
 		/** Add all tiles to the grid. */
 		map = new GridTile[camera.getHeight()][camera.getWidth()];
+		instantiateMap(controller);
+	}
+
+	private void instantiateMap(GridController controller) {
 		for (int y = 0; y < camera.getHeight(); y++) {
 			for (int x = 0; x < camera.getWidth(); x++) {
 				map[y][x] = new GridTile(tiles.get(0));
@@ -67,7 +69,7 @@ public class GridView extends JPanel implements PropertyChangeListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Update the grid.
 	 */
@@ -123,8 +125,6 @@ public class GridView extends JPanel implements PropertyChangeListener {
 		
 		/**
 		 * Construct a tile.
-		 * @param icon The icon of the tile.
-		 * @param character The character that will represent the tile when saved.
 		 */
 		public GridTile(Tile tile) {
 			this.tile = tile;

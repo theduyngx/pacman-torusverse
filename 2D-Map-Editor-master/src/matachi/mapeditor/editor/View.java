@@ -41,40 +41,35 @@ public class View {
 
 	private JTextField txtWidth;
 	private JTextField txtHeight;
+	private JPanel right = null;
+	private Border border = null;
+	private JPanel palette = null;
 
 	/**
 	 * Constructs the View.
 	 * 
 	 * @param controller
 	 *            The controller.
-	 * @param model
-	 *            The model.
 	 */
-	public View(Controller controller, Camera camera, JPanel grid,
-			List<? extends Tile> tiles) {
+	public View(Controller controller, Camera camera, JPanel grid, List<? extends Tile> tiles) {
 
-		// showingGrid = true;
+		grid.setPreferredSize(new Dimension(Constants.GRID_WIDTH * Constants.TILE_WIDTH,
+				Constants.GRID_HEIGHT * Constants.TILE_HEIGHT));
+		/** Create the panels */
+		createBottomPanel(controller, tiles);
+		createTopPanel(controller, camera, grid);
+	}
 
-		grid.setPreferredSize(new Dimension(Constants.GRID_WIDTH
-				* Constants.TILE_WIDTH, Constants.GRID_HEIGHT
-				* Constants.TILE_HEIGHT));
-
-		/** Create the bottom panel. */
-		JPanel palette = new JPanel(new FlowLayout());
+	private void createBottomPanel(Controller controller, List<? extends Tile> tiles) {
+		palette = new JPanel(new FlowLayout());
 		for (Tile t : tiles) {
 			JButton button = new JButton();
-			button.setPreferredSize(new Dimension(Constants.TILE_WIDTH,
-					Constants.TILE_HEIGHT));
+			button.setPreferredSize(new Dimension(Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
 			button.setIcon(t.getIcon());
 			button.addActionListener(controller);
 			button.setActionCommand(Character.toString(t.getCharacter()));
 			palette.add(button);
 		}
-
-		/** Create the right panel. */
-		// showGridButton = new JButton("Hide grid");
-		// showGridButton.addActionListener(controller);
-		// showGridButton.setActionCommand("flipGrid");
 
 		JButton saveButton = new JButton("Save");
 		saveButton.addActionListener(controller);
@@ -84,19 +79,20 @@ public class View {
 		loadButton.addActionListener(controller);
 		loadButton.setActionCommand("load");
 
-		JPanel right = new JPanel();
+		// right
+		right = new JPanel();
 		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-		Border border = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+
+		// border
+		border = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 		right.setBorder(border);
-		// right.add(showGridButton);
 		right.add(saveButton);
 		right.add(loadButton);
+	}
 
-		/** The top panel, that shows coordinates and stuff. */
-		CameraInformationLabel cameraInformationLabel = new CameraInformationLabel(
-				camera);
-		GridMouseInformationLabel mouseInformationLabel = new GridMouseInformationLabel(
-				grid);
+	private void createTopPanel(Controller controller, Camera camera, JPanel grid) {
+		CameraInformationLabel cameraInformationLabel = new CameraInformationLabel(camera);
+		GridMouseInformationLabel mouseInformationLabel = new GridMouseInformationLabel(grid);
 
 		JLabel lblWidth = new JLabel("Width(min:32):");
 		JLabel lblHeight = new JLabel("Height(min:20):");
@@ -105,8 +101,7 @@ public class View {
 		txtWidth.getDocument().addDocumentListener(controller.updateSizeFields);
 		txtWidth.setEnabled(false);
 		txtHeight = new JTextField(Constants.MAP_HEIGHT + "", 3);
-		txtHeight.getDocument()
-				.addDocumentListener(controller.updateSizeFields);
+		txtHeight.getDocument().addDocumentListener(controller.updateSizeFields);
 		txtHeight.setEnabled(false);
 		JButton updateSize = new JButton("Reset");
 		updateSize.addActionListener(controller);
@@ -163,26 +158,4 @@ public class View {
 	public void close() {
 		frame.setVisible(false);
 	}
-	// /**
-	// * Flip the grid on or off.
-	// */
-	// public void flipGrid() {
-	// this.showingGrid = !this.showingGrid;
-	// if (!showingGrid) {
-	// showGridButton.setText("Show grid");
-	// for (int y = 0; y < 20; y++) {
-	// for (int x = 0; x < 32; x++) {
-	// map[y][x].flipGrid();
-	// }
-	// }
-	// } else {
-	// showGridButton.setText("Hide grid");
-	// for (int y = 0; y < 20; y++) {
-	// for (int x = 0; x < 32; x++) {
-	// map[y][x].flipGrid();
-	// }
-	// }
-	// }
-	// frame.repaint();
-	// }
 }

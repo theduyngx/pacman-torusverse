@@ -6,6 +6,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -37,16 +38,9 @@ public class Tile {
 	 * @param filePath The path to the file.
 	 * @param character The character that will represent the tile when saved.
 	 */
-	public Tile(final String filePath, final char character) {
-		try {
-			this.filePath = filePath;
-			image = ImageIO.read(new File(filePath));
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println(e.getMessage());
-			System.err.println("Bad file path: " + filePath);
-			System.exit(0);
-		}
+	public Tile(final String filePath, BufferedImage image, final char character) {
+		this.filePath = filePath;
+		this.image = image;
 		this.character = character;
 	}
 

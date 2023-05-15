@@ -35,7 +35,7 @@ public class GridModel implements Grid {
 	
 	/**
 	 * Constructs the model with number of rows and columns.
-	 * @param cols The number of columns.
+	 * @param columns The number of columns.
 	 * @param rows The number of rows.
 	 * @param defaultChar The character that the map should be filled with by
 	 * default.
