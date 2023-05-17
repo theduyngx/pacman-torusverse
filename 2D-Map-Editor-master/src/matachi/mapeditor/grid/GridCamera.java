@@ -30,70 +30,15 @@ public class GridCamera implements Camera {
 	private PropertyChangeSupport changeSupport;
 
 	/**
-	 * Constructs the camera and model with number of rows and columns. It also sets the
-	 * camera width and height.
-	 * @param cols The number of columns.
-	 * @param rows The number of rows.
-	 * @param cameraWidth The width of the camera.
-	 * @param cameraHeight The height of the camera.
-	 * @param defaultChar The character that the map should be filled with.
-	 */
-	public GridCamera(int cols, int rows, int cameraWidth, int cameraHeight, char defaultChar) {
-		this(cols, rows, cameraWidth, cameraHeight, 0, 0, defaultChar);
-	}
-
-	/**
-	 * Constructs the camera and model with number of rows and columns. It also sets the
-	 * camera width and height.
-	 * @param cols The number of columns.
-	 * @param rows The number of rows.
-	 * @param cameraWidth The width of the camera.
-	 * @param cameraHeight The height of the camera.
-	 * @param cameraX The X coordinate of the camera.
-	 * @param cameraY The Y coordinate of the camera.
-	 * @param defaultChar The character that the map should be filled with.
-	 */
-	public GridCamera(int cols, int rows, int cameraWidth, int cameraHeight, int cameraX, int cameraY, char defaultChar) {
-		checkValidCameraPosition(cols, rows, cameraWidth, cameraHeight, cameraX, cameraY);
-		this.changeSupport = new PropertyChangeSupport(this);
-		this.model = new GridModel(cols, rows, defaultChar);
-		this.camera = new Rectangle(cameraX, cameraY, cameraWidth, cameraHeight);
-	}
-
-
-	/**
 	 * Constructs the camera with a given model.
 	 * @param model The model.
 	 * @param cameraWidth The width of the camera.
 	 * @param cameraHeight The height of the camera.
 	 */
 	public GridCamera(Grid model, int cameraWidth, int cameraHeight) {
-		this(model, cameraWidth, cameraHeight, 0, 0);
-	}
-
-	/**
-	 * Constructs the camera with a given model.
-	 * @param model The model.
-	 * @param cameraWidth The width of the camera.
-	 * @param cameraHeight The height of the camera.
-	 * @param cameraX The X coordinate of the camera.
-	 * @param cameraY The Y coordinate of the camera.
-	 */
-	public GridCamera(Grid model, int cameraWidth, int cameraHeight, int cameraX, int cameraY) {
-		checkValidCameraPosition(model.getWidth(), model.getHeight(), cameraWidth, cameraHeight, cameraX, cameraY);
 		this.changeSupport = new PropertyChangeSupport(this);
 		this.model = model;
-		this.camera = new Rectangle(cameraX, cameraY, cameraWidth, cameraHeight);
-	}
-
-	private void checkValidCameraPosition(int cols, int rows, int cameraWidth, int cameraHeight, int cameraX, int cameraY) {
-		if (cameraWidth + cameraX > cols) {
-			throw new IllegalArgumentException(
-					"The camera width + camera x position > columns");
-		} else if (cameraHeight + cameraY > rows) {
-			throw new IllegalArgumentException(
-					"The camera height + camera y position > rows");
-		}
+		this.camera = new Rectangle(0, 0, cameraWidth, cameraHeight);
 	}
 	
 	/**

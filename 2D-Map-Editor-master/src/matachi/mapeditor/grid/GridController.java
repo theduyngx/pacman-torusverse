@@ -35,11 +35,6 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	 * The class that provides with GUI information.
 	 */
 	private GUIInformation guiInformation;
-	
-//	/**
-//	 * If the drawingMode is on or off.
-//	 */
-//	private boolean drawingMode;
 
 	/**
 	 * The GridController which the GridView needs.
@@ -50,7 +45,6 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	public GridController(Camera camera, GUIInformation guiInformation) {
 		this.camera = camera;
 		this.guiInformation = guiInformation;
-//		this.drawingMode = true;
 	}
 
 	@Override

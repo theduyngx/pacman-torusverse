@@ -60,19 +60,10 @@ public class Controller implements ActionListener, GUIInformation {
 	 * Construct the controller.
 	 */
 	public Controller() {
-		init(Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
-
-	}
-
-	public void init(int width, int height) {
 		this.tiles = TileManager.getTilesFromFolder("data/");
-		this.model = new GridModel(width, height, tiles.get(0).getCharacter());
-		this.camera = new GridCamera(model, Constants.GRID_WIDTH,
-				Constants.GRID_HEIGHT);
-
-		grid = new GridView(this, camera, tiles); // Every tile is
-													// 30x30 pixels
-
+		this.model = new GridModel(Constants.MAP_WIDTH, Constants.MAP_HEIGHT, tiles.get(0).getCharacter());
+		this.camera = new GridCamera(model, Constants.GRID_WIDTH, Constants.GRID_HEIGHT);
+		this.grid = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
 		this.view = new View(this, camera, grid, tiles);
 	}
 
@@ -88,9 +79,7 @@ public class Controller implements ActionListener, GUIInformation {
 				break;
 			}
 		}
-		if (e.getActionCommand().equals("flipGrid")) {
-			// view.flipGrid();
-		} else if (e.getActionCommand().equals("save")) {
+		if (e.getActionCommand().equals("save")) {
 			saveFile();
 		} else if (e.getActionCommand().equals("load")) {
 			loadFile();
@@ -101,7 +90,11 @@ public class Controller implements ActionListener, GUIInformation {
 
 	public void updateGrid(int width, int height) {
 		view.close();
-		init(width, height);
+		this.tiles = TileManager.getTilesFromFolder("data/");
+		this.model = new GridModel(width, height, tiles.get(0).getCharacter());
+		this.camera = new GridCamera(model, Constants.GRID_WIDTH, Constants.GRID_HEIGHT);
+		grid = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
+		this.view = new View(this, camera, grid, tiles);
 		view.setSize(width, height);
 	}
 
