@@ -27,6 +27,7 @@ public class Tile {
 	 */
 	private char character;
 
+
 	/**
 	 * The image that will be used in the editor.
 	 */
