@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -23,7 +22,6 @@ import matachi.mapeditor.grid.GridCamera;
 import matachi.mapeditor.grid.GridModel;
 import matachi.mapeditor.grid.GridView;
 
-import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -52,7 +50,6 @@ public class Controller implements ActionListener, GUIInformation {
 
 	private GridView grid;
 	private View view;
-
 	private int gridWith = Constants.MAP_WIDTH;
 	private int gridHeight = Constants.MAP_HEIGHT;
 
@@ -85,6 +82,8 @@ public class Controller implements ActionListener, GUIInformation {
 			loadFile();
 		} else if (e.getActionCommand().equals("update")) {
 			updateGrid(gridWith, gridHeight);
+		} else if (e.getActionCommand().equals("start_game")) {
+			// TODO: switch to pacman game
 		}
 	}
 

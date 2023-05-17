@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import matachi.mapeditor.editor.Constants;
+import matachi.mapeditor.editor.Controller;
 import matachi.mapeditor.editor.GUIInformation;
 import matachi.mapeditor.editor.Tile;
 
@@ -142,11 +143,6 @@ public class GridView extends JPanel implements PropertyChangeListener {
 		@Override
 		public void paintComponent(Graphics g) {
 			g.drawImage(tile.getImage(), 0, 0, null);
-//			g.setColor(Color.DARK_GRAY);
-//			g.drawRect(0, 0, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
-//			if (showingGrid) {
-//				g.drawRect(0, 0, 30, 30);
-//			}
 		}
 	}
 }

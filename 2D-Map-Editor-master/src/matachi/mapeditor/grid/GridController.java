@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import matachi.mapeditor.editor.Constants;
+import matachi.mapeditor.editor.Controller;
 import matachi.mapeditor.editor.GUIInformation;
 
 /**

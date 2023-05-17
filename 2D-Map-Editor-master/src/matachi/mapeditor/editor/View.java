@@ -35,9 +35,6 @@ public class View {
 	/**
 	 * Settings to the right.
 	 */
-	// private JButton showGridButton;
-
-	// private boolean showingGrid;
 
 	private JTextField txtWidth;
 	private JTextField txtHeight;
@@ -71,13 +68,20 @@ public class View {
 			palette.add(button);
 		}
 
+		// save
 		JButton saveButton = new JButton("Save");
 		saveButton.addActionListener(controller);
 		saveButton.setActionCommand("save");
 
+		// load
 		JButton loadButton = new JButton("Load");
 		loadButton.addActionListener(controller);
 		loadButton.setActionCommand("load");
+
+		// start game
+		JButton startGameButton = new JButton("Start Game");
+		startGameButton.addActionListener(controller);
+		startGameButton.setActionCommand("start_game");
 
 		// right
 		right = new JPanel();
