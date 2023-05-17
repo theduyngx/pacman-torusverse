@@ -4,16 +4,12 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
-import java.nio.Buffer;
 
-import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
- * A class that holds a image, and a character that will be written to the
+ * A class that holds an image, and a character that will be written to the
  * map file.
  * @author Daniel "MaTachi" Jonsson
  * @version 1
@@ -25,14 +21,14 @@ public class Tile {
 	/**
 	 * The character that will be used in the map file when saved.
 	 */
-	private char character;
+	private final char character;
 
 
 	/**
 	 * The image that will be used in the editor.
 	 */
-	private BufferedImage image;
-	private String filePath;
+	private final BufferedImage image;
+	private final String filePath;
 	
 	/**
 	 * Construct a tile.
@@ -51,7 +47,7 @@ public class Tile {
 	}
 
 	/**
-	 * Get the tile as a image.
+	 * Get the tile as an image.
 	 * @return Image The tile icon.
 	 */
 	public Image getImage() {
@@ -60,7 +56,7 @@ public class Tile {
 
 
 	/**
-	 * Get the tile as a icon.
+	 * Get the tile as an icon.
 	 * @return Icon The tile icon.
 	 */
 	public Icon getIcon() {

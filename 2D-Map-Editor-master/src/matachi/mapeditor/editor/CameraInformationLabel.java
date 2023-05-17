@@ -3,6 +3,7 @@ package matachi.mapeditor.editor;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serial;
 
 import javax.swing.JLabel;
 
@@ -17,9 +18,10 @@ import matachi.mapeditor.grid.Camera;
  */
 public class CameraInformationLabel extends JLabel implements PropertyChangeListener {
 
+	@Serial
 	private static final long serialVersionUID = -6772431080845388524L;
 
-	private Camera camera;
+	private final Camera camera;
 	
 	/**
 	 * A label that shows information about a Camera.

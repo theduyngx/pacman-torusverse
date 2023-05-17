@@ -15,5 +15,5 @@ public interface GUIInformation {
 	 * Get the tile that is selected and should be drawn.
 	 * @return Tile The selected tile.
 	 */
-	public Tile getSelectedTile();
+	Tile getSelectedTile();
 }

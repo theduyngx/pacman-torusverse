@@ -25,12 +25,15 @@ public class TileManager {
 	 */
 	public static List<Tile> getTilesFromFolder(final String folderPath) {
 		
-		List<Tile> tiles = new ArrayList<Tile>();
+		List<Tile> tiles = new ArrayList<>();
 		File folder = new File(folderPath);
 		File[] listOfFiles = folder.listFiles();
 		int character = (int)'a';
-		Map<String, File> map = new TreeMap<String, File>();
+		Map<String, File> map = new TreeMap<>();
 
+		///
+		assert listOfFiles != null;
+		///
 		for (File f : listOfFiles) {
 			map.put(f.getName(), f);
 		}

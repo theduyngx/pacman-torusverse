@@ -135,8 +135,8 @@ public class Controller implements ActionListener, GUIInformation {
 				Element size = new Element("size");
 				int height = model.getHeight();
 				int width = model.getWidth();
-				size.addContent(new Element("width").setText(width + ""));
-				size.addContent(new Element("height").setText(height + ""));
+				size.addContent(new Element("width").setText(String.valueOf(width)));
+				size.addContent(new Element("height").setText(String.valueOf(height)));
 				doc.getRootElement().addContent(size);
 
 				for (int y = 0; y < height; y++) {
@@ -175,13 +175,13 @@ public class Controller implements ActionListener, GUIInformation {
 				}
 				XMLOutputter xmlOutput = new XMLOutputter();
 				xmlOutput.setFormat(Format.getPrettyFormat());
-				xmlOutput
-						.output(doc, new FileWriter(chooser.getSelectedFile()));
+				xmlOutput.output(doc, new FileWriter(chooser.getSelectedFile()));
 			}
 		} catch (FileNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, "Invalid file!", "error",
 					JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

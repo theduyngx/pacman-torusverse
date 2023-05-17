@@ -4,12 +4,10 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * An implementation of the interface Grid. It stores characters two
- * dimensionally.
+ * An implementation of the interface Grid. It stores characters two-dimensionally.
  * @author Daniel "MaTachi" Jonsson
  * @version 1
  * @since v0.0.5
- *
  */
 public class GridModel implements Grid {
 
@@ -26,12 +24,12 @@ public class GridModel implements Grid {
 	/**
 	 * Default character.
 	 */
-	private char defaultChar;
+	private final char defaultChar;
 	
 	/**
 	 * Announce changes.
 	 */
-	private PropertyChangeSupport changeSupport;
+	private final PropertyChangeSupport changeSupport;
 	
 	/**
 	 * Constructs the model with number of rows and columns.
@@ -81,9 +79,7 @@ public class GridModel implements Grid {
 	public char[][] getMap() {
 		char[][] tmpMap = new char[map.length][map[0].length];
 		for (int y = 0; y < map.length; y++) {
-			for (int x = 0; x < map[0].length; x++) {
-				tmpMap[y][x] = map[y][x];
-			}
+			System.arraycopy(map[y], 0, tmpMap[y], 0, map[0].length);
 		}
 		return tmpMap;
 	}
@@ -116,9 +112,7 @@ public class GridModel implements Grid {
 
 		// Copy the old map's data to the new one.
 		for (int y = 0; y < map.length; y++) {
-			for (int x = 0; x < map[0].length; x++) {
-				tmpMap[y + northOffset][x + westOffset] = map[y][x];
-			}
+			System.arraycopy(map[y], 0, tmpMap[y + northOffset], westOffset, map[0].length);
 		}
 		
 		map = tmpMap;
@@ -141,14 +135,14 @@ public class GridModel implements Grid {
 	 * {@inheritDoc}
 	 */
 	public String getMapAsString() {
-		String s = "";
-		for (int y = 0; y < map.length; y++) {
+		StringBuilder s = new StringBuilder();
+		for (char[] chars : map) {
 			for (int x = 0; x < map[0].length; x++) {
-				s += map[y][x];
+				s.append(chars[x]);
 			}
-			s += "\n";
+			s.append("\n");
 		}
-		return s;
+		return s.toString();
 	}
 	
 	/**
