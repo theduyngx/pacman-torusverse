@@ -1,4 +1,4 @@
-package matachi.mapeditor.editor;
+package editor;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -50,6 +50,4 @@ public class GridMouseInformationLabel extends JLabel implements MouseMotionList
 		this.setText("Mouse: (" + x + ", " + y + "), Hovering tile: (" +
 				(x/Tile.TILE_WIDTH+1) + ", " + (y/Tile.TILE_HEIGHT+1) + ")");
 	}
-
-	
 }

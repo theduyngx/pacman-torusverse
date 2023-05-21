@@ -1,4 +1,4 @@
-package matachi.mapeditor.editor;
+package editor;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -14,8 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-import matachi.mapeditor.grid.Camera;
-import matachi.mapeditor.grid.Grid;
+import grid.Camera;
+import grid.Grid;
 
 
 /**

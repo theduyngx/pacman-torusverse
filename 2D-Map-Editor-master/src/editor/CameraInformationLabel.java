@@ -1,4 +1,4 @@
-package matachi.mapeditor.editor;
+package editor;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -7,8 +7,8 @@ import java.io.Serial;
 
 import javax.swing.JLabel;
 
-import matachi.mapeditor.grid.Camera;
-import matachi.mapeditor.grid.Grid;
+import grid.Camera;
+import grid.Grid;
 
 /**
  * A label that shows information about a Camera.
