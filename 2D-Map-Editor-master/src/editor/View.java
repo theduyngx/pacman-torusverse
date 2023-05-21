@@ -1,17 +1,9 @@
 package editor;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.Border;
 
 import grid.Camera;
@@ -128,6 +120,7 @@ public class View {
 		frame.setTitle("Map Editor");
 		frame.add(layout);
 		frame.pack();
+		frame.setFocusable(true);
 		frame.setVisible(true);
 	}
 
@@ -152,5 +145,21 @@ public class View {
 
 	public void close() {
 		frame.setVisible(false);
+	}
+
+	/**
+	 * Set the frame to a different one
+	 * @param frame the specified different frame
+	 */
+	public void setFrame(JFrame frame) {
+		frame.toFront();
+		frame.setVisible(true);
+		frame.setEnabled(true);
+		this.frame.dispose();
+		this.frame = frame;
+	}
+
+	public void dispose() {
+		frame.dispose();
 	}
 }

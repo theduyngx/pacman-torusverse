@@ -7,10 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -26,7 +24,6 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import pacman.src.utility.PropertiesLoader;
 import pacman.src.Game;
 
 /**
@@ -54,16 +51,18 @@ public class Controller implements ActionListener, GUIInformation {
 	private View view;
 	private int gridWith = MAP_WIDTH;
 	private int gridHeight = MAP_HEIGHT;
+	private final Game game;
 
 	/**
 	 * Construct the controller.
 	 */
-	public Controller() {
+	public Controller(Game game) {
 		this.tiles  = TileManager.getTilesFromFolder("data/");
 		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		this.grid   = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
 		this.view   = new View(this, camera, grid, tiles);
+		this.game   = game;
 	}
 
 	/**
@@ -77,17 +76,12 @@ public class Controller implements ActionListener, GUIInformation {
 				break;
 			}
 		}
-		if 		(e.getActionCommand().equals("save"))   saveFile();
-		else if (e.getActionCommand().equals("load"))   loadFile();
-		else if (e.getActionCommand().equals("update")) updateGrid(gridWith, gridHeight);
+		if 		(e.getActionCommand().equals("save"		 )) saveFile();
+		else if (e.getActionCommand().equals("load"		 )) loadFile();
+		else if (e.getActionCommand().equals("update"	 )) updateGrid(gridWith, gridHeight);
 		else if (e.getActionCommand().equals("start_game")) {
-			view.close();
-			String propertiesPath = "src/pacman/properties/test1.properties";
-			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
-			assert properties != null;
-			Game game = new Game(properties);
-			game.run();
-			updateGrid(gridWith, gridHeight);
+			view.setFrame(game.getFrame());
+//			SwingUtilities.invokeLater(game);
 		}
 	}
 

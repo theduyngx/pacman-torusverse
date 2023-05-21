@@ -16,7 +16,7 @@ import java.util.Properties;
  * @author Ramon Javier L. Felipe VI - 1233281 (rfelipe@student.unimelb.edu.au)
  * @author Jonathan Chen Jie Kong    - 1263651 (jonathanchen@student.unimelb.edu.au)
  */
-public class Game extends GameGrid {
+public class Game extends GameGrid implements Runnable {
     // draw grid colors
     public final static Color COLOR_LOSE = Color.red;
     public final static Color COLOR_WIN = Color.yellow;
@@ -31,7 +31,7 @@ public class Game extends GameGrid {
     // game running constants
     private final static int SIMULATION_PERIOD = 100;
     private final static int KEY_REPEATED_PERIOD = 150;
-    private final static String GAME_TITLE = "[PacMan in the Multiverse]";
+    private final static String GAME_TITLE = "[PacMan in the TorusVerse]";
     private final static int DELAY_RUN = 10;
     private final static int DELAY_AFTER_RUN = 120;
 
@@ -63,6 +63,12 @@ public class Game extends GameGrid {
 
         // instantiate actors
         manager.instantiateMonsters(properties);
+        addKeyRepeatListener(manager.getPacActor());
+        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
+
+        // set up game window
+        setSimulationPeriod(SIMULATION_PERIOD);
+        setTitle(GAME_TITLE);
     }
 
     /**
@@ -79,15 +85,10 @@ public class Game extends GameGrid {
      * check for a winning / losing condition until either one is met.
      */
     public void run() {
-        // set up game window
-        setSimulationPeriod(SIMULATION_PERIOD);
-        setTitle(GAME_TITLE);
         GGBackground bg = getBg();
         drawGrid(bg);
 
-        // Setup Random seeds
-        addKeyRepeatListener(manager.getPacActor());
-        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
+        // put actors onto the game
         putMonsters();
         putPacActor();
 
@@ -99,6 +100,7 @@ public class Game extends GameGrid {
         PacActor pacActor = manager.getPacActor();
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
         putItems(bg);
+
         do {
             hasPacmanBeenHit = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
