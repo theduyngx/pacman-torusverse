@@ -2,10 +2,8 @@ package editor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -59,11 +57,11 @@ public class Controller implements ActionListener, GUIInformation {
 	 * Construct the controller.
 	 */
 	public Controller() {
-		this.tiles = TileManager.getTilesFromFolder("data/");
-		this.model = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
+		this.tiles  = TileManager.getTilesFromFolder("data/");
+		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
-		this.grid = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
-		this.view = new View(this, camera, grid, tiles);
+		this.grid   = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
+		this.view   = new View(this, camera, grid, tiles);
 	}
 
 	/**
@@ -145,7 +143,20 @@ public class Controller implements ActionListener, GUIInformation {
 					Element row = new Element("row");
 					for (int x = 0; x < width; x++) {
 						char tileChar = model.getTile(x,y);
-						String type = "PathTile";
+						String type = switch(tileChar) {
+							case 'b' -> "WallTile";
+							case 'c' -> "PillTile";
+							case 'd' -> "GoldTile";
+							case 'e' -> "IceTile";
+							case 'f' -> "PacTile";
+							case 'g' -> "TrollTile";
+							case 'h' -> "TX5Tile";
+							case 'i' -> "PortalWhiteTile";
+							case 'j' -> "PortalYellowTile";
+							case 'k' -> "PortalDarkGoldTile";
+							case 'l' -> "PortalDarkGrayTile";
+							default  -> "PathTile";
+						};
 
 						if (tileChar == 'b')
 							type = "WallTile";
@@ -192,8 +203,6 @@ public class Controller implements ActionListener, GUIInformation {
 		try {
 			JFileChooser chooser = new JFileChooser();
 			File selectedFile;
-			BufferedReader in;
-			FileReader reader = null;
 			File workingDirectory = new File(System.getProperty("user.dir"));
 			chooser.setCurrentDirectory(workingDirectory);
 
@@ -202,7 +211,7 @@ public class Controller implements ActionListener, GUIInformation {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				selectedFile = chooser.getSelectedFile();
 				if (selectedFile.canRead() && selectedFile.exists()) {
-					document = (Document) builder.build(selectedFile);
+					document = builder.build(selectedFile);
 
 					Element rootNode = document.getRootElement();
 
@@ -223,39 +232,25 @@ public class Controller implements ActionListener, GUIInformation {
 							Element cell = (Element) cells.get(x);
 							String cellValue = cell.getText();
 
-							char tileNr = 'a';
-							if (cellValue.equals("PathTile"))
-								tileNr = 'a';
-							else if (cellValue.equals("WallTile"))
-								tileNr = 'b';
-							else if (cellValue.equals("PillTile"))
-								tileNr = 'c';
-							else if (cellValue.equals("GoldTile"))
-								tileNr = 'd';
-							else if (cellValue.equals("IceTile"))
-								tileNr = 'e';
-							else if (cellValue.equals("PacTile"))
-								tileNr = 'f';
-							else if (cellValue.equals("TrollTile"))
-								tileNr = 'g';
-							else if (cellValue.equals("TX5Tile"))
-								tileNr = 'h';
-							else if (cellValue.equals("PortalWhiteTile"))
-								tileNr = 'i';
-							else if (cellValue.equals("PortalYellowTile"))
-								tileNr = 'j';
-							else if (cellValue.equals("PortalDarkGoldTile"))
-								tileNr = 'k';
-							else if (cellValue.equals("PortalDarkGrayTile"))
-								tileNr = 'l';
-							else
-								tileNr = '0';
+							char tileNr = switch (cellValue) {
+								case "PathTile" 		  -> 'a';
+								case "WallTile" 		  -> 'b';
+								case "PillTile" 		  -> 'c';
+								case "GoldTile" 		  -> 'd';
+								case "IceTile" 			  -> 'e';
+								case "PacTile" 			  -> 'f';
+								case "TrollTile" 		  -> 'g';
+								case "TX5Tile" 			  -> 'h';
+								case "PortalWhiteTile"    -> 'i';
+								case "PortalYellowTile"   -> 'j';
+								case "PortalDarkGoldTile" -> 'k';
+								case "PortalDarkGrayTile" -> 'l';
+								default 				  -> '0';
+							};
 
 							model.setTile(x, y, tileNr);
 						}
 					}
-
-					String mapString = model.getMapAsString();
 					grid.redrawGrid();
 				}
 			}

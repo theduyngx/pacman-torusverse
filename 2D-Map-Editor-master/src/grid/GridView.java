@@ -7,7 +7,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serial;
 import java.util.List;
-
 import javax.swing.JPanel;
 
 import editor.GUIInformation;
@@ -43,7 +42,7 @@ public class GridView extends JPanel implements PropertyChangeListener {
 	/**
 	 * Creates a grid panel.
 	 * @param guiInformation Information from the GUI that the grid requires.
-	 * @param tiles List of available tiles.
+	 * @param tiles 		 List of available tiles.
 	 */
 	public GridView(GUIInformation guiInformation, Camera camera, List<? extends Tile> tiles) {
 		super(new GridLayout(camera.getHeight(), camera.getWidth()));

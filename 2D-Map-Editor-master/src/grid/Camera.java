@@ -8,7 +8,6 @@ import java.beans.PropertyChangeListener;
  * @author Daniel "MaTachi" Jonsson
  * @version 1
  * @since v0.0.5
- *
  */
 public interface Camera {
 
@@ -25,14 +24,14 @@ public interface Camera {
 	int getHeight();
 	
 	/**
-	 * Returns the X coordiante of the camera.
-	 * @return int The X coordiante of the camera.
+	 * Returns the X coordinate of the camera.
+	 * @return int The X coordinate of the camera.
 	 */
 	int getX();
 	
 	/**
-	 * Returns the Y coordiante of the camera.
-	 * @return int The Y coordiante of the camera.
+	 * Returns the Y coordinate of the camera.
+	 * @return int The Y coordinate of the camera.
 	 */
 	int getY();
 	
@@ -57,7 +56,7 @@ public interface Camera {
 	void setTile(int x, int y, char c);
 	
 	/**
-	 * The the value of a tile.
+	 * The value of a tile.
 	 * @param x The X-coordinate of the current view.
 	 * @param y The Y-coordinate of the current view.
 	 * @return char The character on the tile.
