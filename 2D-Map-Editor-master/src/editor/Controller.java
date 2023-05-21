@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -19,12 +20,16 @@ import grid.Grid;
 import grid.GridCamera;
 import grid.GridModel;
 import grid.GridView;
+import pacman.src.*;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import pacman.src.utility.GameCallback;
+import pacman.src.utility.PropertiesLoader;
+import pacman.src.Game;
 
 /**
  * Controller of the application.
@@ -83,17 +88,21 @@ public class Controller implements ActionListener, GUIInformation {
 		} else if (e.getActionCommand().equals("update")) {
 			updateGrid(gridWith, gridHeight);
 		} else if (e.getActionCommand().equals("start_game")) {
-			// TODO: switch to pacman game
+			String propertiesPath = "properties/test2.properties";
+			final Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
+			GameCallback gameCallback = new GameCallback();
+			assert properties != null;
+			new Game(gameCallback, properties);
 		}
 	}
 
 	public void updateGrid(int width, int height) {
 		view.close();
-		this.tiles = TileManager.getTilesFromFolder("data/");
-		this.model = new GridModel(width, height, tiles.get(0).getCharacter());
+		this.tiles 	= TileManager.getTilesFromFolder("data/");
+		this.model 	= new GridModel(width, height, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
-		grid = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
-		this.view = new View(this, camera, grid, tiles);
+		this.grid 	= new GridView(this, camera, tiles); // Every tile is 30x30 pixels
+		this.view 	= new View(this, camera, grid, tiles);
 		view.setSize(width, height);
 	}
 
@@ -127,7 +136,6 @@ public class Controller implements ActionListener, GUIInformation {
 		int returnVal = chooser.showSaveDialog(null);
 		try {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-
 				Element level = new Element("level");
 				Document doc = new Document(level);
 				doc.setRootElement(level);
@@ -157,30 +165,6 @@ public class Controller implements ActionListener, GUIInformation {
 							case 'l' -> "PortalDarkGrayTile";
 							default  -> "PathTile";
 						};
-
-						if (tileChar == 'b')
-							type = "WallTile";
-						else if (tileChar == 'c')
-							type = "PillTile";
-						else if (tileChar == 'd')
-							type = "GoldTile";
-						else if (tileChar == 'e')
-							type = "IceTile";
-						else if (tileChar == 'f')
-							type = "PacTile";
-						else if (tileChar == 'g')
-							type = "TrollTile";
-						else if (tileChar == 'h')
-							type = "TX5Tile";
-						else if (tileChar == 'i')
-							type = "PortalWhiteTile";
-						else if (tileChar == 'j')
-							type = "PortalYellowTile";
-						else if (tileChar == 'k')
-							type = "PortalDarkGoldTile";
-						else if (tileChar == 'l')
-							type = "PortalDarkGrayTile";
-
 						Element e = new Element("cell");
 						row.addContent(e.setText(type));
 					}
@@ -247,7 +231,6 @@ public class Controller implements ActionListener, GUIInformation {
 								case "PortalDarkGrayTile" -> 'l';
 								default 				  -> '0';
 							};
-
 							model.setTile(x, y, tileNr);
 						}
 					}
