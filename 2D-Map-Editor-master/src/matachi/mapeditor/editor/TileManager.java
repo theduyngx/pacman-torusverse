@@ -28,7 +28,7 @@ public class TileManager {
 		List<Tile> tiles = new ArrayList<>();
 		File folder = new File(folderPath);
 		File[] listOfFiles = folder.listFiles();
-		int character = (int)'a';
+		int character = 'a';
 		Map<String, File> map = new TreeMap<>();
 
 		///

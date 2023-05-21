@@ -9,6 +9,8 @@ import java.beans.PropertyChangeListener;
  * @since v0.0.5
  */
 public interface Grid {
+	int GRID_WIDTH = 20;
+	int GRID_HEIGHT = 11;
 	
 	/**
 	 * Returns the width of the map.

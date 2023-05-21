@@ -20,14 +20,14 @@ public class GridCamera implements Camera {
 	public static final int SOUTH = 2;
 	public static final int WEST = 3;
 	
-	private Grid model;
+	private final Grid model;
 	
-	private Rectangle camera;
+	private final Rectangle camera;
 
 	/**
 	 * Announce changes.
 	 */
-	private PropertyChangeSupport changeSupport;
+	private final PropertyChangeSupport changeSupport;
 
 	/**
 	 * Constructs the camera with a given model.
@@ -88,7 +88,7 @@ public class GridCamera implements Camera {
 	 */
 	public void setTile(int x, int y, char c) {
 		model.setTile(camera.x + x, camera.y + y, c);
-		firePropertyChange("changedTile", new Point(x, y));
+		firePropertyChange(new Point(x, y));
 	}
 	
 	/**
@@ -126,8 +126,7 @@ public class GridCamera implements Camera {
 				camera.setLocation(--camera.x, camera.y);
 			}
 		}
-
-		firePropertyChange("movedCamera");
+		firePropertyChange();
 	}
 	
 	/**
@@ -144,11 +143,11 @@ public class GridCamera implements Camera {
 		changeSupport.removePropertyChangeListener(listener);
 	}
 	
-	private void firePropertyChange(String propertyName) {
-		changeSupport.firePropertyChange(propertyName, false, true);
+	private void firePropertyChange() {
+		changeSupport.firePropertyChange("movedCamera", false, true);
 	}
 	
-	private void firePropertyChange(String propertyName, Object newValue) {
-		changeSupport.firePropertyChange(propertyName, false, newValue);
+	private void firePropertyChange(Object newValue) {
+		changeSupport.firePropertyChange("changedTile", false, newValue);
 	}
 }

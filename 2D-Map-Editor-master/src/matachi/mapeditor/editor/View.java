@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import matachi.mapeditor.grid.Camera;
+import matachi.mapeditor.grid.Grid;
 
 
 /**
@@ -50,9 +51,9 @@ public class View {
 	 */
 	public View(Controller controller, Camera camera, JPanel grid, List<? extends Tile> tiles) {
 
-		grid.setPreferredSize(new Dimension(Constants.GRID_WIDTH * Constants.TILE_WIDTH,
-				Constants.GRID_HEIGHT * Constants.TILE_HEIGHT));
-		/** Create the panels */
+		grid.setPreferredSize(new Dimension(Grid.GRID_WIDTH * Tile.TILE_WIDTH,
+				Grid.GRID_HEIGHT * Tile.TILE_HEIGHT));
+		/* Create the panels */
 		createBottomPanel(controller, tiles);
 		createTopPanel(controller, camera, grid);
 	}
@@ -61,7 +62,7 @@ public class View {
 		palette = new JPanel(new FlowLayout());
 		for (Tile t : tiles) {
 			JButton button = new JButton();
-			button.setPreferredSize(new Dimension(Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
+			button.setPreferredSize(new Dimension(Tile.TILE_WIDTH, Tile.TILE_HEIGHT));
 			button.setIcon(t.getIcon());
 			button.addActionListener(controller);
 			button.setActionCommand(Character.toString(t.getCharacter()));
@@ -101,10 +102,10 @@ public class View {
 		JLabel lblWidth = new JLabel("Width(min:32):");
 		JLabel lblHeight = new JLabel("Height(min:20):");
 
-		txtWidth = new JTextField(Constants.MAP_WIDTH + "", 3);
+		txtWidth = new JTextField(Controller.MAP_WIDTH + "", 3);
 		txtWidth.getDocument().addDocumentListener(controller.updateSizeFields);
 		txtWidth.setEnabled(false);
-		txtHeight = new JTextField(Constants.MAP_HEIGHT + "", 3);
+		txtHeight = new JTextField(Controller.MAP_HEIGHT + "", 3);
 		txtHeight.getDocument().addDocumentListener(controller.updateSizeFields);
 		txtHeight.setEnabled(false);
 		JButton updateSize = new JButton("Reset");
@@ -141,7 +142,7 @@ public class View {
 	public int getWidth() {
 		String value = txtWidth.getText();
 		if (value.equals("")) {
-			value = Constants.MAP_WIDTH + "";
+			value = Controller.MAP_WIDTH + "";
 		}
 		return Integer.parseInt(value);
 	}
@@ -149,14 +150,14 @@ public class View {
 	public int getHeight() {
 		String value = txtHeight.getText();
 		if (value.equals("")) {
-			value = Constants.MAP_WIDTH + "";
+			value = Controller.MAP_WIDTH + "";
 		}
 		return Integer.parseInt(value);
 	}
 	
 	public void setSize(int width, int height){
-		txtWidth.setText(width+"");
-		txtHeight.setText(height+"");
+		txtWidth.setText(String.valueOf(width));
+		txtHeight.setText(String.valueOf(height));
 	}
 
 	public void close() {

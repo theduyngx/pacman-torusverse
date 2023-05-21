@@ -37,6 +37,8 @@ import org.jdom.output.XMLOutputter;
  * 
  */
 public class Controller implements ActionListener, GUIInformation {
+	public static final int MAP_WIDTH = 20;
+	public static final int MAP_HEIGHT = 11;
 
 	/**
 	 * The model of the map editor.
@@ -50,16 +52,16 @@ public class Controller implements ActionListener, GUIInformation {
 
 	private GridView grid;
 	private View view;
-	private int gridWith = Constants.MAP_WIDTH;
-	private int gridHeight = Constants.MAP_HEIGHT;
+	private int gridWith = MAP_WIDTH;
+	private int gridHeight = MAP_HEIGHT;
 
 	/**
 	 * Construct the controller.
 	 */
 	public Controller() {
 		this.tiles = TileManager.getTilesFromFolder("data/");
-		this.model = new GridModel(Constants.MAP_WIDTH, Constants.MAP_HEIGHT, tiles.get(0).getCharacter());
-		this.camera = new GridCamera(model, Constants.GRID_WIDTH, Constants.GRID_HEIGHT);
+		this.model = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
+		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		this.grid = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
 		this.view = new View(this, camera, grid, tiles);
 	}
@@ -91,7 +93,7 @@ public class Controller implements ActionListener, GUIInformation {
 		view.close();
 		this.tiles = TileManager.getTilesFromFolder("data/");
 		this.model = new GridModel(width, height, tiles.get(0).getCharacter());
-		this.camera = new GridCamera(model, Constants.GRID_WIDTH, Constants.GRID_HEIGHT);
+		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		grid = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
 		this.view = new View(this, camera, grid, tiles);
 		view.setSize(width, height);

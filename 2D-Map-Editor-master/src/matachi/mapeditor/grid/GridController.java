@@ -8,9 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import matachi.mapeditor.editor.Constants;
-import matachi.mapeditor.editor.Controller;
 import matachi.mapeditor.editor.GUIInformation;
+import matachi.mapeditor.editor.Tile;
 
 /**
  * Takes inputs from the GridView and communicated with a Camera.
@@ -24,7 +23,7 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	/**
 	 * The camera of the grid.
 	 */
-	private Camera camera;
+	private final Camera camera;
 	
 	/**
 	 * The last tile that the user clicked.
@@ -35,7 +34,7 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	/**
 	 * The class that provides with GUI information.
 	 */
-	private GUIInformation guiInformation;
+	private final GUIInformation guiInformation;
 
 	/**
 	 * The GridController which the GridView needs.
@@ -62,8 +61,8 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
-		lastClickedTileX = e.getX() / Constants.TILE_WIDTH;
-		lastClickedTileY = e.getY() / Constants.TILE_HEIGHT;
+		lastClickedTileX = e.getX() / Tile.TILE_WIDTH;
+		lastClickedTileY = e.getY() / Tile.TILE_HEIGHT;
 		if (ifLeftMouseButtonPressed(e)) {
 			updateTile(lastClickedTileX, lastClickedTileY);
 		}
@@ -78,8 +77,8 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	}
 	
 	private void updateTile(int xCor, int yCor) {
-		xCor = Math.max(0, Math.min(xCor, Constants.GRID_WIDTH-1));
-		yCor = Math.max(0, Math.min(yCor, Constants.GRID_HEIGHT-1));
+		xCor = Math.max(0, Math.min(xCor, Grid.GRID_WIDTH-1));
+		yCor = Math.max(0, Math.min(yCor, Grid.GRID_HEIGHT-1));
 		if (guiInformation.getSelectedTile() != null) {
 			camera.setTile(xCor, yCor, guiInformation.getSelectedTile().getCharacter());
 		}
@@ -114,8 +113,8 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (ifRightMouseButtonPressed(e)) {
-			int newTileX = e.getX() / Constants.TILE_WIDTH;
-			int newTileY = e.getY() / Constants.TILE_HEIGHT;
+			int newTileX = e.getX() / Tile.TILE_WIDTH;
+			int newTileY = e.getY() / Tile.TILE_HEIGHT;
 			updateCamera(newTileX, newTileY);
 		}
 		this.mousePressed(e);

@@ -17,6 +17,8 @@ import javax.swing.ImageIcon;
  *
  */
 public class Tile {
+	public static final int TILE_WIDTH = 32;
+	public static final int TILE_HEIGHT = 32;
 
 	/**
 	 * The character that will be used in the map file when saved.
@@ -73,8 +75,8 @@ public class Tile {
 	
 	private static BufferedImage deepCopy(BufferedImage bi) {
 		ColorModel cm = bi.getColorModel();
-		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+		boolean isAlphaPreMultiplied = cm.isAlphaPremultiplied();
 		WritableRaster raster = bi.copyData(null);
-		return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+		return new BufferedImage(cm, raster, isAlphaPreMultiplied, null);
 	}
 }

@@ -8,6 +8,7 @@ import java.io.Serial;
 import javax.swing.JLabel;
 
 import matachi.mapeditor.grid.Camera;
+import matachi.mapeditor.grid.Grid;
 
 /**
  * A label that shows information about a Camera.
@@ -32,8 +33,8 @@ public class CameraInformationLabel extends JLabel implements PropertyChangeList
 		camera.addPropertyChangeListener(this);
 
 		this.setPreferredSize(new Dimension(220, 15));
-		this.setText("Showing: 0 - " + Constants.GRID_WIDTH + "/" + camera.getModelWidth() +
-				", 0 - " + Constants.GRID_HEIGHT + "/" + camera.getModelHeight());
+		this.setText("Showing: 0 - " + Grid.GRID_WIDTH + "/" + camera.getModelWidth() +
+				", 0 - " + Grid.GRID_HEIGHT + "/" + camera.getModelHeight());
 
 	}
 
