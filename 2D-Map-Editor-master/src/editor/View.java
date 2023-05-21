@@ -21,21 +21,16 @@ import grid.Grid;
 /**
  * The view of the application.
  * 
- * @author Daniel "MaTachi" Jonsson
+ * @author  Daniel "MaTachi" Jonsson
  * @version 1
- * @since v0.0.5
+ * @since   v0.0.5
  * 
  */
 public class View {
-
-	/**
-	 * The JFrame.
-	 */
+	// JFrame
 	private JFrame frame;
 
-	/**
-	 * Settings to the right.
-	 */
+	// Settings to the right.
 	private JTextField txtWidth;
 	private JTextField txtHeight;
 	private JPanel right = null;
@@ -44,12 +39,9 @@ public class View {
 
 	/**
 	 * Constructs the View.
-	 * 
-	 * @param controller
-	 *            The controller.
+	 * @param controller The controller.
 	 */
 	public View(Controller controller, Camera camera, JPanel grid, List<? extends Tile> tiles) {
-
 		grid.setPreferredSize(new Dimension(Grid.GRID_WIDTH * Tile.TILE_WIDTH,
 				Grid.GRID_HEIGHT * Tile.TILE_HEIGHT));
 		/* Create the panels */
@@ -141,17 +133,15 @@ public class View {
 
 	public int getWidth() {
 		String value = txtWidth.getText();
-		if (value.equals("")) {
+		if (value.equals(""))
 			value = Controller.MAP_WIDTH + "";
-		}
 		return Integer.parseInt(value);
 	}
 
 	public int getHeight() {
 		String value = txtHeight.getText();
-		if (value.equals("")) {
+		if (value.equals(""))
 			value = Controller.MAP_WIDTH + "";
-		}
 		return Integer.parseInt(value);
 	}
 	

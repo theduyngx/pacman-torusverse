@@ -8,20 +8,18 @@ import java.beans.PropertyChangeSupport;
 /**
  * An implementation of the interface Camera. It has a Grid and shows only a
  * rectangle of it.
- * @author Daniel "MaTachi" Jonsson
+ * @author  Daniel "MaTachi" Jonsson
  * @version 1
- * @since v0.0.5
+ * @since   v0.0.5
  *
  */
 public class GridCamera implements Camera {
-
 	public static final int NORTH = 0;
-	public static final int EAST = 1;
+	public static final int EAST  = 1;
 	public static final int SOUTH = 2;
-	public static final int WEST = 3;
+	public static final int WEST  = 3;
 	
 	private final Grid model;
-	
 	private final Rectangle camera;
 
 	/**
@@ -110,21 +108,20 @@ public class GridCamera implements Camera {
 	 */
 	public void moveCamera(int direction) {
 		if (direction == GridCamera.NORTH) {
-			if (camera.y > 0) {
+			if (camera.y > 0)
 				camera.setLocation(camera.x, --camera.y);
-			}
-		} else if (direction == GridCamera.EAST) {
-			if (camera.x + camera.width < model.getWidth()) {
+		}
+		else if (direction == GridCamera.EAST) {
+			if (camera.x + camera.width < model.getWidth())
 				camera.setLocation(++camera.x, camera.y);
-			}
-		} else if (direction == GridCamera.SOUTH) {
-			if (camera.y + camera.height < model.getHeight()) {
+		}
+		else if (direction == GridCamera.SOUTH) {
+			if (camera.y + camera.height < model.getHeight())
 				camera.setLocation(camera.x, ++camera.y);
-			}
-		} else if (direction == GridCamera.WEST) {
-			if (camera.x > 0) {
+		}
+		else if (direction == GridCamera.WEST) {
+			if (camera.x > 0)
 				camera.setLocation(--camera.x, camera.y);
-			}
 		}
 		firePropertyChange();
 	}

@@ -32,10 +32,9 @@ import pacman.src.Game;
 /**
  * Controller of the application.
  * 
- * @author Daniel "MaTachi" Jonsson
+ * @author  Daniel "MaTachi" Jonsson
  * @version 1
- * @since v0.0.5
- * 
+ * @since   v0.0.5
  */
 public class Controller implements ActionListener, GUIInformation {
 	public static final int MAP_WIDTH = 20;
@@ -73,21 +72,18 @@ public class Controller implements ActionListener, GUIInformation {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		for (Tile t : tiles) {
-			if (e.getActionCommand().equals(
-					Character.toString(t.getCharacter()))) {
+			if (e.getActionCommand().equals(Character.toString(t.getCharacter()))) {
 				selectedTile = t;
 				break;
 			}
 		}
-		if (e.getActionCommand().equals("save")) {
-			saveFile();
-		} else if (e.getActionCommand().equals("load")) {
-			loadFile();
-		} else if (e.getActionCommand().equals("update")) {
-			updateGrid(gridWith, gridHeight);
-		} else if (e.getActionCommand().equals("start_game")) {
-			String propertiesPath = "src/pacman/properties/test2.properties";
-			final Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
+		if 		(e.getActionCommand().equals("save"))   saveFile();
+		else if (e.getActionCommand().equals("load"))   loadFile();
+		else if (e.getActionCommand().equals("update")) updateGrid(gridWith, gridHeight);
+		else if (e.getActionCommand().equals("start_game")) {
+			view.close();
+			String propertiesPath = "src/pacman/properties/test1.properties";
+			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
 			assert properties != null;
 			Game game = new Game(properties);
 			game.run();
@@ -106,7 +102,6 @@ public class Controller implements ActionListener, GUIInformation {
 	}
 
 	DocumentListener updateSizeFields = new DocumentListener() {
-
 		public void changedUpdate(DocumentEvent e) {
 			gridWith = view.getWidth();
 			gridHeight = view.getHeight();
@@ -183,9 +178,9 @@ public class Controller implements ActionListener, GUIInformation {
 	public void loadFile() {
 		SAXBuilder builder = new SAXBuilder();
 		try {
-			JFileChooser chooser = new JFileChooser();
-			File selectedFile;
+			JFileChooser chooser  = new JFileChooser();
 			File workingDirectory = new File(System.getProperty("user.dir"));
+			File selectedFile;
 			chooser.setCurrentDirectory(workingDirectory);
 
 			int returnVal = chooser.showOpenDialog(null);

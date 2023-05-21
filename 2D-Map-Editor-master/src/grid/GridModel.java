@@ -5,12 +5,11 @@ import java.beans.PropertyChangeSupport;
 
 /**
  * An implementation of the interface Grid. It stores characters two-dimensionally.
- * @author Daniel "MaTachi" Jonsson
+ * @author  Daniel "MaTachi" Jonsson
  * @version 1
- * @since v0.0.5
+ * @since   v0.0.5
  */
 public class GridModel implements Grid {
-
 	public static final int NORTH = 0;
 	public static final int EAST = 1;
 	public static final int SOUTH = 2;
@@ -33,15 +32,14 @@ public class GridModel implements Grid {
 	
 	/**
 	 * Constructs the model with number of rows and columns.
-	 * @param columns The number of columns.
-	 * @param rows The number of rows.
-	 * @param defaultChar The character that the map should be filled with by
-	 * default.
+	 * @param columns 	  The number of columns.
+	 * @param rows 		  The number of rows.
+	 * @param defaultChar The character that the map should be filled with by default.
 	 */
 	public GridModel(int columns, int rows, char defaultChar) {
-		this.defaultChar = defaultChar;
+		this.defaultChar   = defaultChar;
 		this.changeSupport = new PropertyChangeSupport(this);
-		this.map = createEmptyMap(columns, rows);
+		this.map 		   = createEmptyMap(columns, rows);
 	}
 
 	/**
@@ -90,33 +88,24 @@ public class GridModel implements Grid {
 	public void expandMap(int n, int direction) {
 		char[][] tmpMap;
 		int northOffset = 0;
-		int eastOffset = 0;
+		int eastOffset  = 0;
 		int southOffset = 0;
-		int westOffset = 0;
-		
-		if (direction == GridModel.NORTH) {
-			northOffset = n;
-		} else if (direction == GridModel.WEST) {
-			westOffset = n;
-		} else if (direction == GridModel.SOUTH) {
-			southOffset = n;
-		} else if (direction == GridModel.EAST) {
-			eastOffset = n;
-		} else {
-			throw new IllegalArgumentException("Bad direction.");
-		}
+		int westOffset  = 0;
 
-		int heightTmpMap = getWidth() + westOffset + eastOffset;
-		int widthTmpMap = getHeight() + northOffset + southOffset;
+		if      (direction == GridModel.NORTH) northOffset = n;
+		else if (direction == GridModel.WEST ) westOffset  = n;
+		else if (direction == GridModel.SOUTH) southOffset = n;
+		else if (direction == GridModel.EAST ) eastOffset  = n;
+		else    throw new IllegalArgumentException("Bad direction.");
+
+		int heightTmpMap = getWidth()  + westOffset  + eastOffset;
+		int widthTmpMap  = getHeight() + northOffset + southOffset;
 		tmpMap = createEmptyMap(heightTmpMap, widthTmpMap);
 
 		// Copy the old map's data to the new one.
-		for (int y = 0; y < map.length; y++) {
+		for (int y = 0; y < map.length; y++)
 			System.arraycopy(map[y], 0, tmpMap[y + northOffset], westOffset, map[0].length);
-		}
-		
 		map = tmpMap;
-
 		firePropertyChange();
 	}
 	
@@ -124,11 +113,9 @@ public class GridModel implements Grid {
 	 * {@inheritDoc}
 	 */
 	public void fillMap(char[][] map, char character) {
-		for (int y = 0; y < map.length; y++) {
-			for (int x = 0; x < map[0].length; x++) {
+		for (int y = 0; y < map.length; y++)
+			for (int x = 0; x < map[0].length; x++)
 				map[y][x] = character;
-			}
-		}
 	}
 	
 	/**
@@ -137,9 +124,8 @@ public class GridModel implements Grid {
 	public String getMapAsString() {
 		StringBuilder s = new StringBuilder();
 		for (char[] chars : map) {
-			for (int x = 0; x < map[0].length; x++) {
+			for (int x = 0; x < map[0].length; x++)
 				s.append(chars[x]);
-			}
 			s.append("\n");
 		}
 		return s.toString();
@@ -148,8 +134,8 @@ public class GridModel implements Grid {
 	/**
 	 * Returns a new map filled with zeros.
 	 * @param columns The number of columns.
-	 * @param rows The number of rows.
-	 * @return char[][] A 2D array of default characters.
+	 * @param rows 	  The number of rows.
+	 * @return 		  A 2D array of default characters.
 	 */
 	private char[][] createEmptyMap(int columns, int rows) {
 		char[][] tmpMap = new char[rows][columns];

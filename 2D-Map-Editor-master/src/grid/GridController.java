@@ -11,6 +11,7 @@ import java.awt.event.MouseMotionListener;
 import editor.GUIInformation;
 import editor.Tile;
 
+
 /**
  * Takes inputs from the GridView and communicated with a Camera.
  * @author Daniel "MaTachi" Jonsson
@@ -69,11 +70,11 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	}
 
 	private boolean ifLeftMouseButtonPressed(MouseEvent e) {
-		return (e.getModifiers() & MouseEvent.BUTTON1_MASK) == MouseEvent.BUTTON1_MASK;
+		return (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK;
 	}
 	
 	private boolean ifRightMouseButtonPressed(MouseEvent e) {
-		return (e.getModifiers() & MouseEvent.BUTTON3_MASK) == MouseEvent.BUTTON3_MASK;
+		return (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == MouseEvent.BUTTON3_DOWN_MASK;
 	}
 	
 	private void updateTile(int xCor, int yCor) {
@@ -86,18 +87,12 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 
 	private void updateCamera(int newTileX, int newTileY) {
 		if (newTileX != lastClickedTileX) {
-			if (newTileX - lastClickedTileX > 0) {
-				camera.moveCamera(GridCamera.WEST);
-			} else {
-				camera.moveCamera(GridCamera.EAST);
-			}
+			int camDirection = (newTileX > lastClickedTileX) ? GridCamera.WEST : GridCamera.EAST;
+			camera.moveCamera(camDirection);
 		}
 		if (newTileY != lastClickedTileY) {
-			if (newTileY - lastClickedTileY > 0) {
-				camera.moveCamera(GridCamera.NORTH);
-			} else {
-				camera.moveCamera(GridCamera.SOUTH);
-			}
+			int camDirection = (newTileY > lastClickedTileY) ? GridCamera.NORTH : GridCamera.SOUTH;
+			camera.moveCamera(camDirection);
 		}
 		lastClickedTileX = newTileX;
 		lastClickedTileY = newTileY;

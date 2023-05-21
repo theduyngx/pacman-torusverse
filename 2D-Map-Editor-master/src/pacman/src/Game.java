@@ -51,7 +51,6 @@ public class Game extends GameGrid {
      * @see              Properties
      */
     public Game(Properties properties) {
-
         // Setup game
         super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
         this.grid = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
