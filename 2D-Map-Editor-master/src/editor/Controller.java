@@ -88,7 +88,7 @@ public class Controller implements ActionListener, GUIInformation {
 		} else if (e.getActionCommand().equals("update")) {
 			updateGrid(gridWith, gridHeight);
 		} else if (e.getActionCommand().equals("start_game")) {
-			String propertiesPath = "properties/test2.properties";
+			String propertiesPath = "src/pacman/properties/test2.properties";
 			final Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
 			GameCallback gameCallback = new GameCallback();
 			assert properties != null;

@@ -4,6 +4,7 @@ package pacman.src;
 
 import ch.aplu.jgamegrid.*;
 import pacman.src.utility.GameCallback;
+import pacman.src.utility.PropertiesLoader;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,8 +28,7 @@ public class Game extends GameGrid {
     private final ArrayList<Location> propertyPillLocations = new ArrayList<>();
     private final ArrayList<Location> propertyGoldLocations = new ArrayList<>();
 
-    public Game(GameCallback gameCallback, Properties properties)
-    {
+    public Game(GameCallback gameCallback, Properties properties) {
         //Setup game
         super(nbHorzCells, nbVertCells, 20, false);
         this.gameCallback = gameCallback;
@@ -57,8 +57,6 @@ public class Game extends GameGrid {
         tx5.stopMoving(5);
         setupActorLocations();
 
-
-
         //Run the game
         doRun();
         show();
@@ -86,7 +84,7 @@ public class Game extends GameGrid {
         if (hasPacmanBeenHit) {
             bg.setPaintColor(Color.red);
             title = "GAME OVER";
-            addActor(new Actor("sprites/explosion3.gif"), loc);
+            addActor(new Actor(PropertiesLoader.path + "explosion3.gif"), loc);
         } else if (hasPacmanEatAllPills) {
             bg.setPaintColor(Color.yellow);
             title = "YOU WIN";
@@ -102,8 +100,8 @@ public class Game extends GameGrid {
     }
 
     private void setupActorLocations() {
-        String[] trollLocations = this.properties.getProperty("Troll.location").split(",");
-        String[] tx5Locations = this.properties.getProperty("TX5.location").split(",");
+        String[] trollLocations  = this.properties.getProperty("Troll.location").split(",");
+        String[] tx5Locations    = this.properties.getProperty("TX5.location").split(",");
         String[] pacManLocations = this.properties.getProperty("PacMan.location").split(",");
         int trollX = Integer.parseInt(trollLocations[0]);
         int trollY = Integer.parseInt(trollLocations[1]);
@@ -121,27 +119,20 @@ public class Game extends GameGrid {
 
     private int countPillsAndItems() {
         int pillsAndItemsCount = 0;
-        for (int y = 0; y < nbVertCells; y++)
-        {
-            for (int x = 0; x < nbHorzCells; x++)
-            {
+        for (int y = 0; y < nbVertCells; y++) {
+            for (int x = 0; x < nbHorzCells; x++) {
                 Location location = new Location(x, y);
                 int a = grid.getCell(location);
-                if (a == 1 && propertyPillLocations.size() == 0) { // Pill
+                if (a == 1 && propertyPillLocations.size() == 0) // Pill
                     pillsAndItemsCount++;
-                } else if (a == 3 && propertyGoldLocations.size() == 0) { // Gold
+                else if (a == 3 && propertyGoldLocations.size() == 0) // Gold
                     pillsAndItemsCount++;
-                }
             }
         }
-        if (propertyPillLocations.size() != 0) {
+        if (propertyPillLocations.size() != 0)
             pillsAndItemsCount += propertyPillLocations.size();
-        }
-
-        if (propertyGoldLocations.size() != 0) {
+        if (propertyGoldLocations.size() != 0)
             pillsAndItemsCount += propertyGoldLocations.size();
-        }
-
         return pillsAndItemsCount;
     }
 
@@ -156,7 +147,8 @@ public class Game extends GameGrid {
             String[] singlePillLocationStrings = pillsLocationString.split(";");
             for (String singlePillLocationString: singlePillLocationStrings) {
                 String[] locationStrings = singlePillLocationString.split(",");
-                propertyPillLocations.add(new Location(Integer.parseInt(locationStrings[0]), Integer.parseInt(locationStrings[1])));
+                propertyPillLocations.add(new Location(Integer.parseInt(locationStrings[0]),
+                        Integer.parseInt(locationStrings[1])));
             }
         }
 
@@ -165,110 +157,93 @@ public class Game extends GameGrid {
             String[] singleGoldLocationStrings = goldLocationString.split(";");
             for (String singleGoldLocationString: singleGoldLocationStrings) {
                 String[] locationStrings = singleGoldLocationString.split(",");
-                propertyGoldLocations.add(new Location(Integer.parseInt(locationStrings[0]), Integer.parseInt(locationStrings[1])));
+                propertyGoldLocations.add(new Location(Integer.parseInt(locationStrings[0]),
+                        Integer.parseInt(locationStrings[1])));
             }
         }
     }
     private void setupPillAndItemsLocations() {
-        for (int y = 0; y < nbVertCells; y++)
-        {
-            for (int x = 0; x < nbHorzCells; x++)
-            {
+        for (int y = 0; y < nbVertCells; y++) {
+            for (int x = 0; x < nbHorzCells; x++) {
                 Location location = new Location(x, y);
                 int a = grid.getCell(location);
-                if (a == 1 && propertyPillLocations.size() == 0) {
+                if (a == 1 && propertyPillLocations.size() == 0)
                     pillAndItemLocations.add(location);
-                }
-                if (a == 3 &&  propertyGoldLocations.size() == 0) {
+                if (a == 3 &&  propertyGoldLocations.size() == 0)
                     pillAndItemLocations.add(location);
-                }
-                if (a == 4) {
+                if (a == 4)
                     pillAndItemLocations.add(location);
-                }
             }
         }
-
-
-        if (propertyPillLocations.size() > 0) {
+        if (propertyPillLocations.size() > 0)
             pillAndItemLocations.addAll(propertyPillLocations);
-        }
-        if (propertyGoldLocations.size() > 0) {
+        if (propertyGoldLocations.size() > 0)
             pillAndItemLocations.addAll(propertyGoldLocations);
-        }
     }
 
-    private void drawGrid(GGBackground bg)
-    {
+    private void drawGrid(GGBackground bg) {
         bg.clear(Color.gray);
         bg.setPaintColor(Color.white);
-        for (int y = 0; y < nbVertCells; y++)
-        {
-            for (int x = 0; x < nbHorzCells; x++)
-            {
+        for (int y = 0; y < nbVertCells; y++) {
+            for (int x = 0; x < nbHorzCells; x++) {
                 bg.setPaintColor(Color.white);
                 Location location = new Location(x, y);
                 int a = grid.getCell(location);
                 if (a > 0)
                     bg.fillCell(location, Color.lightGray);
-                if (a == 1 && propertyPillLocations.size() == 0) { // Pill
+                if (a == 1 && propertyPillLocations.size() == 0) // Pill
                     putPill(bg, location);
-                } else if (a == 3 && propertyGoldLocations.size() == 0) { // Gold
+                else if (a == 3 && propertyGoldLocations.size() == 0) // Gold
                     putGold(bg, location);
-                } else if (a == 4) {
+                else if (a == 4)
                     putIce(bg, location);
-                }
             }
         }
 
-        for (Location location : propertyPillLocations) {
+        for (Location location : propertyPillLocations)
             putPill(bg, location);
-        }
 
-        for (Location location : propertyGoldLocations) {
+        for (Location location : propertyGoldLocations)
             putGold(bg, location);
-        }
     }
 
     private void putPill(GGBackground bg, Location location){
         bg.fillCircle(toPoint(location), 5);
     }
 
-    private void putGold(GGBackground bg, Location location){
+    private void putGold(GGBackground bg, Location location) {
         bg.setPaintColor(Color.yellow);
         bg.fillCircle(toPoint(location), 5);
-        Actor gold = new Actor("sprites/gold.png");
+        Actor gold = new Actor(PropertiesLoader.path + "gold.png");
         this.goldPieces.add(gold);
         addActor(gold, location);
     }
 
-    private void putIce(GGBackground bg, Location location){
+    private void putIce(GGBackground bg, Location location) {
         bg.setPaintColor(Color.blue);
         bg.fillCircle(toPoint(location), 5);
-        Actor ice = new Actor("sprites/ice.png");
+        Actor ice = new Actor(PropertiesLoader.path + "ice.png");
         this.iceCubes.add(ice);
         addActor(ice, location);
     }
 
-    public void removeItem(String type,Location location){
-        if(type.equals("gold")){
-            for (Actor item : this.goldPieces){
-                if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY()) {
+    public void removeItem(String type,Location location) {
+        if (type.equals("gold")) {
+            for (Actor item : this.goldPieces)
+                if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY())
                     item.hide();
-                }
-            }
-        }else if(type.equals("ice")){
-            for (Actor item : this.iceCubes){
-                if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY()) {
+        }
+        else if (type.equals("ice")) {
+            for (Actor item : this.iceCubes)
+                if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY())
                     item.hide();
-                }
-            }
         }
     }
 
     public int getNumHorzCells(){
         return nbHorzCells;
     }
-    public int getNumVertCells(){
+    public int getNumVertCells() {
         return nbVertCells;
     }
 }

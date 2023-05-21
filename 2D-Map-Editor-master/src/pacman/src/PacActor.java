@@ -3,6 +3,8 @@
 package pacman.src;
 
 import ch.aplu.jgamegrid.*;
+import pacman.src.utility.PropertiesLoader;
+
 import java.awt.event.KeyEvent;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     private int propertyMoveIndex = 0;
     private final Random randomizer = new Random();
     public PacActor(Game game) {
-        super(true, "sprites/pacpix.gif", nbSprites);  // Rotatable
+        super(true, PropertiesLoader.path + "pacpix.gif", nbSprites);  // Rotatable
         this.game = game;
     }
     private boolean isAuto = false;

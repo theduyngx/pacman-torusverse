@@ -3,6 +3,8 @@
 package pacman.src;
 
 import ch.aplu.jgamegrid.*;
+import pacman.src.utility.PropertiesLoader;
+
 import java.awt.Color;
 import java.util.*;
 
@@ -14,7 +16,7 @@ public class Monster extends Actor {
     private final Random randomizer = new Random(0);
 
     public Monster(Game game, MonsterType type) {
-        super("sprites/" + type.getImageName());
+        super(PropertiesLoader.path + type.getImageName());
         this.game = game;
         this.type = type;
     }

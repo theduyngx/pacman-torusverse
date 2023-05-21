@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesLoader {
+    public static String path = "src/pacman/sprites/";
+
     public static Properties loadPropertiesFile(String propertiesFile) {
         try (InputStream input = new FileInputStream(propertiesFile)) {
             Properties prop = new Properties();
