@@ -93,6 +93,7 @@ public class View {
 		right.setBorder(border);
 		right.add(saveButton);
 		right.add(loadButton);
+		right.add(startGameButton);
 	}
 
 	private void createTopPanel(Controller controller, Camera camera, JPanel grid) {
