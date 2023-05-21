@@ -36,7 +36,6 @@ public class View {
 	/**
 	 * Settings to the right.
 	 */
-
 	private JTextField txtWidth;
 	private JTextField txtHeight;
 	private JPanel right = null;

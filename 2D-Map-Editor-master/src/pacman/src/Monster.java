@@ -1,120 +1,174 @@
-// Monster.java
-// Used for PacMan
 package pacman.src;
-
 import ch.aplu.jgamegrid.*;
-import pacman.src.utility.PropertiesLoader;
-
-import java.awt.Color;
 import java.util.*;
 
-public class Monster extends Actor {
-    private final Game game;
-    private final MonsterType type;
-    private final ArrayList<Location> visitedList = new ArrayList<>();
-    private boolean stopMoving = false;
-    private final Random randomizer = new Random(0);
+/**
+ * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
+ * Monster abstract class extended from abstract LiveActor class.
+ * @see LiveActor
+ */
+public abstract class Monster extends LiveActor {
 
-    public Monster(Game game, MonsterType type) {
-        super(PropertiesLoader.path + type.getImageName());
-        this.game = game;
-        this.type = type;
+    // step sizes
+    public static final int AGGRESSIVE_STEP_SIZE = 2;
+
+    /**
+     * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
+     * to the extended multiverse game or not.
+     * <ul>
+     *     <li>Troll  - not exclusive to multiverse
+     *     <li>TX5    - not exclusive to multiverse
+     *     <li>Alien  - exclusive to multiverse
+     *     <li>Orion  - exclusive to multiverse
+     *     <li>Wizard - exclusive to multiverse
+     * </ul>
+     */
+    public enum MonsterType {
+        Troll(false),
+        TX5(false),
+        Alien(true),
+        Orion(true),
+        Wizard(true);
+        public final boolean inMultiverse;
+        MonsterType(boolean inMultiverse) {
+            this.inMultiverse = inMultiverse;
+        }
     }
 
-    public void stopMoving(int seconds) {
-        this.stopMoving = true;
+    // time-related constants
+    public static final int SECOND_TO_MILLISECONDS = 1000;
+    public static final int AGGRAVATE_TIME = 3;
+    // if it has stopped moving or not
+    private boolean stopMoving = false;
+
+    /**
+     * Monster constructor.
+     * @param isRotatable   if monster is rotatable
+     * @param directory     sprite image directory
+     * @param numSprites    number of sprites
+     */
+    public Monster(ObjectManager manager, boolean isRotatable, String directory, int numSprites) {
+        super(manager, isRotatable, directory, numSprites);
+        assert manager != null;
+    }
+
+    /**
+     * Get the object manager.
+     * @return the object manager
+     */
+    @Override
+    public ObjectManager getManager() {
+        assert super.getManager() != null;
+        return super.getManager();
+    }
+
+    /**
+     * Set the monster type to monster.
+     * @param type the monster type
+     */
+    public void setType(MonsterType type) {
+        setName(type.toString());
+    }
+
+    /**
+     * Overridden method for setting monster's seed.
+     * @param seed specified seed
+     */
+    @Override
+    protected void setSeed(int seed) {
+        getRandomizer().setSeed(seed);
+    }
+
+    /**
+     * Set monster to either stop or continue/start moving.
+     * @param stopMoving boolean indicating if monster stops moving or not
+     */
+    protected void setStopMoving(boolean stopMoving) {
+        this.stopMoving = stopMoving;
+    }
+
+    /**
+     * Stops monster's movement for a specified number of seconds.
+     * @param seconds number of seconds monster stops moving
+     */
+    protected void stopMoving(int seconds) {
+        setStopMoving(true);
         Timer timer = new Timer(); // Instantiate Timer Object
-        int SECOND_TO_MILLISECONDS = 1000;
         final Monster monster = this;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                monster.stopMoving = false;
+                monster.setStopMoving(false);
             }
         }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
-    public void setSeed(int seed) {
-        randomizer.setSeed(seed);
+    /**
+     * Speed up monster's movement by a constant factor for a specified number of seconds.
+     * @param seconds number of seconds monster speeds up
+     */
+    public void speedUp(int seconds) {
+        this.setStepSize(AGGRESSIVE_STEP_SIZE);
+        Timer timer = new Timer();
+        final Monster monster = this;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                monster.setStepSize(LiveActor.NORMAL_STEP_SIZE);
+            }
+        }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
-    public void setStopMoving(boolean stopMoving) {
-        this.stopMoving = stopMoving;
-    }
 
+    /**
+     * Overridden act method from Actor class for monster to act within the game.
+     * @see Actor
+     */
+    @Override
     public void act() {
         if (stopMoving) return;
-        walkApproach();
-        setHorzMirror(!(getDirection() > 150) || !(getDirection() < 210));
+        moveApproach();
+        int DIRECTION_EXCEED = 150;
+        int DIRECTION_PRECEDE = 210;
+        boolean enable = getDirection() > DIRECTION_EXCEED && getDirection() < DIRECTION_PRECEDE;
+        setHorzMirror(!enable);
+
+        // Record changes in position to game
+        getGameCallback().monsterLocationChanged(this);
     }
 
-    private void walkApproach() {
-        Location pacLocation = game.pacActor.getLocation();
-        double oldDirection = getDirection();
 
-        // Walking approach:
-        // TX5: Determine direction to pacActor and try to move in that direction. Otherwise, random walk.
-        // Troll: Random walk.
-        Location.CompassDirection compassDir =
-                getLocation().get4CompassDirectionTo(pacLocation);
-        Location next = getLocation().getNeighbourLocation(compassDir);
-        setDirection(compassDir);
-        if (type == MonsterType.TX5 &&
-                !isVisited(next) && canMove(next))
-            setLocation(next);
-        else {
-            // Random walk
-            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
-            setDirection(oldDirection);
-            turn(sign * 90);  // Try to turn left/right
-            next = getNextMoveLocation();
-            if (canMove(next))
-                setLocation(next);
-            else {
-                setDirection(oldDirection);
-                next = getNextMoveLocation();
-                if (canMove(next)) // Try to move forward
-                    setLocation(next);
-                else {
-                    setDirection(oldDirection);
-                    turn(-sign * 90);  // Try to turn right/left
-                    next = getNextMoveLocation();
-                    if (canMove(next))
-                        setLocation(next);
-                    else {
-                        setDirection(oldDirection);
-                        turn(180);  // Turn backward
-                        next = getNextMoveLocation();
-                        setLocation(next);
-                    }
-                }
-            }
+    /**
+     * Adding itself to be an 'official' part of the game, viz. an actor of the game. Overridden
+     * from Movable interface.
+     * @param game the game
+     * @see        Movable
+     */
+    @Override
+    public void putActor(Game game) {
+        game.addActor(this, getInitLocation(), Location.NORTH);
+    }
+
+
+    /**
+     * Overridden moveApproach method from LiveActor class for monsters within the game
+     * @see LiveActor
+     */
+    @Override
+    public void moveApproach() {
+        Location newLocation = nextMonsterLocation(this.getStepSize());
+        if (newLocation == null) {
+            newLocation = nextMonsterLocation(LiveActor.NORMAL_STEP_SIZE);
         }
-        game.getGameCallback().monsterLocationChanged(this);
-        addVisitedList(next);
+
+        // If you really cannot move, just stand still
+        if (newLocation == null) return;
+
+        this.setLocation(newLocation);
     }
 
-    public MonsterType getType() {
-        return type;
-    }
-
-    private void addVisitedList(Location location) {
-        visitedList.add(location);
-        int listLength = 10;
-        if (visitedList.size() == listLength)
-            visitedList.remove(0);
-    }
-
-    private boolean isVisited(Location location) {
-        for (Location loc : visitedList)
-            if (loc.equals(location))
-                return true;
-        return false;
-    }
-
-    private boolean canMove(Location location) {
-        Color c = getBackground().getColor(location);
-        return !c.equals(Color.gray) && location.getX() < game.getNumHorzCells()
-                && location.getX() >= 0 && location.getY() < game.getNumVertCells() && location.getY() >= 0;
-    }
+    /**
+     * Abstract method for specific movement behavior of monster types
+     */
+    protected abstract Location nextMonsterLocation(int stepSize);
 }

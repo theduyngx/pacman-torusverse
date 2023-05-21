@@ -20,14 +20,12 @@ import grid.Grid;
 import grid.GridCamera;
 import grid.GridModel;
 import grid.GridView;
-import pacman.src.*;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import pacman.src.utility.GameCallback;
 import pacman.src.utility.PropertiesLoader;
 import pacman.src.Game;
 
@@ -90,9 +88,10 @@ public class Controller implements ActionListener, GUIInformation {
 		} else if (e.getActionCommand().equals("start_game")) {
 			String propertiesPath = "src/pacman/properties/test2.properties";
 			final Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
-			GameCallback gameCallback = new GameCallback();
 			assert properties != null;
-			new Game(gameCallback, properties);
+			Game game = new Game(properties);
+			game.run();
+			updateGrid(gridWith, gridHeight);
 		}
 	}
 
@@ -125,7 +124,6 @@ public class Controller implements ActionListener, GUIInformation {
 	};
 
 	private void saveFile() {
-
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"xml files", "xml");
@@ -196,15 +194,12 @@ public class Controller implements ActionListener, GUIInformation {
 				selectedFile = chooser.getSelectedFile();
 				if (selectedFile.canRead() && selectedFile.exists()) {
 					document = builder.build(selectedFile);
-
 					Element rootNode = document.getRootElement();
 
 					List sizeList = rootNode.getChildren("size");
 					Element sizeElem = (Element) sizeList.get(0);
-					int height = Integer.parseInt(sizeElem
-							.getChildText("height"));
-					int width = Integer
-							.parseInt(sizeElem.getChildText("width"));
+					int height = Integer.parseInt(sizeElem.getChildText("height"));
+					int width = Integer.parseInt(sizeElem.getChildText("width"));
 					updateGrid(width, height);
 
 					List rows = rootNode.getChildren("row");
@@ -215,7 +210,6 @@ public class Controller implements ActionListener, GUIInformation {
 						for (int x = 0; x < cells.size(); x++) {
 							Element cell = (Element) cells.get(x);
 							String cellValue = cell.getText();
-
 							char tileNr = switch (cellValue) {
 								case "PathTile" 		  -> 'a';
 								case "WallTile" 		  -> 'b';
