@@ -1,280 +1,193 @@
-// PacMan.java
-// Simple PacMan implementation
 package src;
 
 import ch.aplu.jgamegrid.*;
-import src.utility.GameCallback;
-
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 
-public class Game extends GameGrid
-{
-  private final static int nbHorzCells = 20;
-  private final static int nbVertCells = 11;
-  protected PacManGameGrid grid = new PacManGameGrid(nbHorzCells, nbVertCells);
 
-  protected PacActor pacActor = new PacActor(this);
-  private Monster troll = new Monster(this, MonsterType.Troll);
-  private Monster tx5 = new Monster(this, MonsterType.TX5);
+/**
+ * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
+ * The Game class represents the entire PacMan game. It is responsible for putting items and
+ * actors onto its own grid, as well as running the game.
+ * @see GameGrid
+ *
+ * @author The Duy Nguyen            - 1100548 (theduyn@student.unimelb.edu.au)
+ * @author Ramon Javier L. Felipe VI - 1233281 (rfelipe@student.unimelb.edu.au)
+ * @author Jonathan Chen Jie Kong    - 1263651 (jonathanchen@student.unimelb.edu.au)
+ */
+public class Game extends GameGrid {
+    // draw grid colors
+    public final static Color COLOR_LOSE = Color.red;
+    public final static Color COLOR_WIN = Color.yellow;
+    public final static Color COLOR_BACKGROUND = Color.white;
+    public final static Color COLOR_WALL = Color.gray;
+    public final static Color COLOR_SPACE = Color.lightGray;
 
+    // win/lose messages
+    public final static String LOSE_MESSAGE = "GAME OVER";
+    public final static String WIN_MESSAGE = "YOU WIN";
 
-  private ArrayList<Location> pillAndItemLocations = new ArrayList<Location>();
-  private ArrayList<Actor> iceCubes = new ArrayList<Actor>();
-  private ArrayList<Actor> goldPieces = new ArrayList<Actor>();
-  private GameCallback gameCallback;
-  private Properties properties;
-  private int seed = 30006;
-  private ArrayList<Location> propertyPillLocations = new ArrayList<>();
-  private ArrayList<Location> propertyGoldLocations = new ArrayList<>();
+    // game running constants
+    private final static int SIMULATION_PERIOD = 100;
+    private final static int KEY_REPEATED_PERIOD = 150;
+    private final static String GAME_TITLE = "[PacMan in the Multiverse]";
+    private final static int DELAY_RUN = 10;
+    private final static int DELAY_AFTER_RUN = 120;
 
-  public Game(GameCallback gameCallback, Properties properties)
-  {
-    //Setup game
-    super(nbHorzCells, nbVertCells, 20, false);
-    this.gameCallback = gameCallback;
-    this.properties = properties;
-    setSimulationPeriod(100);
-    setTitle("[PacMan in the Multiverse]");
+    // game grid
+    public final static int STRETCH_RATE = 2;
+    public final static int CELL_SIZE = 20 * STRETCH_RATE;
+    private final static int NUM_HORIZONTAL_CELLS = 20;
+    private final static int NUM_VERTICAL_CELLS = 11;
+    private final PacManGameGrid grid;
 
-    //Setup for auto test
-    pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
-    pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
-    loadPillAndItemsLocations();
+    // object manager
+    private final ObjectManager manager;
 
-    GGBackground bg = getBg();
-    drawGrid(bg);
+    /**
+     * Game class constructor.
+     * @param properties properties object read from properties file for instantiating actors and items
+     * @see              Properties
+     */
+    public Game(Properties properties) {
 
-    //Setup Random seeds
-    seed = Integer.parseInt(properties.getProperty("seed"));
-    pacActor.setSeed(seed);
-    troll.setSeed(seed);
-    tx5.setSeed(seed);
-    addKeyRepeatListener(pacActor);
-    setKeyRepeatPeriod(150);
-    troll.setSlowDown(3);
-    tx5.setSlowDown(3);
-    pacActor.setSlowDown(3);
-    tx5.stopMoving(5);
-    setupActorLocations();
+        // Setup game
+        super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
+        this.grid = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
+        this.manager = new ObjectManager(this);
 
+        // parse properties and instantiate objects
+        manager.parseInanimateActor(properties);
+        manager.instantiatePacActor(properties);
+        manager.instantiateObjects(grid);
 
-
-    //Run the game
-    doRun();
-    show();
-    // Loop to look for collision in the application thread
-    // This makes it improbable that we miss a hit
-    boolean hasPacmanBeenHit;
-    boolean hasPacmanEatAllPills;
-    setupPillAndItemsLocations();
-    int maxPillsAndItems = countPillsAndItems();
-    
-    do {
-      hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||
-              tx5.getLocation().equals(pacActor.getLocation());
-      hasPacmanEatAllPills = pacActor.getNbPills() >= maxPillsAndItems;
-      delay(10);
-    } while(!hasPacmanBeenHit && !hasPacmanEatAllPills);
-    delay(120);
-
-    Location loc = pacActor.getLocation();
-    troll.setStopMoving(true);
-    tx5.setStopMoving(true);
-    pacActor.removeSelf();
-
-    String title = "";
-    if (hasPacmanBeenHit) {
-      bg.setPaintColor(Color.red);
-      title = "GAME OVER";
-      addActor(new Actor("sprites/explosion3.gif"), loc);
-    } else if (hasPacmanEatAllPills) {
-      bg.setPaintColor(Color.yellow);
-      title = "YOU WIN";
+        // instantiate actors
+        manager.instantiateMonsters(properties);
     }
-    setTitle(title);
-    gameCallback.endOfGame(title);
 
-    doPause();
-  }
+    /**
+     * Get the game grid.
+     * @return the game grid
+     * @see    PacManGameGrid
+     */
+    public PacManGameGrid getGrid() {
+        return grid;
+    }
 
-  public GameCallback getGameCallback() {
-    return gameCallback;
-  }
+    /**
+     * Run the game. Upon running, all actors and items will be put to the game, and it will continually
+     * check for a winning / losing condition until either one is met.
+     */
+    public void run() {
+        // set up game window
+        setSimulationPeriod(SIMULATION_PERIOD);
+        setTitle(GAME_TITLE);
+        GGBackground bg = getBg();
+        drawGrid(bg);
 
-  private void setupActorLocations() {
-    String[] trollLocations = this.properties.getProperty("Troll.location").split(",");
-    String[] tx5Locations = this.properties.getProperty("TX5.location").split(",");
-    String[] pacManLocations = this.properties.getProperty("PacMan.location").split(",");
-    int trollX = Integer.parseInt(trollLocations[0]);
-    int trollY = Integer.parseInt(trollLocations[1]);
+        // Setup Random seeds
+        addKeyRepeatListener(manager.getPacActor());
+        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
+        putMonsters();
+        putPacActor();
 
-    int tx5X = Integer.parseInt(tx5Locations[0]);
-    int tx5Y = Integer.parseInt(tx5Locations[1]);
+        // Run the game
+        doRun();
+        show();
 
-    int pacManX = Integer.parseInt(pacManLocations[0]);
-    int pacManY = Integer.parseInt(pacManLocations[1]);
+        // check win / lose conditions
+        PacActor pacActor = manager.getPacActor();
+        boolean hasPacmanEatAllPills, hasPacmanBeenHit;
+        putItems(bg);
+        do {
+            hasPacmanBeenHit = pacActor.collideMonster();
+            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
+            delay(DELAY_RUN);
+        } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
+        delay(DELAY_AFTER_RUN);
 
-    addActor(troll, new Location(trollX, trollY), Location.NORTH);
-    addActor(pacActor, new Location(pacManX, pacManY));
-    addActor(tx5, new Location(tx5X, tx5Y), Location.NORTH);
-  }
-
-  private int countPillsAndItems() {
-    int pillsAndItemsCount = 0;
-    for (int y = 0; y < nbVertCells; y++)
-    {
-      for (int x = 0; x < nbHorzCells; x++)
-      {
-        Location location = new Location(x, y);
-        int a = grid.getCell(location);
-        if (a == 1 && propertyPillLocations.size() == 0) { // Pill
-          pillsAndItemsCount++;
-        } else if (a == 3 && propertyGoldLocations.size() == 0) { // Gold
-          pillsAndItemsCount++;
+        // upon winning / losing
+        Location loc = pacActor.getLocation();
+        manager.setMonstersStopMoving();
+        pacActor.removeSelf();
+        String title;
+        if (hasPacmanBeenHit) {
+            bg.setPaintColor(COLOR_LOSE);
+            title = LOSE_MESSAGE;
+            addActor(new Actor(PacActor.KILLED_SPRITE), loc);
         }
-      }
-    }
-    if (propertyPillLocations.size() != 0) {
-      pillsAndItemsCount += propertyPillLocations.size();
-    }
-
-    if (propertyGoldLocations.size() != 0) {
-      pillsAndItemsCount += propertyGoldLocations.size();
-    }
-
-    return pillsAndItemsCount;
-  }
-
-  public ArrayList<Location> getPillAndItemLocations() {
-    return pillAndItemLocations;
-  }
-
-
-  private void loadPillAndItemsLocations() {
-    String pillsLocationString = properties.getProperty("Pills.location");
-    if (pillsLocationString != null) {
-      String[] singlePillLocationStrings = pillsLocationString.split(";");
-      for (String singlePillLocationString: singlePillLocationStrings) {
-        String[] locationStrings = singlePillLocationString.split(",");
-        propertyPillLocations.add(new Location(Integer.parseInt(locationStrings[0]), Integer.parseInt(locationStrings[1])));
-      }
-    }
-
-    String goldLocationString = properties.getProperty("Gold.location");
-    if (goldLocationString != null) {
-      String[] singleGoldLocationStrings = goldLocationString.split(";");
-      for (String singleGoldLocationString: singleGoldLocationStrings) {
-        String[] locationStrings = singleGoldLocationString.split(",");
-        propertyGoldLocations.add(new Location(Integer.parseInt(locationStrings[0]), Integer.parseInt(locationStrings[1])));
-      }
-    }
-  }
-  private void setupPillAndItemsLocations() {
-    for (int y = 0; y < nbVertCells; y++)
-    {
-      for (int x = 0; x < nbHorzCells; x++)
-      {
-        Location location = new Location(x, y);
-        int a = grid.getCell(location);
-        if (a == 1 && propertyPillLocations.size() == 0) {
-          pillAndItemLocations.add(location);
+        else {
+            bg.setPaintColor(COLOR_WIN);
+            title = WIN_MESSAGE;
         }
-        if (a == 3 &&  propertyGoldLocations.size() == 0) {
-          pillAndItemLocations.add(location);
+        setTitle(title);
+        manager.getGameCallback().endOfGame(title);
+        doPause();
+    }
+
+
+    /**
+     * Draw the game's grid. The grid includes empty space and walls.
+     * @param bg background object for grid
+     * @see      GGBackground
+     */
+    private void drawGrid(GGBackground bg) {
+        // set the background
+        bg.clear(COLOR_WALL);
+        bg.setPaintColor(COLOR_BACKGROUND);
+
+        // draw the maze (its border and items)
+        for (int y = 0; y < NUM_VERTICAL_CELLS; y++) {
+            for (int x = 0; x < NUM_HORIZONTAL_CELLS; x++) {
+                bg.setPaintColor(COLOR_BACKGROUND);
+                Location location = new Location(x, y);
+                // space
+                if (grid.getCell(location) != InanimateActor.BlockType.ERROR)
+                    bg.fillCell(location, COLOR_SPACE);
+                // wall -> added to wall map in manager
+                if (grid.getCell(location) == InanimateActor.BlockType.WALL) {
+                    HashableLocation.putLocationHash(manager.getWalls(), location, 1);
+                    bg.fillCell(location, COLOR_WALL);
+                }
+            }
         }
-        if (a == 4) {
-          pillAndItemLocations.add(location);
+    }
+
+
+    /**
+     * Putting all items to game. Items once put to the game will exist within the game as well as the
+     * grid, and it will also be visualized to the background.
+     * @param background the background
+     * @see              GGBackground
+     * @see              Item
+     */
+    public void putItems(GGBackground background) {
+        for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
+            Location location = entry.getKey().location();
+            Item item = entry.getValue();
+            item.putActor(background, this, location);
         }
-      }
     }
 
-
-    if (propertyPillLocations.size() > 0) {
-      for (Location location : propertyPillLocations) {
-        pillAndItemLocations.add(location);
-      }
-    }
-    if (propertyGoldLocations.size() > 0) {
-      for (Location location : propertyGoldLocations) {
-        pillAndItemLocations.add(location);
-      }
-    }
-  }
-
-  private void drawGrid(GGBackground bg)
-  {
-    bg.clear(Color.gray);
-    bg.setPaintColor(Color.white);
-    for (int y = 0; y < nbVertCells; y++)
-    {
-      for (int x = 0; x < nbHorzCells; x++)
-      {
-        bg.setPaintColor(Color.white);
-        Location location = new Location(x, y);
-        int a = grid.getCell(location);
-        if (a > 0)
-          bg.fillCell(location, Color.lightGray);
-        if (a == 1 && propertyPillLocations.size() == 0) { // Pill
-          putPill(bg, location);
-        } else if (a == 3 && propertyGoldLocations.size() == 0) { // Gold
-          putGold(bg, location);
-        } else if (a == 4) {
-          putIce(bg, location);
+    /**
+     * Putting all monsters to game. Monsters once put to the game will exist within the game as well as the
+     * grid, and it will also be visualized to the background.
+     * @see Monster
+     */
+    public void putMonsters() {
+        for (int i=0; i<manager.getMonsters().size(); i++) {
+            Monster monster = manager.getMonsters().get(i);
+            monster.putActor(this);
         }
-      }
     }
 
-    for (Location location : propertyPillLocations) {
-      putPill(bg, location);
+    /**
+     * Putting PacMan to game. Similar to put monsters, PacMan will also be added to the game in the same
+     * manner.
+     * @see PacActor
+     */
+    public void putPacActor() {
+        manager.getPacActor().putActor(this);
     }
-
-    for (Location location : propertyGoldLocations) {
-      putGold(bg, location);
-    }
-  }
-
-  private void putPill(GGBackground bg, Location location){
-    bg.fillCircle(toPoint(location), 5);
-  }
-
-  private void putGold(GGBackground bg, Location location){
-    bg.setPaintColor(Color.yellow);
-    bg.fillCircle(toPoint(location), 5);
-    Actor gold = new Actor("sprites/gold.png");
-    this.goldPieces.add(gold);
-    addActor(gold, location);
-  }
-
-  private void putIce(GGBackground bg, Location location){
-    bg.setPaintColor(Color.blue);
-    bg.fillCircle(toPoint(location), 5);
-    Actor ice = new Actor("sprites/ice.png");
-    this.iceCubes.add(ice);
-    addActor(ice, location);
-  }
-
-  public void removeItem(String type,Location location){
-    if(type.equals("gold")){
-      for (Actor item : this.goldPieces){
-        if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY()) {
-          item.hide();
-        }
-      }
-    }else if(type.equals("ice")){
-      for (Actor item : this.iceCubes){
-        if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY()) {
-          item.hide();
-        }
-      }
-    }
-  }
-
-  public int getNumHorzCells(){
-    return this.nbHorzCells;
-  }
-  public int getNumVertCells(){
-    return this.nbVertCells;
-  }
 }
