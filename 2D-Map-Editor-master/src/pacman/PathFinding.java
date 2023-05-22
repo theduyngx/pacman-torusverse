@@ -27,23 +27,46 @@ public class PathFinding {
         return moves;
     }
 
-    public boolean bfs(PacActor pacActor) {
+    private static class LocationPath {
+        private final Location location;
+        private LocationPath parent = null;
+        private LocationPath(Location location) {
+            this.location = location;
+        }
+        private void setParent(LocationPath parent) {
+            this.parent = parent;
+        }
+
+        private static LinkedList<Location> getPath(LocationPath locationPath) {
+            LinkedList<Location> path = new LinkedList<>();
+            while (locationPath != null) {
+                path.addFirst(locationPath.location);
+                locationPath = locationPath.parent;
+            }
+            return path;
+        }
+    }
+
+    public LinkedList<Location> bfs(PacActor pacActor) {
         ObjectManager manager = pacActor.getManager();
-        LinkedList<Location> locationQueue = new LinkedList<>();
-        locationQueue.addLast(pacActor.getLocation());
+        LinkedList<LocationPath> locationQueue = new LinkedList<>();
+        locationQueue.addLast(new LocationPath(pacActor.getLocation()));
+
         while (! locationQueue.isEmpty()) {
-            Location loc = locationQueue.removeFirst();
-            pacActor.moveWithVisited(loc);
+            LocationPath path = locationQueue.removeFirst();
+            pacActor.moveWithVisited(path.location);
             if (manager.getNumPillsAndGold() <= 0)
-                return true;
+                return LocationPath.getPath(path);
             ArrayList<Location> nextLocations = getAllMoves(pacActor);
             for (Location next : nextLocations) {
                 if (! pacActor.hasVisited(next)) {
                     pacActor.addVisitedMap(next);
-                    locationQueue.addLast(next);
+                    LocationPath nextPath = new LocationPath(next);
+                    nextPath.setParent(path);
+                    locationQueue.addLast(nextPath);
                 }
             }
         }
-        return false;
+        return new LinkedList<>();
     }
 }
