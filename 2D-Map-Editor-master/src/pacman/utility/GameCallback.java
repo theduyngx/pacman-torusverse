@@ -1,7 +1,7 @@
-package pacman.src.utility;
+package pacman.utility;
 
 import ch.aplu.jgamegrid.Location;
-import pacman.src.Monster;
+import pacman.Monster;
 
 import java.io.FileWriter;
 import java.io.IOException;

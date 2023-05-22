@@ -1,4 +1,4 @@
-package pacman.src.utility;
+package pacman.utility;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -6,7 +6,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesLoader {
-    public static String PATH = "src/pacman/sprites/";
+    public static final String PATH = "sprites/";
+    public static final String PROPERTIES_PATH = "properties/";
 
     // properties location entry extension (for representing an object's location in properties file)
     public static final String LOCATION_EXTENSION = ".location";

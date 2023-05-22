@@ -1,4 +1,4 @@
-package pacman.src;
+package pacman;
 import ch.aplu.jgamegrid.Location;
 import java.util.Arrays;
 import java.util.HashMap;
