@@ -122,7 +122,6 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     public void moveWithVisited(Location next) {
         setLocation(next);
         eatItem(getManager());
-        addVisitedMap(next);
     }
 
     /**

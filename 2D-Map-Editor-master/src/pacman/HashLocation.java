@@ -95,10 +95,13 @@ public record HashLocation(Location location) {
      * Delete an entry from the map, given the location as key.
      * @param map       the hashmap
      * @param location  specified location
+     * @return          if there was an entry to be deleted
      * @param <T>       generic Object class
      */
-    public static <T> void delete(HashMap<HashLocation, T> map, Location location) {
+    public static <T> boolean delete(HashMap<HashLocation, T> map, Location location) {
         HashLocation hashLocation = new HashLocation(location);
+        boolean ret = map.containsKey(hashLocation);
         map.remove(hashLocation);
+        return ret;
     }
 }

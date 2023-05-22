@@ -21,7 +21,7 @@ public class LevelChecker {
     public HashMap<HashLocation, Item> unreachableItems(Game game) {
         PacActor pacActor = game.getManager().getPacActor();
         HashMap<HashLocation, Item> items = game.getManager().getMandatoryItems();
-        path = pathFinding.ids(pacActor);
+        path = pathFinding.idsFull(pacActor);
         HashMap<HashLocation, Item> reachable = new HashMap<>();
 
         // get the reachable hash map

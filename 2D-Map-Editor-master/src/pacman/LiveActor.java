@@ -3,7 +3,6 @@ import pacman.utility.GameCallback;
 
 import ch.aplu.jgamegrid.*;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -31,7 +30,6 @@ public abstract class LiveActor extends GameActor implements Movable {
     // Visited locations list - after a cycle, the earliest location will be removed from
     // visited list. We use LinkedList instead of ArrayList for fast removal and adding.
     private final LinkedList<Location> visitedList = new LinkedList<>();
-    private final HashMap<HashLocation, Integer> visitedMap = new HashMap<>();
 
     // direction-related - representing which angle to turn to for a move
     public static final int RIGHT_TURN_ANGLE = 90;
@@ -223,19 +221,6 @@ public abstract class LiveActor extends GameActor implements Movable {
         visitedList.add(location);
         if (visitedList.size() == CYCLE_LENGTH)
             visitedList.removeFirst();
-    }
-
-
-    public void addVisitedMap(Location location) {
-        visitedMap.put(new HashLocation(location), 1);
-    }
-
-    public void removeVisitedMap(Location location) {
-        visitedMap.remove(new HashLocation(location));
-    }
-
-    public boolean hasVisited(Location location) {
-        return visitedMap.containsKey(new HashLocation(location));
     }
 
 
