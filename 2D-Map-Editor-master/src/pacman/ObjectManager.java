@@ -172,6 +172,15 @@ public class ObjectManager {
             numPillsAndGold--;
     }
 
+    /**
+     *  Modified parsing function to account for new properties file format,
+     *  only stores isAuto and random seed
+     */
+    protected void parsePacProperties(Properties properties) {
+        seed = Integer.parseInt(properties.getProperty("seed"));
+        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("isAuto")));
+    }
+
 
     /**
      * Parse properties that do not relate to a live actor instantiation. This includes the seed, edible
