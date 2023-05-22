@@ -17,6 +17,8 @@ public abstract class InanimateActor extends GameActor {
     private static final char PILL_CHAR = '.';
     private static final char GOLD_CHAR = 'g';
     private static final char ICE_CHAR = 'i';
+
+    private static final char PORTAL_CHAR ='p';
     private static final char ERROR_CHAR = '\0';
 
 
@@ -37,8 +39,10 @@ public abstract class InanimateActor extends GameActor {
         SPACE(SPACE_CHAR),
         GOLD(GOLD_CHAR),
         ICE(ICE_CHAR),
+
+        PORTAL(PORTAL_CHAR),
         ERROR(ERROR_CHAR);
-        public final char BLOCK_CHAR;
+        public final cha BLOCK_CHAR;
         BlockType(char BLOCK_CHAR) {
             this.BLOCK_CHAR = BLOCK_CHAR;
         }

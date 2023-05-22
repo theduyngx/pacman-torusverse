@@ -14,14 +14,14 @@ public class Main {
 		assert properties != null;
 		Game game = new Game(properties);
 
-		Thread t = new Thread(() -> {
-			new Controller(game);
-			try {
-				SwingUtilities.invokeAndWait(game);
-			} catch (InterruptedException | InvocationTargetException e) {
-				throw new RuntimeException(e);
-			}
-		});
-		t.start();
+//		Thread t = new Thread(() -> {
+//			new Controller(game);
+//			try {
+//				SwingUtilities.invokeAndWait(game);
+//			} catch (InterruptedException | InvocationTargetException e) {
+//				throw new RuntimeException(e);
+//			}
+//		});
+//		t.start();
 	}
 }
