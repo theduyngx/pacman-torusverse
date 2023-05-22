@@ -230,6 +230,10 @@ public abstract class LiveActor extends GameActor implements Movable {
         visitedMap.put(new HashableLocation(location), 1);
     }
 
+    public void removeVisitedMap(Location location) {
+        visitedMap.remove(new HashableLocation(location));
+    }
+
     public boolean hasVisited(Location location) {
         return visitedMap.containsKey(new HashableLocation(location));
     }

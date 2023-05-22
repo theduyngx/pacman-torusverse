@@ -5,7 +5,6 @@ import ch.aplu.jgamegrid.Location;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 
 /**
@@ -16,6 +15,8 @@ import java.util.Map;
  * 4. Path finding to check if any pill/gold is unreachable
  */
 public class PathFinding {
+    LinkedList<Action> actionQueue = new LinkedList<>();
+
     public ArrayList<Location> getAllMoves(LiveActor actor) {
         ArrayList<Location> moves = new ArrayList<>();
         Location next;
@@ -27,6 +28,11 @@ public class PathFinding {
             if (actor.canMove(next)) moves.add(next);
         }
         return moves;
+    }
+
+
+    private record Action(Location previous, Location next, Item itemAtNext) {
+        // ...
     }
 
     private static class LocationPath {
@@ -50,26 +56,39 @@ public class PathFinding {
         }
     }
 
-    public LinkedList<Location> bfs(PacActor pacActor) {
-        ObjectManager manager = pacActor.getManager();
-        // deep copy
-        HashMap<HashableLocation, Item> items = new HashMap<>();
-        for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet())
-            items.put(new HashableLocation(entry.getKey().location()), entry.getValue().deepCopy());
 
+    public void proceedMove(PacActor pacActor, Location next, HashMap<HashableLocation, Item> items) {
+        Action action = new Action(pacActor.getLocation(), next, items.get(new HashableLocation(next)));
+        actionQueue.addFirst(action);
+        items.remove(new HashableLocation(next));
+        pacActor.setLocation(next);
+        pacActor.addVisitedMap(next);
+    }
+
+    public void undoMove(PacActor pacActor, HashMap<HashableLocation, Item> items) {
+        Action action = actionQueue.removeFirst();
+        pacActor.setLocation(action.previous);
+        pacActor.removeVisitedMap(action.next);
+        items.put(new HashableLocation(action.next), action.itemAtNext);
+    }
+
+
+    public LinkedList<Location> bfs(PacActor pacActor) {
+        HashMap<HashableLocation, Item> items = pacActor.getManager().getItems();
         LinkedList<LocationPath> locationQueue = new LinkedList<>();
         locationQueue.addLast(new LocationPath(pacActor.getLocation()));
 
         while (! locationQueue.isEmpty()) {
             LocationPath path = locationQueue.removeFirst();
-            pacActor.setLocation(path.location);
-            pacActor.addVisitedMap(path.location);
+            proceedMove(pacActor, path.location, items);
 
-            // update items hashmap
-            items.remove(new HashableLocation(path.location));
-
-            if (items.size() == 0)
+            // goal state
+            if (items.size() == 0) {
+                while (! actionQueue.isEmpty()) undoMove(pacActor, items);
                 return LocationPath.getPath(path);
+            }
+
+            // for each next unvisited location
             ArrayList<Location> nextLocations = getAllMoves(pacActor);
             for (Location next : nextLocations) {
                 if (! pacActor.hasVisited(next)) {
@@ -79,7 +98,9 @@ public class PathFinding {
                     locationQueue.addLast(nextPath);
                 }
             }
+//            undoMove(pacActor, items);
         }
+        while (! actionQueue.isEmpty()) undoMove(pacActor, items);
         return new LinkedList<>();
     }
 }
