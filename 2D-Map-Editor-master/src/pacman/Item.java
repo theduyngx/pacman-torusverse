@@ -1,4 +1,4 @@
-package pacman.src;
+package pacman;
 
 
 /**

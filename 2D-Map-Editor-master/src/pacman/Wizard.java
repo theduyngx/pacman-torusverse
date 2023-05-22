@@ -1,6 +1,6 @@
-package pacman.src;
+package pacman;
 import ch.aplu.jgamegrid.Location;
-import pacman.src.utility.PropertiesLoader;
+import pacman.utility.PropertiesLoader;
 
 import java.util.ArrayList;
 

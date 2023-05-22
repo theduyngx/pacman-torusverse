@@ -1,5 +1,5 @@
-package pacman.src;
-import pacman.src.utility.GameCallback;
+package pacman;
+import pacman.utility.GameCallback;
 
 import ch.aplu.jgamegrid.*;
 import java.util.LinkedList;

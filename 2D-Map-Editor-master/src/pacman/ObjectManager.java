@@ -1,6 +1,8 @@
-package pacman.src;
-import pacman.src.utility.GameCallback;
+package pacman;
+import pacman.utility.GameCallback;
+import pacman.utility.PropertiesLoader;
 import ch.aplu.jgamegrid.Location;
+
 import java.util.*;
 
 
@@ -201,15 +203,15 @@ public class ObjectManager {
         // parse pacman
         pacActor.setPropertyMoves(properties.getProperty(
                 pacActor.getName() +
-                pacman.src.utility.PropertiesLoader.MOVE_EXTENSION)
+                PropertiesLoader.MOVE_EXTENSION)
         );
         pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
                 pacActor.getName() +
-                pacman.src.utility.PropertiesLoader.AUTO_EXTENSION))
+                PropertiesLoader.AUTO_EXTENSION))
         );
         String[] pacManLocations = properties.getProperty(
                 pacActor.getName() +
-                pacman.src.utility.PropertiesLoader.LOCATION_EXTENSION
+                PropertiesLoader.LOCATION_EXTENSION
         ).split(",");
         int pacManX = Integer.parseInt(pacManLocations[0]);
         int pacManY = Integer.parseInt(pacManLocations[1]);
@@ -230,7 +232,7 @@ public class ObjectManager {
             // states otherwise, then we ignore)
             if (type.inMultiverse && !isMultiverse) continue;
             String name = type.toString();
-            String property_name = name + pacman.src.utility.PropertiesLoader.LOCATION_EXTENSION;
+            String property_name = name + PropertiesLoader.LOCATION_EXTENSION;
 
             // valid entry
             if (properties.containsKey(property_name) && !properties.getProperty(property_name).equals("")) {

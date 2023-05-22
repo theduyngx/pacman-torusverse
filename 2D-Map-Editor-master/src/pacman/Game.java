@@ -1,4 +1,4 @@
-package pacman.src;
+package pacman;
 
 import ch.aplu.jgamegrid.*;
 import java.awt.*;
@@ -44,6 +44,7 @@ public class Game extends GameGrid implements Runnable {
 
     // object manager
     private final ObjectManager manager;
+
 
     /**
      * Game class constructor.
