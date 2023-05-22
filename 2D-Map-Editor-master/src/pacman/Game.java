@@ -44,6 +44,7 @@ public class Game extends GameGrid implements Runnable {
 
     // object manager
     private final ObjectManager manager;
+    private boolean start = false;
 
 
     /**
@@ -81,11 +82,17 @@ public class Game extends GameGrid implements Runnable {
         return grid;
     }
 
+
+    public void setStart(boolean start) {
+        this.start = start;
+    }
+
     /**
      * Run the game. Upon running, all actors and items will be put to the game, and it will continually
      * check for a winning / losing condition until either one is met.
      */
     public void run() {
+        if (!start) return;
         GGBackground bg = getBg();
         drawGrid(bg);
 
@@ -97,19 +104,18 @@ public class Game extends GameGrid implements Runnable {
         doRun();
         show();
 
-        // check win / lose conditions
+        // run the game until win / lose condition satisfies
         PacActor pacActor = manager.getPacActor();
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
         putItems(bg);
-
         do {
-            hasPacmanBeenHit = pacActor.collideMonster();
+            hasPacmanBeenHit     = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);
 
-        // upon winning / losing
+        // upon game over
         Location loc = pacActor.getLocation();
         manager.setMonstersStopMoving();
         pacActor.removeSelf();

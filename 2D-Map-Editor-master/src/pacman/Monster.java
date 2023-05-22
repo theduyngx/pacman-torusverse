@@ -161,9 +161,8 @@ public abstract class Monster extends LiveActor {
             newLocation = nextMonsterLocation(LiveActor.NORMAL_STEP_SIZE);
         }
 
-        // If you really cannot move, just stand still
+        // If really cannot move, just stand still
         if (newLocation == null) return;
-
         this.setLocation(newLocation);
     }
 
