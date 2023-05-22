@@ -5,6 +5,7 @@ import ch.aplu.jgamegrid.Location;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 
 /**
@@ -35,15 +36,18 @@ public class PathFinding {
         // ...
     }
 
-    private static class LocationPath {
+    private static class LocationPath implements Comparable<LocationPath> {
         private final Location location;
         private LocationPath parent = null;
+        private int size;
 
         private LocationPath(Location location) {
             this.location = location;
+            size = 0;
         }
         private void setParent(LocationPath parent) {
             this.parent = parent;
+            size += parent.size;
         }
 
         private static LinkedList<Location> getPath(LocationPath locationPath) {
@@ -53,6 +57,16 @@ public class PathFinding {
                 locationPath = locationPath.parent;
             }
             return path;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashableLocation(location).hashCode();
+        }
+
+        @Override
+        public int compareTo(LocationPath other) {
+            return Integer.compare(this.size, other.size);
         }
     }
 
@@ -73,6 +87,20 @@ public class PathFinding {
     }
 
 
+    public LinkedList<Location> aStar(PacActor pacActor) {
+        PriorityQueue<LocationPath> openMin = new PriorityQueue<>();
+        HashMap<LocationPath, Integer> gCost = new HashMap<>();
+        HashMap<LocationPath, Integer> fCost = new HashMap<>();
+        HashMap<LocationPath, Boolean> discovered = new HashMap<>();
+        return null;
+    }
+
+
+    /**
+     * Breadth-first search pathfinding algorithm.
+     * @param pacActor the PacMan
+     * @return         the optimal path for PacMan to eat all items
+     */
     public LinkedList<Location> bfs(PacActor pacActor) {
         HashMap<HashableLocation, Item> items = pacActor.getManager().getItems();
         LinkedList<LocationPath> locationQueue = new LinkedList<>();
@@ -98,7 +126,6 @@ public class PathFinding {
                     locationQueue.addLast(nextPath);
                 }
             }
-//            undoMove(pacActor, items);
         }
         while (! actionQueue.isEmpty()) undoMove(pacActor, items);
         return new LinkedList<>();
