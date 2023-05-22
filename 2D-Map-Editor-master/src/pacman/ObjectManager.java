@@ -28,9 +28,9 @@ public class ObjectManager {
     // hashmap of monsters with their initial location as key
     private final ArrayList<Monster> monsters;
     // hashmap of all items with their location as key
-    private final HashMap<HashableLocation, Item> items;
+    private final HashMap<HashLocation, Item> items;
     // hashmap of all walls with their location as key
-    private final HashMap<HashableLocation, Integer> walls;
+    private final HashMap<HashLocation, Integer> walls;
 
     // the game
     private final Game game;
@@ -94,21 +94,21 @@ public class ObjectManager {
     /**
      * Get all items currently still in the game.
      * @return a hashmap where the key is the items' locations, and value being the items
-     * @see    HashableLocation
+     * @see    HashLocation
      * @see    Item
      */
-    protected HashMap<HashableLocation, Item> getItems() {
+    protected HashMap<HashLocation, Item> getItems() {
         return items;
     }
 
     /**
      * Get all gold and pill items currently still in the game.
      * @return a hashmap where the key is the items' locations, and value being the items
-     * @see    HashableLocation
+     * @see    HashLocation
      * @see    Item
      */
-    protected HashMap<HashableLocation, Item> getMandatoryItems() {
-        Map<HashableLocation, Item> map
+    protected HashMap<HashLocation, Item> getMandatoryItems() {
+        Map<HashLocation, Item> map
                 = items.entrySet().stream().
                         filter(
                              e -> !(e.getValue() instanceof Ice)).collect(
@@ -121,9 +121,9 @@ public class ObjectManager {
     /**
      * Get all walls.
      * @return a hashmap where the key is the walls' locations, and value being the walls
-     * @see    HashableLocation
+     * @see    HashLocation
      */
-    protected HashMap<HashableLocation, Integer> getWalls() {
+    protected HashMap<HashLocation, Integer> getWalls() {
         return walls;
     }
 
@@ -196,7 +196,7 @@ public class ObjectManager {
                     if (item == null) continue;
 
                     // add to item hashmaps and set game grid's cell
-                    HashableLocation.putLocationHash(items, location, item);
+                    HashLocation.put(items, location, item);
                     getGame().getGrid().setCell(location, blockType);
                     if (blockType == InanimateActor.BlockType.PILL || blockType == InanimateActor.BlockType.GOLD)
                         numPillsAndGold++;
@@ -295,23 +295,23 @@ public class ObjectManager {
 
                 // ignore if location is already occupied
                 Location location = new Location(row, col);
-                if (HashableLocation.containLocationHash(items, location)) continue;
+                if (HashLocation.contain(items, location)) continue;
 
                 // otherwise add
                 switch (itemType) {
                     case PILL -> {
                         Pill pill = new Pill();
-                        HashableLocation.putLocationHash(items, location, pill);
+                        HashLocation.put(items, location, pill);
                         numPillsAndGold++;
                     }
                     case GOLD -> {
                         Gold gold = new Gold();
-                        HashableLocation.putLocationHash(items, location, gold);
+                        HashLocation.put(items, location, gold);
                         numPillsAndGold++;
                     }
                     case ICE -> {
                         Ice ice = new Ice();
-                        HashableLocation.putLocationHash(items, location, ice);
+                        HashLocation.put(items, location, ice);
                     }
                 }
             }

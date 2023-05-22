@@ -62,7 +62,7 @@ public class Gold extends Item {
                     monster.speedUp(Monster.AGGRAVATE_TIME);
                     // monster is Orion, then we want Orion to know that this gold piece is already eaten
                     if (monster instanceof Orion orion)
-                        HashableLocation.putLocationHash(
+                        HashLocation.put(
                                 orion.getGoldPacmanAte(),
                                 this.getLocation(),
                                 true

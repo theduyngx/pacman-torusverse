@@ -1,4 +1,4 @@
-import pacman.HashableLocation;
+import pacman.HashLocation;
 import pacman.Item;
 import pacman.Monster;
 
@@ -13,9 +13,9 @@ public class XMLParser {
 
     private final ArrayList<Monster> monsters;
     // hashmap of all items with their location as key
-    private final HashMap<HashableLocation, Item> items;
+    private final HashMap<HashLocation, Item> items;
     // hashmap of all walls with their location as key
-    private final HashMap<HashableLocation, Integer> walls;
+    private final HashMap<HashLocation, Integer> walls;
 
     public XMLParser() {
         this.monsters = new ArrayList<>();

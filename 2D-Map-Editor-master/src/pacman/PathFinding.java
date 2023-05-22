@@ -17,7 +17,7 @@ import java.util.PriorityQueue;
  */
 public class PathFinding {
     LinkedList<Action> actionQueue = new LinkedList<>();
-    HashMap<HashableLocation, Item> hashActors;
+    HashMap<HashLocation, Item> hashActors;
     private record Action(Location previous, Location next, Item itemAtNext) {}
 
 
@@ -35,7 +35,7 @@ public class PathFinding {
          * @param path       the path to reach the state
          * @param hashActors the map of hash actors
          */
-        private State(LocationPath path, HashMap<HashableLocation, Item> hashActors) {
+        private State(LocationPath path, HashMap<HashLocation, Item> hashActors) {
             hash = hashActors.keySet().hashCode();
             this.path = path;
         }
@@ -68,7 +68,7 @@ public class PathFinding {
 
         @Override
         public int hashCode() {
-            return new HashableLocation(location).hashCode();
+            return new HashLocation(location).hashCode();
         }
 
         /**
@@ -111,13 +111,13 @@ public class PathFinding {
      * @param next     the location to move to
      */
     public void proceedMove(PacActor pacActor, Location next) {
-        Action action = new Action(pacActor.getLocation(), next, hashActors.get(new HashableLocation(next)));
+        Action action = new Action(pacActor.getLocation(), next, HashLocation.get(hashActors, next));
         actionQueue.addFirst(action);
-        hashActors.remove(new HashableLocation(next));
-        hashActors.remove(new HashableLocation(pacActor.getLocation()));
+        HashLocation.delete(hashActors, next);
+        HashLocation.delete(hashActors, pacActor.getLocation());
         pacActor.setLocation(next);
         pacActor.addVisitedMap(next);
-        hashActors.put(new HashableLocation(pacActor.getLocation()), null);
+        HashLocation.put(hashActors, pacActor.getLocation(), null);
     }
 
 
@@ -127,11 +127,11 @@ public class PathFinding {
      */
     public void undoMove(PacActor pacActor) {
         Action action = actionQueue.removeFirst();
-        hashActors.remove(new HashableLocation(pacActor.getLocation()));
+        HashLocation.delete(hashActors, pacActor.getLocation());
         pacActor.setLocation(action.previous);
         pacActor.removeVisitedMap(action.next);
-        hashActors.put(new HashableLocation(action.next), action.itemAtNext);
-        hashActors.put(new HashableLocation(pacActor.getLocation()), null);
+        HashLocation.put(hashActors, action.next, action.itemAtNext);
+        HashLocation.put(hashActors, pacActor.getLocation(), null);
     }
 
 
@@ -143,7 +143,7 @@ public class PathFinding {
     public LinkedList<Location> aStar(PacActor pacActor) {
         // all hash actors, including pacman and all mandatory items
         hashActors = pacActor.getManager().getMandatoryItems();
-        hashActors.put(new HashableLocation(pacActor.getLocation()), null);
+        HashLocation.put(hashActors, pacActor.getLocation(), null);
 
         // open set, g costs, f costs, and discovered map relative to the state
         PriorityQueue<State> openMin        = new PriorityQueue<>();
@@ -203,7 +203,7 @@ public class PathFinding {
      * @param hashActors the map of all hash actors
      * @return           the heuristic value
      */
-    public int heuristic(HashMap<HashableLocation, Item> hashActors) {
+    public int heuristic(HashMap<HashLocation, Item> hashActors) {
         // IMPORTANT: find the real distance to the closest fruit = z --> bfs
         // NOT-TOO-IMPORTANT: find the number of fruit 'lines' = y
         // the number of fruits = x

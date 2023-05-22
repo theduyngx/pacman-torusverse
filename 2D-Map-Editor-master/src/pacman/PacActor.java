@@ -172,7 +172,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     protected void eatItem(ObjectManager manager) {
         Location location = getLocation();
-        HashableLocation hashLocation = new HashableLocation(location);
+        HashLocation hashLocation = new HashLocation(location);
 
         // item exists
         if (manager.getItems().containsKey(hashLocation)) {
@@ -212,7 +212,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private Location closestPillLocation() {
         int currentDistance = getManager().getGame().getGrid().INF; // set distance to infinity
         Location currentLocation = null;
-        for (Map.Entry<HashableLocation, Item> entry : getManager().getItems().entrySet()) {
+        for (Map.Entry<HashLocation, Item> entry : getManager().getItems().entrySet()) {
             Item item = entry.getValue();
             if (item instanceof Pill || item instanceof Gold) {
                 Location location = entry.getKey().location();

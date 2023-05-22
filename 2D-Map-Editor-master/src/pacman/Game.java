@@ -180,7 +180,7 @@ public class Game extends GameGrid implements Runnable {
                     bg.fillCell(location, COLOR_SPACE);
                 // wall -> added to wall map in manager
                 if (grid.getCell(location) == InanimateActor.BlockType.WALL) {
-                    HashableLocation.putLocationHash(manager.getWalls(), location, 1);
+                    HashLocation.put(manager.getWalls(), location, 1);
                     bg.fillCell(location, COLOR_WALL);
                 }
             }
@@ -196,7 +196,7 @@ public class Game extends GameGrid implements Runnable {
      * @see              Item
      */
     public void putItems(GGBackground background) {
-        for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
+        for (Map.Entry<HashLocation, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey().location();
             Item item = entry.getValue();
             item.putActor(background, this, location);

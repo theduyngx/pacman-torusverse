@@ -1,6 +1,6 @@
 import editor.Controller;
 import pacman.Game;
-import pacman.HashableLocation;
+import pacman.HashLocation;
 import pacman.Item;
 import pacman.LevelChecker;
 import pacman.utility.GameCallback;
@@ -32,7 +32,7 @@ public class Main {
 			/// NOTE: this part of level checking should be within the level checking itself
 			/// then the unreachable must be printed and moved to object manager for log update accordingly
 			LevelChecker levelChecker = new LevelChecker();
-			HashMap<HashableLocation, Item> unreachable = levelChecker.unreachableItems(game);
+			HashMap<HashLocation, Item> unreachable = levelChecker.unreachableItems(game);
 			boolean setStart = (unreachable.size() == 0);
 			new Controller(game, setStart);
 		}

@@ -50,7 +50,7 @@ public abstract class Item extends InanimateActor {
      * @param manager object manager
      */
     protected void removeItem(ObjectManager manager) {
-        HashableLocation hashLocation = new HashableLocation(getLocation());
+        HashLocation hashLocation = new HashLocation(getLocation());
         manager.getItems().remove(hashLocation);
         removeSelf();
     }

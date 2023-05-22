@@ -4,7 +4,6 @@ import ch.aplu.jgamegrid.Location;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 
 public class LevelChecker {
@@ -19,21 +18,16 @@ public class LevelChecker {
         return path;
     }
 
-    public HashMap<HashableLocation, Item> unreachableItems(Game game) {
+    public HashMap<HashLocation, Item> unreachableItems(Game game) {
         PacActor pacActor = game.getManager().getPacActor();
-        HashMap<HashableLocation, Item> items = game.getManager().getMandatoryItems();
+        HashMap<HashLocation, Item> items = game.getManager().getMandatoryItems();
         path = pathFinding.bfs(pacActor);
-        HashMap<HashableLocation, Item> unreachable = new HashMap<>();
-
-        // fast check
-        if (path.size() == items.size())
-            return unreachable;
+        HashMap<HashLocation, Item> unreachable = new HashMap<>();
 
         // get the unreachable hash map
         for (Location loc : path) {
-            HashableLocation key = new HashableLocation(loc);
-            if (! items.containsKey(key))
-                unreachable.put(key, items.get(key));
+            if (! HashLocation.contain(items, loc))
+                HashLocation.put(unreachable, loc, HashLocation.get(items, loc));
         }
         return unreachable;
     }
