@@ -29,7 +29,7 @@ public class PortalFactory {
         Portal[] portalList = new Portal[portals.length*2];
         int i=0;
 
-        // Empty the hashmap since we are only constructiing
+        // Empty the hashmap since we are only constructing
         // portals once
         for (String portal: portals) {
             // Now make the portals
