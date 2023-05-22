@@ -3,6 +3,7 @@ import pacman.utility.GameCallback;
 import pacman.utility.PropertiesLoader;
 import ch.aplu.jgamegrid.Location;
 
+import javax.sound.sampled.Port;
 import java.util.*;
 
 
@@ -24,13 +25,19 @@ public class ObjectManager {
 
     // PacMan
     private PacActor pacActor;
+    // PacActor Positions for Errors
+    private final ArrayList<Location> pacActorLocs;
     // hashmap of monsters with their initial location as key
     private final ArrayList<Monster> monsters;
     // hashmap of all items with their location as key
     private final HashMap<HashableLocation, Item> items;
     // hashmap of all walls with their location as key
     private final HashMap<HashableLocation, Integer> walls;
-
+    // hashmap of each portal color associated with a nested hashmap of each
+    // portal and its location
+    private final HashMap<String, HashMap<HashableLocation, Portal>> portalMap;
+    // the constructor for all the portals
+    private final PortalFactory portalFactory;
     // the game
     private final Game game;
     // game callback
@@ -52,6 +59,9 @@ public class ObjectManager {
         this.monsters = new ArrayList<>();
         this.items = new HashMap<>();
         this.walls = new HashMap<>();
+        this.pacActorLocs = new ArrayList<>();
+        this.portalMap = new HashMap<>();
+        this.portalFactory = PortalFactory.getInstance();
     }
 
     /**
@@ -82,6 +92,15 @@ public class ObjectManager {
     }
 
     /**
+     * Get all the recorded PacMan locations. Used for checking for errors regarding the number
+     * of PacMan locations recorded
+     * @return ArrayList of PacMan Locations
+     * @see PacActor
+     */
+
+    protected ArrayList<Location> getPacActorLocs() { return pacActorLocs; }
+
+    /**
      * Get all monsters.
      * @return a list of all the monsters in the game
      * @see    Monster
@@ -108,6 +127,22 @@ public class ObjectManager {
     protected HashMap<HashableLocation, Integer> getWalls() {
         return walls;
     }
+
+    /**
+     * Get the portals map
+     * @return a hashmap that maps each portal colors to a nested hashmap of a hashable location
+     *         and the designated portals
+     * @see Portal
+     */
+
+    protected HashMap<String, HashMap<HashableLocation, Portal>> getPortalMap() { return portalMap; }
+
+    /**
+     * Get the portal factory
+     * @return a factory for constructing all the portals in the map
+     * @see PortalFactory
+     */
+    protected PortalFactory getPortalFactory() { return  portalFactory; }
 
     /**
      * Get the number of pills and gold pieces left in the game. Hence, used to detect winning condition.
@@ -216,6 +251,15 @@ public class ObjectManager {
         int pacManX = Integer.parseInt(pacManLocations[0]);
         int pacManY = Integer.parseInt(pacManLocations[1]);
         pacActor.setInitLocation(new Location(pacManX, pacManY));
+    }
+
+    /**
+     * Instantiate the pacActor's location based on a given Location instance
+     * @param loc   Location pacActor will spawn ins
+     */
+    protected void instantiatePacActorLoc(Location loc) {
+        pacActor = new PacActor(this);
+        pacActor.setInitLocation(loc);
     }
 
 
