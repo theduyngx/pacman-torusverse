@@ -3,14 +3,16 @@ import static pacman.LiveActor.*;
 
 import ch.aplu.jgamegrid.Location;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 
 /**
  * LEVEL CHECKING:
  * 1. Check the number of pacActors (cannot exceed 1, if 0 then go to Level editor)
  * 2. Beware of the log file when running game in background
- * 3. Portal validity (each must corresponds to another and cannot have 2 portals of same color (factory method)
+ * 3. Portal validity, each must corresponds to another and cannot have 2 portals of same color (factory method)
  * 4. Path finding to check if any pill/gold is unreachable
  */
 public class PathFinding {
@@ -30,6 +32,7 @@ public class PathFinding {
     private static class LocationPath {
         private final Location location;
         private LocationPath parent = null;
+
         private LocationPath(Location location) {
             this.location = location;
         }
@@ -49,13 +52,23 @@ public class PathFinding {
 
     public LinkedList<Location> bfs(PacActor pacActor) {
         ObjectManager manager = pacActor.getManager();
+        // deep copy
+        HashMap<HashableLocation, Item> items = new HashMap<>();
+        for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet())
+            items.put(new HashableLocation(entry.getKey().location()), entry.getValue().deepCopy());
+
         LinkedList<LocationPath> locationQueue = new LinkedList<>();
         locationQueue.addLast(new LocationPath(pacActor.getLocation()));
 
         while (! locationQueue.isEmpty()) {
             LocationPath path = locationQueue.removeFirst();
-            pacActor.moveWithVisited(path.location);
-            if (manager.getNumPillsAndGold() <= 0)
+            pacActor.setLocation(path.location);
+            pacActor.addVisitedMap(path.location);
+
+            // update items hashmap
+            items.remove(new HashableLocation(path.location));
+
+            if (items.size() == 0)
                 return LocationPath.getPath(path);
             ArrayList<Location> nextLocations = getAllMoves(pacActor);
             for (Location next : nextLocations) {
