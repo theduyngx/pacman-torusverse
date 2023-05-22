@@ -130,7 +130,7 @@ public class Controller implements ActionListener, GUIInformation {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"xml files", "xml");
 		chooser.setFileFilter(filter);
-		File workingDirectory = new File(System.getProperty("user.dir"));
+		File workingDirectory = new File(System.getProperty("user.dir")+"\\maps");
 		chooser.setCurrentDirectory(workingDirectory);
 
 		int returnVal = chooser.showSaveDialog(null);
@@ -186,7 +186,7 @@ public class Controller implements ActionListener, GUIInformation {
 		SAXBuilder builder = new SAXBuilder();
 		try {
 			JFileChooser chooser  = new JFileChooser();
-			File workingDirectory = new File(System.getProperty("user.dir"));
+			File workingDirectory = new File(System.getProperty("user.dir")+"\\maps");
 			File selectedFile;
 			chooser.setCurrentDirectory(workingDirectory);
 
