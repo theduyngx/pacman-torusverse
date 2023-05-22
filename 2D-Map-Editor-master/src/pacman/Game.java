@@ -47,6 +47,7 @@ public class Game extends GameGrid implements Runnable {
     // object manager
     private final ObjectManager manager;
     private boolean start = false;
+    private final GGBackground bg;
 
 
     /**
@@ -73,6 +74,14 @@ public class Game extends GameGrid implements Runnable {
         // set up game window
         setSimulationPeriod(SIMULATION_PERIOD);
         setTitle(GAME_TITLE);
+
+        // put actors onto the game
+        bg = getBg();
+        drawGrid(bg);
+        putMonsters();
+        manager.setMonstersStopMoving();
+        putPacActor();
+        putItems(bg);
     }
 
     /**
@@ -84,6 +93,13 @@ public class Game extends GameGrid implements Runnable {
         return grid;
     }
 
+    /**
+     * Get the object manager.
+     * @return the object manager
+     */
+    protected ObjectManager getManager() {
+        return manager;
+    }
 
     /**
      * Set the game start status (if True then the game has officially started).
@@ -99,12 +115,7 @@ public class Game extends GameGrid implements Runnable {
      */
     public void run() {
         if (!start) return;
-        GGBackground bg = getBg();
-        drawGrid(bg);
-
-        // put actors onto the game
-        putMonsters();
-        putPacActor();
+        manager.setMonstersStartMoving();
 
         // Run the game
         doRun();
@@ -113,7 +124,6 @@ public class Game extends GameGrid implements Runnable {
         // run the game until win / lose condition satisfies
         PacActor pacActor = manager.getPacActor();
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
-        putItems(bg);
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;

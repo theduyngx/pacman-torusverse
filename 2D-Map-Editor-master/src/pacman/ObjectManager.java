@@ -308,4 +308,13 @@ public class ObjectManager {
         for (Monster monster: monsters)
             monster.setStopMoving(true);
     }
+
+    /**
+     * Set all monsters to start moving; used when starting the game.
+     * @see Monster
+     */
+    protected void setMonstersStartMoving() {
+        for (Monster monster: monsters)
+            monster.setStopMoving(false);
+    }
 }
