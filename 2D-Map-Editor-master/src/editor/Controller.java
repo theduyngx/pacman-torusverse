@@ -92,7 +92,10 @@ public class Controller implements ActionListener, GUIInformation {
 		if 		(e.getActionCommand().equals("save"		 )) saveFile();
 		else if (e.getActionCommand().equals("load"		 )) loadFile();
 		else if (e.getActionCommand().equals("update"	 )) updateGrid(gridWith, gridHeight);
-		else if (e.getActionCommand().equals("start_game")) view.setFrame(game.getFrame());
+		else if (e.getActionCommand().equals("start_game")) {
+			game.setStart(true);
+			view.setFrame(game.getFrame());
+		}
 	}
 
 	public void updateGrid(int width, int height) {

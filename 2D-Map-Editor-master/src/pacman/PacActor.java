@@ -96,10 +96,8 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
                 setDirection(Location.SOUTH);
             }
         }
-        if (next != null && canMove(next)) {
-            setLocation(next);
-            eatItem(getManager());
-        }
+        if (next != null && canMove(next))
+            moveWithVisited(next);
     }
 
     /**
@@ -118,6 +116,16 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     }
 
     /**
+     * Move for PacMan with consideration to the visited map.
+     * @param next the next location to move to
+     */
+    public void moveWithVisited(Location next) {
+        setLocation(next);
+        eatItem(getManager());
+        addVisitedMap(next);
+    }
+
+    /**
      * Overridden move approach method for PacMan which is only used when in auto movement mode.
      * Overridden from Movable.
      * @see Movable
@@ -133,9 +141,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (notVisited(next) && canMove(next))
-            setLocation(next);
-        else {
+        if (!notVisited(next) || !canMove(next)) {
             int sign = getRandomizer().nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
             turn(sign * RIGHT_TURN_ANGLE); // Try to turn left/right
@@ -154,9 +160,8 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
                     }
                 }
             }
-            setLocation(next);
         }
-        eatItem(getManager());
+        moveWithVisited(next);
         if (isAuto) addVisitedList(next);
     }
 
@@ -165,7 +170,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * this method will handle that as well.
      * @param manager object manager
      */
-    private void eatItem(ObjectManager manager) {
+    protected void eatItem(ObjectManager manager) {
         Location location = getLocation();
         HashableLocation hashLocation = new HashableLocation(location);
 
@@ -233,10 +238,8 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             case PropertiesLoader.LEFT_DIR  -> turn(LEFT_TURN_ANGLE);
             case PropertiesLoader.MOVE_DIR  -> {
                 Location next = getNextMoveLocation();
-                if (canMove(next)) {
-                    setLocation(next);
-                    eatItem(getManager());
-                }
+                if (canMove(next))
+                    moveWithVisited(next);
             }
         }
         propertyMoveIndex++;
