@@ -1,3 +1,5 @@
+package pacman;
+
 /**
  * Factory class for construction of portals; ensures that each portal
  * is paired with each other.
@@ -29,10 +31,10 @@ public class PortalFactory {
 
         // Empty the hashmap since we are only constructiing
         // portals once
-        for (portal: portalList) {
+        for (String portal: portals) {
             // Now make the portals
-            portalList[i] = new Portal(currPortal);
-            portalList[i+1] = new Portal(currPortal, portalList[i]);
+            portalList[i] = new Portal(portal);
+            portalList[i+1] = new Portal(portal, portalList[i]);
             i+=2;
         }
 
@@ -44,8 +46,8 @@ public class PortalFactory {
      * @return  PortalFactory instance
      */
     public static synchronized PortalFactory getInstance() {
-        if instance == null {
-            instance = new ServicesFactory();
+        if (instance == null) {
+            instance = new PortalFactory();
         }
         return instance;
     }

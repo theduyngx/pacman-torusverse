@@ -1,10 +1,15 @@
+package pacman;
+
+import ch.aplu.jgamegrid.GGBackground;
+import ch.aplu.jgamegrid.Location;
+
 /**
  * Portal class used to transport LiveActors to the other paired portal
  * @see InanimateActor
  */
 public class Portal extends InanimateActor {
     private String portalSprite;
-    private final Portal portalPair;
+    private Portal portalPair;
     private static final String PORTAL_NAME = "portal";
 
     /**
@@ -22,10 +27,23 @@ public class Portal extends InanimateActor {
      * @param pair      Instance to be paired with new portal
      */
     public Portal(String sprite, Portal pair) {
+        super(sprite);
         this.portalSprite = sprite;
-        this.pairPortal = pair;
+        this.portalPair = pair;
         // Set the pair of the other portal
         pair.setPortalPair(this);
+    }
+
+    /**
+     * Overwritten putItem method for Portals, portal puts
+     * itself into the game
+     * @param bg        background of game grid
+     * @param game      the game
+     * @param location  actor's location
+     */
+    @Override
+    protected void putActor(GGBackground bg, Game game, Location location) {
+        game.addActor(this, location);
     }
 
     /**
