@@ -17,7 +17,80 @@ import java.util.PriorityQueue;
  */
 public class PathFinding {
     LinkedList<Action> actionQueue = new LinkedList<>();
+    HashMap<HashableLocation, Item> hashActors;
+    private record Action(Location previous, Location next, Item itemAtNext) {}
 
+
+    /**
+     * The State of the game, representing the board with locations of all hash actors.
+     * Hash actors are actors that are directly relevant to pathfinding, including the pacman,
+     * and all mandatory items - pills and gold.
+     */
+    private static class State implements Comparable<State>{
+        private final int hash;
+        LocationPath path;
+
+        /**
+         * The state constructor.
+         * @param path       the path to reach the state
+         * @param hashActors the map of hash actors
+         */
+        private State(LocationPath path, HashMap<HashableLocation, Item> hashActors) {
+            hash = hashActors.keySet().hashCode();
+            this.path = path;
+        }
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+        @Override
+        public int compareTo(State other) {
+            return Integer.compare(path.size, other.path.size);
+        }
+    }
+
+    /**
+     * Location path, includes the location itself and its parent, hence forming a path.
+     */
+    private static class LocationPath {
+        private final Location location;
+        private LocationPath parent = null;
+        private int size;
+
+        private LocationPath(Location location) {
+            this.location = location;
+            size = 0;
+        }
+        private void setParent(LocationPath parent) {
+            this.parent = parent;
+            size += parent.size;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashableLocation(location).hashCode();
+        }
+
+        /**
+         * Get the path to the current location path object.
+         */
+        private LinkedList<Location> getPath() {
+            LinkedList<Location> path = new LinkedList<>();
+            LocationPath locationPath = this;
+            while (locationPath != null) {
+                path.addFirst(locationPath.location);
+                locationPath = locationPath.parent;
+            }
+            return path;
+        }
+    }
+
+
+    /**
+     * Get all possible moves a live actor can make from their given position.
+     * @param actor the live actor
+     * @return      the list of locations live actor can move to
+     */
     public ArrayList<Location> getAllMoves(LiveActor actor) {
         ArrayList<Location> moves = new ArrayList<>();
         Location next;
@@ -32,67 +105,111 @@ public class PathFinding {
     }
 
 
-    private record Action(Location previous, Location next, Item itemAtNext) {
-        // ...
-    }
-
-    private static class LocationPath implements Comparable<LocationPath> {
-        private final Location location;
-        private LocationPath parent = null;
-        private int size;
-
-        private LocationPath(Location location) {
-            this.location = location;
-            size = 0;
-        }
-        private void setParent(LocationPath parent) {
-            this.parent = parent;
-            size += parent.size;
-        }
-
-        private static LinkedList<Location> getPath(LocationPath locationPath) {
-            LinkedList<Location> path = new LinkedList<>();
-            while (locationPath != null) {
-                path.addFirst(locationPath.location);
-                locationPath = locationPath.parent;
-            }
-            return path;
-        }
-
-        @Override
-        public int hashCode() {
-            return new HashableLocation(location).hashCode();
-        }
-
-        @Override
-        public int compareTo(LocationPath other) {
-            return Integer.compare(this.size, other.size);
-        }
-    }
-
-
-    public void proceedMove(PacActor pacActor, Location next, HashMap<HashableLocation, Item> items) {
-        Action action = new Action(pacActor.getLocation(), next, items.get(new HashableLocation(next)));
+    /**
+     * Proceed with a move.
+     * @param pacActor the pacman actor
+     * @param next     the location to move to
+     */
+    public void proceedMove(PacActor pacActor, Location next) {
+        Action action = new Action(pacActor.getLocation(), next, hashActors.get(new HashableLocation(next)));
         actionQueue.addFirst(action);
-        items.remove(new HashableLocation(next));
+        hashActors.remove(new HashableLocation(next));
+        hashActors.remove(new HashableLocation(pacActor.getLocation()));
         pacActor.setLocation(next);
         pacActor.addVisitedMap(next);
+        hashActors.put(new HashableLocation(pacActor.getLocation()), null);
     }
 
-    public void undoMove(PacActor pacActor, HashMap<HashableLocation, Item> items) {
+
+    /**
+     * Undo a move.
+     * @param pacActor the pacman actor
+     */
+    public void undoMove(PacActor pacActor) {
         Action action = actionQueue.removeFirst();
+        hashActors.remove(new HashableLocation(pacActor.getLocation()));
         pacActor.setLocation(action.previous);
         pacActor.removeVisitedMap(action.next);
-        items.put(new HashableLocation(action.next), action.itemAtNext);
+        hashActors.put(new HashableLocation(action.next), action.itemAtNext);
+        hashActors.put(new HashableLocation(pacActor.getLocation()), null);
     }
 
 
+    /**
+     * A-star pathfinding algorithm.
+     * @param pacActor the pacman actor
+     * @return         the optimal path to obtain all pills
+     */
     public LinkedList<Location> aStar(PacActor pacActor) {
-        PriorityQueue<LocationPath> openMin = new PriorityQueue<>();
-        HashMap<LocationPath, Integer> gCost = new HashMap<>();
-        HashMap<LocationPath, Integer> fCost = new HashMap<>();
-        HashMap<LocationPath, Boolean> discovered = new HashMap<>();
-        return null;
+        // all hash actors, including pacman and all mandatory items
+        hashActors = pacActor.getManager().getMandatoryItems();
+        hashActors.put(new HashableLocation(pacActor.getLocation()), null);
+
+        // open set, g costs, f costs, and discovered map relative to the state
+        PriorityQueue<State> openMin        = new PriorityQueue<>();
+        HashMap<State, Integer> gCost       = new HashMap<>();
+        HashMap<State, Integer> fCost       = new HashMap<>();
+        HashMap<State, Boolean> discovered  = new HashMap<>();
+
+        // get the current state
+        LocationPath currPath = new LocationPath(pacActor.getLocation());
+        State state = new State(currPath, hashActors);
+        openMin.add(state);
+        discovered.put(state, true);
+        gCost.put(state, currPath.size);
+        fCost.put(state, currPath.size);
+
+        // until the open set is empty
+        while (! openMin.isEmpty()) {
+            state = openMin.remove();
+            discovered.remove(state);
+            currPath = state.path;
+
+            // or that the state is goal state
+            if (hashActors.size() <= 1) {
+                while (! actionQueue.isEmpty()) undoMove(pacActor);
+                return currPath.getPath();
+            }
+
+            // for each neighboring node
+            ArrayList<Location> nextLocations = getAllMoves(pacActor);
+            for (Location next : nextLocations) {
+                proceedMove(pacActor, next);
+                LocationPath nextPath = new LocationPath(next);
+
+                // get the accumulated g cost and compare that with the current g cost of neighbor state
+                int gCostAccumulate = gCost.get(state) + 1;
+                State nextState = new State(nextPath, hashActors);
+                if (! gCost.containsKey(nextState) || gCostAccumulate < gCost.get(nextState) + 1) {
+                    gCost.put(nextState, gCostAccumulate);
+                    fCost.put(nextState, gCostAccumulate + heuristic(hashActors));
+                    nextState.path.size = fCost.get(nextState);
+
+                    // update open set and mark new state as discovered
+                    if (! discovered.containsKey(nextState)) {
+                        discovered.put(nextState, true);
+                        openMin.add(nextState);
+                    }
+                }
+            }
+        }
+        while (! actionQueue.isEmpty()) undoMove(pacActor);
+        return new LinkedList<>();
+    }
+
+
+    /**
+     * Heuristic function for A-star.
+     * @param hashActors the map of all hash actors
+     * @return           the heuristic value
+     */
+    public int heuristic(HashMap<HashableLocation, Item> hashActors) {
+        // IMPORTANT: find the real distance to the closest fruit = z --> bfs
+        // NOT-TOO-IMPORTANT: find the number of fruit 'lines' = y
+        // the number of fruits = x
+
+        // h = x + y + z
+        return hashActors.size() - 1;
     }
 
 
@@ -102,18 +219,19 @@ public class PathFinding {
      * @return         the optimal path for PacMan to eat all items
      */
     public LinkedList<Location> bfs(PacActor pacActor) {
-        HashMap<HashableLocation, Item> items = pacActor.getManager().getItems();
+        // get the map of all hash actors
+        hashActors = pacActor.getManager().getMandatoryItems();
         LinkedList<LocationPath> locationQueue = new LinkedList<>();
         locationQueue.addLast(new LocationPath(pacActor.getLocation()));
 
         while (! locationQueue.isEmpty()) {
             LocationPath path = locationQueue.removeFirst();
-            proceedMove(pacActor, path.location, items);
+            proceedMove(pacActor, path.location);
 
             // goal state
-            if (items.size() == 0) {
-                while (! actionQueue.isEmpty()) undoMove(pacActor, items);
-                return LocationPath.getPath(path);
+            if (hashActors.size() == 0) {
+                while (! actionQueue.isEmpty()) undoMove(pacActor);
+                return path.getPath();
             }
 
             // for each next unvisited location
@@ -127,7 +245,7 @@ public class PathFinding {
                 }
             }
         }
-        while (! actionQueue.isEmpty()) undoMove(pacActor, items);
+        while (! actionQueue.isEmpty()) undoMove(pacActor);
         return new LinkedList<>();
     }
 }

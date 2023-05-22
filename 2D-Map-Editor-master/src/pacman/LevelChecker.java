@@ -21,22 +21,19 @@ public class LevelChecker {
 
     public HashMap<HashableLocation, Item> unreachableItems(Game game) {
         PacActor pacActor = game.getManager().getPacActor();
-        HashMap<HashableLocation, Item> items = game.getManager().getItems();
+        HashMap<HashableLocation, Item> items = game.getManager().getMandatoryItems();
         path = pathFinding.bfs(pacActor);
-
-        // moderate copy
         HashMap<HashableLocation, Item> unreachable = new HashMap<>();
 
         // fast check
         if (path.size() == items.size())
             return unreachable;
 
-        for (Map.Entry<HashableLocation, Item> entry : items.entrySet())
-            unreachable.put(new HashableLocation(entry.getKey().location()), entry.getValue());
         // get the unreachable hash map
         for (Location loc : path) {
             HashableLocation key = new HashableLocation(loc);
-            unreachable.remove(key);
+            if (! items.containsKey(key))
+                unreachable.put(key, items.get(key));
         }
         return unreachable;
     }
