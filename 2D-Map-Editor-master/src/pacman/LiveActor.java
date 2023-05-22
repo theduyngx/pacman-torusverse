@@ -176,9 +176,9 @@ public abstract class LiveActor extends GameActor implements Movable {
     @Override
     public boolean canMove(Location location) {
         int x = location.getX(), y = location.getY();
-        PacManGameGrid grid = getManager().getGame().getGrid();
+        PacManGameGrid grid = manager.getGame().getGrid();
         assert grid != null;
-        return (! HashLocation.contain(getManager().getWalls(), location)) &&
+        return (! HashLocation.contain(manager.getWalls(), location)) &&
                 x < grid.getXRight() && x >= grid.getXLeft() && y < grid.getYBottom() && y >= grid.getYTop();
     }
 

@@ -16,8 +16,8 @@ import java.util.PriorityQueue;
  * 4. Path finding to check if any pill/gold is unreachable
  */
 public class PathFinding {
-    LinkedList<Action> actionQueue = new LinkedList<>();
-    HashMap<HashLocation, Item> hashActors;
+    private final LinkedList<Action> actionQueue = new LinkedList<>();
+    private HashMap<HashLocation, Item> hashActors = new HashMap<>();
     private record Action(Location previous, Location next, Item itemAtNext) {}
 
 
@@ -94,9 +94,10 @@ public class PathFinding {
     public ArrayList<Location> getAllMoves(LiveActor actor) {
         ArrayList<Location> moves = new ArrayList<>();
         Location next;
+        double oldDirection = actor.getDirection();
         int[] turn_angles = new int[]{RIGHT_TURN_ANGLE, LEFT_TURN_ANGLE, FORWARD_TURN_ANGLE, BACK_TURN_ANGLE};
         for (int turnAngle : turn_angles) {
-            actor.setDirection(turnAngle);
+            actor.setDirection(oldDirection);
             actor.turn(turnAngle);
             next = actor.getNextMoveLocation();
             if (actor.canMove(next)) moves.add(next);
@@ -117,7 +118,7 @@ public class PathFinding {
         HashLocation.delete(hashActors, pacActor.getLocation());
         pacActor.setLocation(next);
         pacActor.addVisitedMap(next);
-        HashLocation.put(hashActors, pacActor.getLocation(), null);
+        HashLocation.put(hashActors, next, null);
     }
 
 
@@ -213,39 +214,38 @@ public class PathFinding {
     }
 
 
-    /**
-     * Breadth-first search pathfinding algorithm.
-     * @param pacActor the PacMan
-     * @return         the optimal path for PacMan to eat all items
-     */
-    public LinkedList<Location> bfs(PacActor pacActor) {
-        // get the map of all hash actors
-        hashActors = pacActor.getManager().getMandatoryItems();
-        LinkedList<LocationPath> locationQueue = new LinkedList<>();
-        locationQueue.addLast(new LocationPath(pacActor.getLocation()));
+    public LinkedList<Location> dfsLimited(PacActor pacActor, LocationPath path, int depth) {
+        if (hashActors.size() <= 1)
+            return path.getPath();
+        else if (depth <= 0)
+            return null;
 
-        while (! locationQueue.isEmpty()) {
-            LocationPath path = locationQueue.removeFirst();
-            proceedMove(pacActor, path.location);
+        ArrayList<Location> nextLocations = getAllMoves(pacActor);
+        for (Location next : nextLocations) {
+            proceedMove(pacActor, next);
+            LocationPath nextPath = new LocationPath(next);
+            nextPath.setParent(path);
 
-            // goal state
-            if (hashActors.size() == 0) {
-                while (! actionQueue.isEmpty()) undoMove(pacActor);
-                return path.getPath();
-            }
-
-            // for each next unvisited location
-            ArrayList<Location> nextLocations = getAllMoves(pacActor);
-            for (Location next : nextLocations) {
-                if (! pacActor.hasVisited(next)) {
-                    pacActor.addVisitedMap(next);
-                    LocationPath nextPath = new LocationPath(next);
-                    nextPath.setParent(path);
-                    locationQueue.addLast(nextPath);
-                }
-            }
+            LinkedList<Location> ret = dfsLimited(pacActor, nextPath, depth-1);
+            if (ret != null)
+                return nextPath.getPath();
+            undoMove(pacActor);
         }
-        while (! actionQueue.isEmpty()) undoMove(pacActor);
-        return new LinkedList<>();
+        return null;
+    }
+
+    public LinkedList<Location> ids(PacActor pacActor) {
+        // all hash actors, including pacman and all mandatory items
+        hashActors = pacActor.getManager().getMandatoryItems();
+        HashLocation.put(hashActors, pacActor.getLocation(), null);
+
+        LinkedList<Location> result;
+        int depth = 0;
+        while (true) {
+            result = dfsLimited(pacActor, new LocationPath(pacActor.getLocation()), depth);
+            if (result != null)
+                return result;
+            depth++;
+        }
     }
 }
