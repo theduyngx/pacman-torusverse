@@ -1,6 +1,8 @@
 package pacman;
 
 import ch.aplu.jgamegrid.*;
+import pacman.utility.GameCallback;
+
 import java.awt.*;
 import java.util.Map;
 import java.util.Properties;
@@ -52,11 +54,11 @@ public class Game extends GameGrid implements Runnable {
      * @param properties properties object read from properties file for instantiating actors and items
      * @see              Properties
      */
-    public Game(Properties properties) {
+    public Game(Properties properties, GameCallback gameCallback) {
         // Setup game
         super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
         this.grid = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
-        this.manager = new ObjectManager(this);
+        this.manager = new ObjectManager(this, gameCallback);
 
         // parse properties and instantiate objects
         manager.parseInanimateActor(properties);

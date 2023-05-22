@@ -45,10 +45,10 @@ public class ObjectManager {
      * Constructor for ObjectManager.
      * @see Game
      */
-    public ObjectManager(Game game) {
+    public ObjectManager(Game game, GameCallback gameCallback) {
         assert game != null;
         this.game = game;
-        this.gameCallback = new GameCallback();
+        this.gameCallback = gameCallback;
         this.monsters = new ArrayList<>();
         this.items = new HashMap<>();
         this.walls = new HashMap<>();
