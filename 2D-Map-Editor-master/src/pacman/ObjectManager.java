@@ -4,6 +4,7 @@ import pacman.utility.PropertiesLoader;
 import ch.aplu.jgamegrid.Location;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -98,6 +99,23 @@ public class ObjectManager {
      */
     protected HashMap<HashableLocation, Item> getItems() {
         return items;
+    }
+
+    /**
+     * Get all gold and pill items currently still in the game.
+     * @return a hashmap where the key is the items' locations, and value being the items
+     * @see    HashableLocation
+     * @see    Item
+     */
+    protected HashMap<HashableLocation, Item> getMandatoryItems() {
+        Map<HashableLocation, Item> map
+                = items.entrySet().stream().
+                        filter(
+                             e -> !(e.getValue() instanceof Ice)).collect(
+                        Collectors.toMap(
+                            Map.Entry::getKey, Map.Entry::getValue)
+                );
+        return new HashMap<>(map);
     }
 
     /**

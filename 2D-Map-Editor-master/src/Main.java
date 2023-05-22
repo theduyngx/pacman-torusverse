@@ -33,7 +33,7 @@ public class Main {
 			/// then the unreachable must be printed and moved to object manager for log update accordingly
 			LevelChecker levelChecker = new LevelChecker();
 			HashMap<HashableLocation, Item> unreachable = levelChecker.unreachableItems(game);
-			boolean setStart = (unreachable.size() > 0);
+			boolean setStart = (unreachable.size() == 0);
 			new Controller(game, setStart);
 		}
 	}

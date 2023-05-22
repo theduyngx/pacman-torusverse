@@ -26,6 +26,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import pacman.Game;
 
+
 /**
  * Controller of the application.
  * 
@@ -54,7 +55,9 @@ public class Controller implements ActionListener, GUIInformation {
 	private final Game game;
 
 	/**
-	 * Construct the controller.
+	 * Controller constructor.
+	 * @param game		the game
+	 * @param gameStart whether game has started or not
 	 */
 	public Controller(Game game, boolean gameStart) {
 		this.tiles  = TileManager.getTilesFromFolder("data/");
@@ -64,10 +67,15 @@ public class Controller implements ActionListener, GUIInformation {
 		this.view   = new View(this, camera, grid, tiles);
 		this.game   = game;
 		this.game.setStart(gameStart);
+
+		// start game immediately by manually trigger an action
+		if (game.getStart())
+			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 	}
 
 	/**
-	 * Different commands that comes from the view.
+	 * Listener awaiting actions to be performed.
+	 * @param e the event to be processed
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -79,9 +87,9 @@ public class Controller implements ActionListener, GUIInformation {
 				return null;
 			}
 		};
-		gameWorker.execute();
 
-		// ???
+		// execute threads
+		gameWorker.execute();
 		for (Tile t : tiles) {
 			if (e.getActionCommand().equals(Character.toString(t.getCharacter()))) {
 				selectedTile = t;
@@ -93,12 +101,17 @@ public class Controller implements ActionListener, GUIInformation {
 		if 		(e.getActionCommand().equals("save"		 )) saveFile();
 		else if (e.getActionCommand().equals("load"		 )) loadFile();
 		else if (e.getActionCommand().equals("update"	 )) updateGrid(gridWith, gridHeight);
-		else if (e.getActionCommand().equals("start_game")) {
+		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
 			game.setStart(true);
 			view.setFrame(game.getFrame());
 		}
 	}
 
+	/**
+	 * Update the game editor grid (for now this works as a reset).
+	 * @param width	 the grid's width
+	 * @param height the grid's height
+	 */
 	public void updateGrid(int width, int height) {
 		view.close();
 		this.tiles 	= TileManager.getTilesFromFolder("data/");
@@ -126,6 +139,11 @@ public class Controller implements ActionListener, GUIInformation {
 		}
 	};
 
+
+	/**
+	 * Method triggered when save file action is performed. This is to save an editor grid to local
+	 * user file.
+	 */
 	private void saveFile() {
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -183,6 +201,11 @@ public class Controller implements ActionListener, GUIInformation {
 		}
 	}
 
+
+	/**
+	 * Method triggered when save load file action is performed. This is to load an editor grid from
+	 * local user file.
+	 */
 	public void loadFile() {
 		SAXBuilder builder = new SAXBuilder();
 		try {

@@ -101,6 +101,15 @@ public class Game extends GameGrid implements Runnable {
         return manager;
     }
 
+
+    /**
+     * Get the game start status (if True then the game has officially started).
+     * @return True if the game has officially started
+     */
+    public boolean getStart() {
+        return start;
+    }
+
     /**
      * Set the game start status (if True then the game has officially started).
      * @param start True if the game has officially started
