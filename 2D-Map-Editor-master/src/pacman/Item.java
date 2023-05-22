@@ -32,6 +32,12 @@ public abstract class Item extends InanimateActor {
     }
 
     /**
+     * Deep copy the item.
+     * @return the copied item
+     */
+    public abstract Item deepCopy();
+
+    /**
      * Set the score that would be acquired if item were eaten.
      * @param score set score
      */

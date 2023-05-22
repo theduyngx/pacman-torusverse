@@ -40,6 +40,11 @@ public class Ice extends Item {
         game.addActor(this, location);
     }
 
+    @Override
+    public Item deepCopy() {
+        return new Ice();
+    }
+
     /**
      * Overridden method signalling object manager to freeze monsters.
      * @param manager object manager

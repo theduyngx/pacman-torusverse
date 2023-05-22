@@ -40,6 +40,11 @@ public class Gold extends Item {
         game.addActor(this, location);
     }
 
+    @Override
+    public Item deepCopy() {
+        return new Gold();
+    }
+
     /**
      * Overridden method signalling object manager to aggravate monsters.
      * @param manager object manager
