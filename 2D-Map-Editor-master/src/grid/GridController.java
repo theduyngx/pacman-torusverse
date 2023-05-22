@@ -14,9 +14,9 @@ import editor.Tile;
 
 /**
  * Takes inputs from the GridView and communicated with a Camera.
- * @author Daniel "MaTachi" Jonsson
+ * @author  Daniel "MaTachi" Jonsson
  * @version 1
- * @since v0.0.5
+ * @since   v0.0.5
  *
  */
 public class GridController implements MouseListener, MouseMotionListener, ActionListener, KeyListener {

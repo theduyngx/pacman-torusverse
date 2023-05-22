@@ -14,13 +14,11 @@ import editor.Tile;
 
 /**
  * A class which shows a Grid graphically as a JPanel.
- * @author Daniel "MaTachi" Jonsson
+ * @author  Daniel "MaTachi" Jonsson
  * @version 1
- * @since v0.0.5
- *
+ * @since   v0.0.5
  */
 public class GridView extends JPanel implements PropertyChangeListener {
-
 	@Serial
 	private static final long serialVersionUID = -345930170664066299L;
 	
@@ -28,6 +26,7 @@ public class GridView extends JPanel implements PropertyChangeListener {
 	 * A reference to the model. Needed to query data.
 	 */
 	private final Camera camera;
+	private final GridController gridController;
 	
 	/**
 	 * References to all tiles.
@@ -50,13 +49,13 @@ public class GridView extends JPanel implements PropertyChangeListener {
 		this.tiles = tiles;
 		this.camera = camera;
 		this.camera.addPropertyChangeListener(this);
-		GridController controller = new GridController(camera, guiInformation);
-		this.addMouseListener(controller);
-		this.addMouseMotionListener(controller);
+		this.gridController = new GridController(camera, guiInformation);
+		this.addMouseListener(gridController);
+		this.addMouseMotionListener(gridController);
 		
 		/* Add all tiles to the grid. */
 		map = new GridTile[camera.getHeight()][camera.getWidth()];
-		instantiateMap(controller);
+		instantiateMap(gridController);
 	}
 
 	private void instantiateMap(GridController controller) {
