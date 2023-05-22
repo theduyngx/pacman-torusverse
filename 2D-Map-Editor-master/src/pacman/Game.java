@@ -83,6 +83,10 @@ public class Game extends GameGrid implements Runnable {
     }
 
 
+    /**
+     * Set the game start status (if True then the game has officially started).
+     * @param start True if the game has officially started
+     */
     public void setStart(boolean start) {
         this.start = start;
     }
