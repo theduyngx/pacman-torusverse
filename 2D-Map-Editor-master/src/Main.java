@@ -1,5 +1,8 @@
 import editor.Controller;
 import pacman.Game;
+import pacman.HashableLocation;
+import pacman.Item;
+import pacman.LevelChecker;
 import pacman.utility.GameCallback;
 import pacman.utility.PropertiesLoader;
 
@@ -11,30 +14,35 @@ import java.util.Properties;
 
 public class Main {
 	public static void main(String[] args) {
-		String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test1.properties";
-		Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
-		assert properties != null;
 
-		boolean checkPass = false;
+		boolean checkPass;
 		GameCallback gameCallback = new GameCallback();
 		String path = "test";
 		File filePath = new File(path);
-		if (filePath.isDirectory()) {
+		if (filePath.isDirectory())
 			checkPass = gameCheck(path, gameCallback);
-		}
 
 		checkPass = true;
 		if (checkPass) {
+			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test1.properties";
+			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
+			assert properties != null;
 			Game game = new Game(properties, gameCallback);
-			new Controller(game);
+
+			/// NOTE: this part of level checking should be within the level checking itself
+			/// then the unreachable must be printed and moved to object manager for log update accordingly
+			LevelChecker levelChecker = new LevelChecker();
+			HashMap<HashableLocation, Item> unreachable = levelChecker.unreachableItems(game);
+			boolean setStart = (unreachable.size() > 0);
+			new Controller(game, setStart);
 		}
 	}
 
 	/**
 	 * Check the validity of a game folder
-	 * @param path the path of the directory
-	 * @param callback
-	 * @return whether the gameCheck fail or succeed
+	 * @param path 	   the path of the directory
+	 * @param callback the game callback
+	 * @return 		   whether the gameCheck fail or succeed
 	 */
 	public static boolean gameCheck(String path, GameCallback callback) {
 		File directory = new File(path);
@@ -42,7 +50,9 @@ public class Main {
 		String dirName = dirNameSplit[dirNameSplit.length - 1];
 
 		File[] gameMaps = directory.listFiles();
-		HashMap<Integer, ArrayList<String>> levelTally = new HashMap<Integer, ArrayList<String>>();
+		if (gameMaps == null)
+			return false;
+		HashMap<Integer, ArrayList<String>> levelTally = new HashMap<>();
 
 		// build a hashmap with the key as levels and filename as value
 		for (File map: gameMaps) {
@@ -58,13 +68,12 @@ public class Main {
 				if (levelTally.containsKey(decimalRep)) {
 					levelTally.get(decimalRep).add(map.getName());
 				} else {
-					ArrayList files = new ArrayList();
+					ArrayList<String> files = new ArrayList<>();
 					files.add(map.getName());
 					levelTally.put(decimalRep, files);
 				}
 			}
 		}
-
 		return gameCheckLog(levelTally, dirName, callback);
 	}
 
@@ -74,7 +83,8 @@ public class Main {
 	 * @param dirName    the name of the directory
 	 * @return           whether the directory has fail any game check
 	 */
-	private static boolean gameCheckLog(HashMap<Integer, ArrayList<String>> levelTally, String dirName, GameCallback callback) {
+	private static boolean gameCheckLog(HashMap<Integer, ArrayList<String>> levelTally, String dirName,
+										GameCallback callback) {
 		boolean pass = true;
 
 		// check the hashmap for check failure and print the corresponding issues
@@ -84,7 +94,7 @@ public class Main {
 			pass = false;
 		} else {
 			// loop through hashmap, check that the array list is greater than 1.
-			for (ArrayList level: levelTally.values()) {
+			for (ArrayList<String> level: levelTally.values()) {
 				if (level.size() > 1) {
 					String dupFiles = String.join("; ", level);
 					String failLog = String.format("[Game %s - multiple maps at same level: %s]", dirName, dupFiles);
