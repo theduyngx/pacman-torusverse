@@ -70,19 +70,29 @@ public class Controller implements ActionListener, GUIInformation {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// swing worker game running in the background
+		SwingWorker<Void, Void> gameWorker = new SwingWorker<>() {
+			@Override
+			protected Void doInBackground() {
+				game.run();
+				return null;
+			}
+		};
+		gameWorker.execute();
+
+		// ???
 		for (Tile t : tiles) {
 			if (e.getActionCommand().equals(Character.toString(t.getCharacter()))) {
 				selectedTile = t;
 				break;
 			}
 		}
+
+		// check for the action performed
 		if 		(e.getActionCommand().equals("save"		 )) saveFile();
 		else if (e.getActionCommand().equals("load"		 )) loadFile();
 		else if (e.getActionCommand().equals("update"	 )) updateGrid(gridWith, gridHeight);
-		else if (e.getActionCommand().equals("start_game")) {
-			view.setFrame(game.getFrame());
-//			SwingUtilities.invokeLater(game);
-		}
+		else if (e.getActionCommand().equals("start_game")) view.setFrame(game.getFrame());
 	}
 
 	public void updateGrid(int width, int height) {

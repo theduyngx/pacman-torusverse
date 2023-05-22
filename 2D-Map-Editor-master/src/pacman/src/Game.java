@@ -45,6 +45,7 @@ public class Game extends GameGrid implements Runnable {
     // object manager
     private final ObjectManager manager;
 
+
     /**
      * Game class constructor.
      * @param properties properties object read from properties file for instantiating actors and items
