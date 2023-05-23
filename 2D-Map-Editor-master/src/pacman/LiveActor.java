@@ -191,7 +191,7 @@ public abstract class LiveActor extends GameActor implements Movable {
      * @see                  Location
      */
     protected boolean canMove(double directionValue, int stepSize) {
-        for (int i=0; i<stepSize; i++) {
+        for (int i=0; i < stepSize; i++) {
             Location nextLocation = nextLocation();
             if (!canMove(nextLocation))
                 return false;
