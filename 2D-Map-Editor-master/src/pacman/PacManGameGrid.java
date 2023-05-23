@@ -7,9 +7,6 @@ import ch.aplu.jgamegrid.*;
  * on the grid via enumerated identification.
  */
 public class PacManGameGrid {
-    // grid constants
-    private final int X_LEFT;
-    private final int Y_TOP;
     private final int X_RIGHT;
     private final int Y_BOTTOM;
     // overestimated maximal distance between any 2 given locations
@@ -34,24 +31,23 @@ public class PacManGameGrid {
         this.INF = numHorizontalCells + numVerticalCells;
 
         // Setup grid border
-        X_LEFT   = 0;
-        Y_TOP    = 0;
+        // grid constants
         X_RIGHT  = numHorizontalCells;
         Y_BOTTOM = numVerticalCells;
         mazeArray = new InanimateActor.BlockType[numVerticalCells][numHorizontalCells];
         String maze =
-
-                        "xxxxxxxxxxxxxxxxxxxx" + // 0
-                        "xi.           x    x" + // 1
-                        "xxxxxx xxxxxx x xx x" + // 2
+                        // removed walls to test for torus
+                        "xx xxxxxxx xxxxxxxxx" + // 0
+                        "xi   x        x    x" + // 1
+                        "xxxxxx xxx xx x xx x" + // 2
                         "x x              x x" + // 3
                         "x.x xx xx  xx xx x x" + // 4
                         "x      x    x      x" + // 5
                         "x x xx xxxxxx xx x.x" + // 6
                         "x x              x.x" + // 7
                         "xixx x xxxxxx x.xx.x" + // 8
-                        "x    x        x....x" + // 9
-                        "xxxxxxxxxxxxxxxxxxxx";  // 10
+                        "     x        x.... " + // 9
+                        "xx xxxxxxx xxxxxxxxx";  // 10
 
         // Copy structure into integer array
         for (int i = 0; i < numVerticalCells; i++)
@@ -105,22 +101,6 @@ public class PacManGameGrid {
      */
     protected InanimateActor.BlockType[][] getMazeArray() {
         return mazeArray;
-    }
-
-    /**
-     * Get leftmost x-coordinate of the grid; used for border checking when initiating movement.
-     * @return leftmost x-coordinate
-     */
-    public int getXLeft() {
-        return X_LEFT;
-    }
-
-    /**
-     * Get topmost y-coordinate of the grid; used for border checking when initiating movement.
-     * @return leftmost y-coordinate
-     */
-    public int getYTop() {
-        return Y_TOP;
     }
 
     /**

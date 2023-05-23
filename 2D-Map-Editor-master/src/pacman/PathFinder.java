@@ -78,7 +78,7 @@ public class PathFinder {
         for (int turnAngle : turn_angles) {
             actor.setDirection(oldDirection);
             actor.turn(turnAngle);
-            next = actor.getNextMoveLocation();
+            next = actor.nextLocation();
             if (actor.canMove(next)) moves.add(next);
         }
         return moves;
@@ -99,7 +99,7 @@ public class PathFinder {
 
 
     /**
-     * Proceed with a move.
+     * Proceed with a move. This will update the hash actor map and the action queue.
      * @param pacActor the pacman actor
      * @param next     the location to move to
      * @return         whether pacman has eaten a mandatory item
@@ -119,7 +119,7 @@ public class PathFinder {
 
 
     /**
-     * Undo a move.
+     * Undo a move. This will return the hash actor map and the action queue to its previous state.
      * @param pacActor the pacman actor
      */
     private void undoMove(PacActor pacActor) {
@@ -239,7 +239,6 @@ public class PathFinder {
                     stack.addFirst(next);
             }
         }
-
         // undo all moves
         undoAll(pacActor);
 

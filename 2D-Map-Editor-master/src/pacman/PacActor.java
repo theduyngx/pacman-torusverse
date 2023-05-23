@@ -85,6 +85,9 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
                 setDirection(Location.SOUTH);
             }
         }
+
+        // torus-effect
+        next = nextLocation();
         if (next != null && canMove(next))
             moveWithVisited(next);
     }

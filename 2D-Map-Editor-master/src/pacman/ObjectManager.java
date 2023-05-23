@@ -220,7 +220,7 @@ public class ObjectManager {
         pacActor.setSeed(seed);
         pacActor.setSlowDown(LiveActor.SLOW_DOWN);
 
-        // parse pacman
+        // parse pacman (comment out to test for torus)
         pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
                 pacActor.getName() +
                 PropertiesLoader.AUTO_EXTENSION))

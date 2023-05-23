@@ -173,11 +173,9 @@ public abstract class LiveActor extends GameActor implements Movable {
      */
     @Override
     public boolean canMove(Location location) {
-        int x = location.getX(), y = location.getY();
         PacManGameGrid grid = manager.getGame().getGrid();
         assert grid != null;
-        return (! HashLocation.contain(manager.getWalls(), location)) &&
-                x < grid.getXRight() && x >= grid.getXLeft() && y < grid.getYBottom() && y >= grid.getYTop();
+        return (! HashLocation.contain(manager.getWalls(), location));
     }
 
 
@@ -241,5 +239,18 @@ public abstract class LiveActor extends GameActor implements Movable {
         for (Location loc : visitedList)
             if (loc.equals(location)) return false;
         return true;
+    }
+
+    /**
+     * Determine the next location for live actor
+     * @return the next location of live actor
+     */
+    protected Location nextLocation() {
+        int gridXMax = getManager().getGame().getGrid().getXRight();
+        int gridYMax = getManager().getGame().getGrid().getYBottom();
+        Location next = this.getLocation().getAdjacentLocation(this.getDirection(), getStepSize());
+        next = new Location((next.getX() % gridXMax + gridXMax) % gridXMax,
+                (next.getY() % gridYMax + gridYMax) % gridYMax);
+        return next;
     }
 }
