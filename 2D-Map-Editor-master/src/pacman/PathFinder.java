@@ -228,4 +228,9 @@ public class PathFinder {
         undoAll(pacActor);
         return result;
     }
+
+
+//    public LinkedList<Location> dfsGreedyCheck(PacActor pacActor) {
+//        LinkedList<Location> stack =
+//    }
 }

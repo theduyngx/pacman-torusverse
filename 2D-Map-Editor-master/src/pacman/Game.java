@@ -66,7 +66,6 @@ public class Game extends GameGrid implements Runnable {
         // set up game window
         setSimulationPeriod(SIMULATION_PERIOD);
         setTitle(GAME_TITLE);
-        addKeyRepeatListener(manager.getPacActor());
 
         // put actors onto the game
         bg = getBg();
@@ -83,6 +82,7 @@ public class Game extends GameGrid implements Runnable {
         manager.instantiateObjects(grid);
 
         // instantiate actors
+        addKeyRepeatListener(manager.getPacActor());
         manager.instantiateMonsters(properties);
         setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
         drawGrid(bg);
