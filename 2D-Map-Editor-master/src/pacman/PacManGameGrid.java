@@ -37,17 +37,17 @@ public class PacManGameGrid {
         mazeArray = new InanimateActor.BlockType[numVerticalCells][numHorizontalCells];
         String maze =
                         // removed walls to test for torus
-                        "xx xxxxxxx xxxxxxxxx" + // 0
+                        "xx xxxx xx xxxxxxxxx" + // 0
                         "xi   x        x    x" + // 1
                         "xxxxxx xxx xx x xx x" + // 2
                         "x x              x x" + // 3
                         "x.x xx xx  xx xx x x" + // 4
-                        "x      x    x      x" + // 5
+                        "       x    x      x" + // 5
                         "x x xx xxxxxx xx x.x" + // 6
-                        "x x              x.x" + // 7
+                        "  x              x. " + // 7
                         "xixx x xxxxxx x.xx.x" + // 8
                         "     x        x.... " + // 9
-                        "xx xxxxxxx xxxxxxxxx";  // 10
+                        "xx xxxxxxx xxxxxxx x";  // 10
 
         // Copy structure into integer array
         for (int i = 0; i < numVerticalCells; i++)

@@ -79,6 +79,7 @@ public class Game extends GameGrid implements Runnable {
     public void reset() {
         // remove all actors
         manager.removeAll();
+        setTitle(GAME_TITLE);
 
         // parse properties and instantiate objects
         manager.parseInanimateActor(properties);
