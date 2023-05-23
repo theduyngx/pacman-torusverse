@@ -3,14 +3,68 @@ package pacman;
 import ch.aplu.jgamegrid.GGBackground;
 import ch.aplu.jgamegrid.Location;
 
+import java.util.HashMap;
+
+
 /**
  * Portal class used to transport LiveActors to the other paired portal
  * @see InanimateActor
  */
 public class Portal extends InanimateActor {
-    private String portalSprite;
+    private Location staticLocation;
     private Portal portalPair;
-    private static final String PORTAL_NAME = "portal";
+    private static final String PORTAL_NAME = "portal"; // might need for callback
+
+
+    /**
+     * The portal type, enumerated by its color.
+     */
+    public enum PortalType {
+        White(XMLParser.PORTAL_WHITE_TILE),
+        Yellow(XMLParser.PORTAL_YELLOW_TILE),
+        DarkGold(XMLParser.PORTAL_DARK_GOLD_TILE),
+        DarkGrey(XMLParser.PORTAL_DARK_GREY_TILE);
+        public final String color;
+
+        /**
+         * Portal type constructor.
+         * @param portalColor the portal color
+         */
+        PortalType(String portalColor) {
+            this.color = portalColor;
+        }
+        private static final HashMap<String, PortalType> map = new HashMap<>(values().length, 1);
+
+        static {
+            for (PortalType c: values()) map.put(c.color, c);
+        }
+
+        /**
+         * Get the color sprite path for the portal type in question.
+         * @return the sprite path
+         */
+        public String getColorSprite() {
+            return switch (this) {
+                case White    -> "data/i_portalWhiteTile.png";
+                case Yellow   -> "data/j_portalYellowTile.png";
+                case DarkGold -> "data/k_portalDarkGoldTile.png";
+                case DarkGrey -> "data/l_portalDarkGrayTile.png";
+            };
+        }
+
+        /**
+         * Portal type color check with string.
+         * @param color specified color
+         * @return      portal type
+         */
+        public static PortalType of(String color) {
+            PortalType result = map.get(color);
+            if (result == null)
+                throw new IllegalArgumentException("Invalid color name " + color);
+            return result;
+        }
+    }
+
 
     /**
      * Constructor for the Portal when no pair exists yet
@@ -18,20 +72,6 @@ public class Portal extends InanimateActor {
      */
     public Portal(String sprite) {
         super(sprite);
-        this.portalSprite = sprite;
-    }
-
-    /**
-     * Constructor for the portal when a pair exists already
-     * @param sprite    Portal Sprite displayed in the game
-     * @param pair      Instance to be paired with new portal
-     */
-    public Portal(String sprite, Portal pair) {
-        super(sprite);
-        this.portalSprite = sprite;
-        this.portalPair = pair;
-        // Set the pair of the other portal
-        pair.setPortalPair(this);
     }
 
     /**
@@ -46,11 +86,24 @@ public class Portal extends InanimateActor {
         game.addActor(this, location);
     }
 
+    public Portal getPortalPair() {
+        return portalPair;
+    }
+
+    public Location getStaticLocation() {
+        return staticLocation;
+    }
+
     /**
      * Necessary setter function to pair portals together
      * @param pair  Portal instance paired with another
      */
-    public void setPortalPair(Portal pair) {
+    protected void setPortalPair(Portal pair) {
         this.portalPair = pair;
+        pair.portalPair = this;
+    }
+
+    public void setStaticLocation(Location staticLocation) {
+        this.staticLocation = staticLocation;
     }
 }
