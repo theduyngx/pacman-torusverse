@@ -45,7 +45,7 @@ public class TX5 extends Monster {
         this.setDirection(compassDir);
 
         // This marks the direction nearest to pacman
-        Location next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+        Location next = nextLocation();
 
         // Only go to this direction if you can move here, and if it wasn't visited yet
         if (this.canMove(this.getDirection(), stepSize) && this.notVisited(next)) finalLoc = next;
@@ -55,7 +55,7 @@ public class TX5 extends Monster {
             int sign = this.getRandomizer().nextDouble() < 0.5 ? 1 : -1;
             this.setDirection(oldDirection);
             this.turn(sign*RIGHT_TURN_ANGLE);
-            next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+            next = nextLocation();
 
             // Check if we can turn this direction
             if (this.canMove(this.getDirection(), stepSize))
@@ -64,21 +64,21 @@ public class TX5 extends Monster {
             else {
                 // Try move forward
                 this.setDirection(oldDirection);
-                next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                next = nextLocation();
                 if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
 
                 // Try turn the other direction
                 else {
                     this.setDirection(oldDirection);
                     this.turn(sign*LEFT_TURN_ANGLE);
-                    next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                    next = nextLocation();
                     if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
 
                     // Just move backwards
                     else {
                         this.setDirection(oldDirection);
                         this.turn(BACK_TURN_ANGLE);
-                        next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                        next = nextLocation();
                         if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
                     }
                 }

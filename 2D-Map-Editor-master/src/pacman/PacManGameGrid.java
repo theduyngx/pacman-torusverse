@@ -48,10 +48,10 @@ public class PacManGameGrid {
                         "x.x xx xx  xx xx x x" + // 4
                         "x      x    x      x" + // 5
                         "x x xx xxxxxx xx x.x" + // 6
-                        "  x              x.x" + // 7
+                        "x x              x.x" + // 7
                         "xixx x xxxxxx x.xx.x" + // 8
                         "     x        x.... " + // 9
-                        "xx x xxxxx xxxxxxxxx";  // 10
+                        "xx xxxxxxx xxxxxxxxx";  // 10
 
         // Copy structure into integer array
         for (int i = 0; i < numVerticalCells; i++)

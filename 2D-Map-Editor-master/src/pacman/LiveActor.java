@@ -176,8 +176,7 @@ public abstract class LiveActor extends GameActor implements Movable {
         int x = location.getX(), y = location.getY();
         PacManGameGrid grid = manager.getGame().getGrid();
         assert grid != null;
-        return (! HashLocation.contain(manager.getWalls(), location)) &&
-                x < grid.getXRight() && x >= grid.getXLeft() && y < grid.getYBottom() && y >= grid.getYTop();
+        return (! HashLocation.contain(manager.getWalls(), location));
     }
 
 
@@ -191,15 +190,9 @@ public abstract class LiveActor extends GameActor implements Movable {
      * @see                  Location
      */
     protected boolean canMove(double directionValue, int stepSize) {
-        int gridXMax = getManager().getGame().getGrid().getXRight();
-        int gridYMax = getManager().getGame().getGrid().getYBottom();
         Location nextLocation = this.getLocation();
         for (int i=0; i<stepSize; i++) {
             nextLocation = nextLocation.getNeighbourLocation(directionValue);
-
-            // torus-verse implementation
-            nextLocation = new Location((nextLocation.getX() % gridXMax + gridXMax) % gridXMax,
-                    (nextLocation.getY() % gridYMax + gridYMax) % gridYMax);
             if (!canMove(nextLocation))
                 return false;
         }
@@ -247,5 +240,19 @@ public abstract class LiveActor extends GameActor implements Movable {
         for (Location loc : visitedList)
             if (loc.equals(location)) return false;
         return true;
+    }
+
+    /**
+     * Determine the next location for liveactor
+     * @return the next location of liveactor
+     */
+    protected Location nextLocation() {
+        int gridXMax = getManager().getGame().getGrid().getXRight();
+        int gridYMax = getManager().getGame().getGrid().getYBottom();
+        Location next = this.getLocation().getAdjacentLocation(this.getDirection(), getStepSize());
+        next = new Location((next.getX() % gridXMax + gridXMax) % gridXMax,
+                (next.getY() % gridYMax + gridYMax) % gridYMax);
+
+        return next;
     }
 }
