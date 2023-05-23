@@ -56,7 +56,7 @@ public class XMLParser {
 
         // Need these variables for the portal factory
         ArrayList<String> colors = new ArrayList<>();
-        ArrayList<Location> locations = new ArrayList<>();
+        ArrayList<Location> portalLocations = new ArrayList<>();
 
         // Now loop through every single cell and stores its location
         NodeList rows = doc.getElementsByTagName(ROW);
@@ -104,12 +104,12 @@ public class XMLParser {
                     // For portals, we want to store them into a hashmap then
                     default:
                         colors.add(currCell);
-                        locations.add(currLocation);
+                        portalLocations.add(currLocation);
                         break;
                 }
             }
         }
         // After this, we want to construct the portals for the object manager
-        manager.getPortalFactory().makePortals(manager.getPortalMap(), colors, locations);
+        manager.getPortalFactory().makePortals(manager.getPortals(), colors, portalLocations);
     }
 }

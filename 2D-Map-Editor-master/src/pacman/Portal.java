@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @see InanimateActor
  */
 public class Portal extends InanimateActor {
-    private Location staticLocation;
+    private final Location staticLocation;
     private Portal portalPair;
     private static final String PORTAL_NAME = "portal"; // might need for callback
 
@@ -70,26 +70,23 @@ public class Portal extends InanimateActor {
      * Constructor for the Portal when no pair exists yet
      * @param sprite    Portal Sprite displayed in the game
      */
-    public Portal(String sprite) {
+    public Portal(String sprite, Location location) {
         super(sprite);
+        this.staticLocation = location;
     }
 
     /**
-     * Overwritten putItem method for Portals, portal puts
-     * itself into the game
-     * @param bg        background of game grid
-     * @param game      the game
-     * @param location  actor's location
+     * Get the portal pair.
+     * @return the pair
      */
-    @Override
-    protected void putActor(GGBackground bg, Game game, Location location) {
-        game.addActor(this, location);
-    }
-
     public Portal getPortalPair() {
         return portalPair;
     }
 
+    /**
+     * Get the portal's static location.
+     * @return the portal's location
+     */
     public Location getStaticLocation() {
         return staticLocation;
     }
@@ -103,7 +100,15 @@ public class Portal extends InanimateActor {
         pair.portalPair = this;
     }
 
-    public void setStaticLocation(Location staticLocation) {
-        this.staticLocation = staticLocation;
+    /**
+     * Overwritten putItem method for Portals, portal puts
+     * itself into the game
+     * @param bg        background of game grid
+     * @param game      the game
+     * @param location  actor's location
+     */
+    @Override
+    protected void putActor(GGBackground bg, Game game, Location location) {
+        game.addActor(this, location);
     }
 }

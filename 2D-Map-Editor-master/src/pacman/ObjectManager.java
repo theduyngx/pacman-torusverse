@@ -37,14 +37,8 @@ public class ObjectManager {
     private final HashMap<HashLocation, Item> items;
     // hashmap of all walls with their location as key
     private final HashMap<HashLocation, Integer> walls;
-
-    // hashmap of each portal color associated with a nested hashmap of each
-    // portal and its location
-
-    ////// WIP
-    private final HashMap<String, HashMap<HashLocation, Portal>> portalMap;
+    // hashmap of portals with their respective position
     private final HashMap<HashLocation, Portal> portals;
-    //////
 
 
     // the constructor for all the portals
@@ -67,7 +61,6 @@ public class ObjectManager {
         this.items             = new HashMap<>();
         this.walls             = new HashMap<>();
         this.portals           = new HashMap<>();
-        this.portalMap         = new HashMap<>();
         this.portalFactory     = PortalFactory.getInstance();
     }
 
@@ -145,20 +138,14 @@ public class ObjectManager {
     }
 
 
-    /////////////////////// WIP
-
     /**
      * Get the portals map
-     * @return a hashmap that maps each portal colors to a nested hashmap of a hashable location
-     *         and the designated portals
+     * @return the map of all portals
      * @see Portal
      */
-    protected HashMap<String, HashMap<HashLocation, Portal>> getPortalMap() { return portalMap; }
-
     protected HashMap<HashLocation, Portal> getPortals() {
         return portals;
     }
-    ///////////////////////
 
     /**
      * Get the portal factory
@@ -230,21 +217,6 @@ public class ObjectManager {
             exception.printStackTrace();
         }
         numPillsAndGold = getMandatoryItems().size();
-
-        // portal setting
-        for (Map.Entry<String, HashMap<HashLocation, Portal>> entry : portalMap.entrySet()) {
-            HashMap<HashLocation, Portal> locationMap = entry.getValue();
-            Portal portal = null;
-            for (Map.Entry<HashLocation, Portal> mapEntry : locationMap.entrySet()) {
-                Portal currPortal = mapEntry.getValue();
-                HashLocation hashLocation = mapEntry.getKey();
-                if (portal == null) portal = currPortal;
-                else
-                    currPortal.setPortalPair(portal);
-                portals.put(hashLocation, currPortal);
-                currPortal.setStaticLocation(hashLocation.location());
-            }
-        }
     }
 
     /**
