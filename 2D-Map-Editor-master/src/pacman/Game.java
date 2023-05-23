@@ -66,30 +66,8 @@ public class Game extends GameGrid implements Runnable {
         // set up game window
         setSimulationPeriod(SIMULATION_PERIOD);
         setTitle(GAME_TITLE);
-
-        // put actors onto the game
         bg = getBg();
         reset();
-    }
-
-    public void reset() {
-        // remove all actors
-        manager.removeAll();
-
-        // parse properties and instantiate objects
-        manager.parseInanimateActor(properties);
-        manager.instantiatePacActor(properties);
-        manager.instantiateObjects(grid);
-
-        // instantiate actors
-        addKeyRepeatListener(manager.getPacActor());
-        manager.instantiateMonsters(properties);
-        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
-        drawGrid(bg);
-        putMonsters();
-        manager.setMonstersStopMoving();
-        putPacActor();
-        putItems(bg);
     }
 
     /**
@@ -124,6 +102,32 @@ public class Game extends GameGrid implements Runnable {
      */
     public void setStart(boolean start) {
         this.start = start;
+    }
+
+
+    /**
+     * Reset the game's state by re-putting actors and re-setting up the game settings
+     * and object manager. Called in Controller when the game needs to be reset and ready
+     * for another play.
+     */
+    public void reset() {
+        // remove all actors
+        manager.removeAll();
+
+        // parse properties and instantiate objects
+        manager.parseInanimateActor(properties);
+        manager.instantiatePacActor(properties);
+        manager.instantiateObjects(grid);
+
+        // instantiate actors
+        addKeyRepeatListener(manager.getPacActor());
+        manager.instantiateMonsters(properties);
+        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
+        drawGrid(bg);
+        putMonsters();
+        manager.setMonstersStopMoving();
+        putPacActor();
+        putItems(bg);
     }
 
     /**

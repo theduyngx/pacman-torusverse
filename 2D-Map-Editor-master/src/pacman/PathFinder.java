@@ -70,7 +70,7 @@ public class PathFinder {
      * @param actor the live actor
      * @return      the list of locations live actor can move to
      */
-    public ArrayList<Location> getAllMoves(LiveActor actor) {
+    private ArrayList<Location> getAllMoves(LiveActor actor) {
         ArrayList<Location> moves = new ArrayList<>();
         Location next;
         double oldDirection = actor.getDirection();
@@ -104,7 +104,7 @@ public class PathFinder {
      * @param next     the location to move to
      * @return         whether pacman has eaten a mandatory item
      */
-    public boolean proceedMove(PacActor pacActor, Location next) {
+    private boolean proceedMove(PacActor pacActor, Location next) {
         if (pacActor == null || next == null)
             return false;
         Action action = new Action(pacActor.getLocation(), next, HashLocation.get(hashActors, next));
@@ -122,7 +122,7 @@ public class PathFinder {
      * Undo a move.
      * @param pacActor the pacman actor
      */
-    public void undoMove(PacActor pacActor) {
+    private void undoMove(PacActor pacActor) {
         Action action = actionQueue.removeFirst();
         HashLocation.delete(hashActors, pacActor.getLocation());
         pacActor.setLocation(action.previous);
@@ -136,7 +136,7 @@ public class PathFinder {
      * Undo all actions taken so far by PathFinder.
      * @param pacActor the pacman actor
      */
-    public void undoAll(PacActor pacActor) {
+    private void undoAll(PacActor pacActor) {
         while (! actionQueue.isEmpty())
             undoMove(pacActor);
     }
@@ -185,10 +185,10 @@ public class PathFinder {
      * @return         the path to be taken
      */
     public LocationPath idsSinglePath(PacActor pacActor) {
-        // all hash actors, including pacman and all mandatory items
         assignActorMap(pacActor);
         LocationPath path = new LocationPath(pacActor.getLocation());
 
+        // iteratively deepening the depth until an item is reached
         int depth = 1;
         while (true) {
             LocationPath curr = dfsLimited(pacActor, path, depth);
@@ -239,6 +239,10 @@ public class PathFinder {
                     stack.addFirst(next);
             }
         }
+
+        // undo all moves
+        undoAll(pacActor);
+
         // return the key set of the visited map
         return (ArrayList<Location>)
                 visited.keySet()
