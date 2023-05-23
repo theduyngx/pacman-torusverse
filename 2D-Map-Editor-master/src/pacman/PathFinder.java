@@ -7,11 +7,9 @@ import java.util.stream.Collectors;
 
 
 /**
- * LEVEL CHECKING:
- * 1. Check the number of pacActors (cannot exceed 1, if 0 then go to Level editor)
- * 2. Beware of the log file when running game in background
- * 3. Portal validity, each must corresponds to another and cannot have 2 portals of same color (factory method)
- * 4. Path finding to check if any pill/gold is unreachable
+ * PathFinder class with various different pathfinding algorithms serving different purposes.
+ * This includes an optimal pathfinding algorithm, IDS, to search PacActor's next move during
+ * auto-mode, as well as a level checking algorithm, DFS, to obtain all the reachable space.
  */
 public class PathFinder {
     // the queue of proceeded actions (for undoing purposes)
@@ -26,6 +24,7 @@ public class PathFinder {
 
     /**
      * Location path, includes the location itself and its parent, hence forming a path.
+     * Essentially, it takes the form of a linked list.
      */
     private static class LocationPath {
         private final Location location;
@@ -33,21 +32,25 @@ public class PathFinder {
         private int size;
         private int childSize;
 
+        /**
+         * Location path constructor.
+         * @param location the specified location
+         */
         private LocationPath(Location location) {
             this.location = location;
             size = 1;
             childSize = 0;
         }
+
+        /**
+         * Set the child for location path.
+         * @param child the specified child
+         */
         private void setChild(LocationPath child) {
             this.child = child;
             size -= childSize;
             childSize = child.size;
             size += childSize;
-        }
-
-        @Override
-        public int hashCode() {
-            return new HashLocation(location).hashCode();
         }
 
         /**
@@ -61,6 +64,11 @@ public class PathFinder {
                 locationPath = locationPath.child;
             }
             return path;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashLocation(location).hashCode();
         }
     }
 

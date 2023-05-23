@@ -1,8 +1,7 @@
 package pacman;
-
-import ch.aplu.jgamegrid.*;
 import pacman.utility.GameCallback;
 
+import ch.aplu.jgamegrid.*;
 import java.awt.*;
 import java.util.Map;
 import java.util.Properties;
@@ -71,40 +70,6 @@ public class Game extends GameGrid implements Runnable {
         reset();
     }
 
-    /**
-     * Get the game grid.
-     * @return the game grid
-     * @see    PacManGameGrid
-     */
-    public PacManGameGrid getGrid() {
-        return grid;
-    }
-
-    /**
-     * Get the object manager.
-     * @return the object manager
-     */
-    protected ObjectManager getManager() {
-        return manager;
-    }
-
-
-    /**
-     * Get the game start status (if True then the game has officially started).
-     * @return True if the game has officially started
-     */
-    public boolean getStart() {
-        return start;
-    }
-
-    /**
-     * Set the game start status (if True then the game has officially started).
-     * @param start True if the game has officially started
-     */
-    public void setStart(boolean start) {
-        this.start = start;
-    }
-
 
     /**
      * Reset the game's state by re-putting actors and re-setting up the game settings
@@ -148,12 +113,6 @@ public class Game extends GameGrid implements Runnable {
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
-
-            ///
-//            System.out.println(manager.getNumPillsAndGold());
-//            System.out.println(manager.getItems().size());
-            ///
-
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);
@@ -175,6 +134,40 @@ public class Game extends GameGrid implements Runnable {
         setTitle(title);
         manager.getGameCallback().endOfGame(title);
         doPause();
+    }
+
+
+    /**
+     * Get the game grid.
+     * @return the game grid
+     * @see    PacManGameGrid
+     */
+    public PacManGameGrid getGrid() {
+        return grid;
+    }
+
+    /**
+     * Get the object manager.
+     * @return the object manager
+     */
+    protected ObjectManager getManager() {
+        return manager;
+    }
+
+    /**
+     * Get the game start status (if True then the game has officially started).
+     * @return True if the game has officially started
+     */
+    public boolean getStart() {
+        return start;
+    }
+
+    /**
+     * Set the game start status (if True then the game has officially started).
+     * @param start True if the game has officially started
+     */
+    public void setStart(boolean start) {
+        this.start = start;
     }
 
 

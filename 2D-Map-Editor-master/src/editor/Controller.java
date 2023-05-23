@@ -35,23 +35,23 @@ import pacman.Game;
  * @since   v0.0.5
  */
 public class Controller implements ActionListener, GUIInformation {
+	// width and height of the map grid editor
 	public static final int MAP_WIDTH = 20;
 	public static final int MAP_HEIGHT = 11;
 
-	/**
-	 * The model of the map editor.
-	 */
+	// model, tile, camera
 	private Grid model;
-
 	private Tile selectedTile;
 	private Camera camera;
-
 	private List<Tile> tiles;
 
+	// the grid and view of the editor
 	private GridView grid;
 	private View view;
 	private int gridWith = MAP_WIDTH;
 	private int gridHeight = MAP_HEIGHT;
+
+	// the game itself
 	private final Game game;
 
 	/**
@@ -131,19 +131,24 @@ public class Controller implements ActionListener, GUIInformation {
 		view.setSize(width, height);
 	}
 
+
+	/**
+	 * Document listener registering changes made to a text file document. This is used to
+	 * update the loaded file (perhaps).
+	 */
 	DocumentListener updateSizeFields = new DocumentListener() {
 		public void changedUpdate(DocumentEvent e) {
-			gridWith = view.getWidth();
+			gridWith   = view.getWidth();
 			gridHeight = view.getHeight();
 		}
 
 		public void removeUpdate(DocumentEvent e) {
-			gridWith = view.getWidth();
+			gridWith   = view.getWidth();
 			gridHeight = view.getHeight();
 		}
 
 		public void insertUpdate(DocumentEvent e) {
-			gridWith = view.getWidth();
+			gridWith   = view.getWidth();
 			gridHeight = view.getHeight();
 		}
 	};
