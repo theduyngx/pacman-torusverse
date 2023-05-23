@@ -3,6 +3,7 @@ import static pacman.LiveActor.*;
 
 import ch.aplu.jgamegrid.Location;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -212,25 +213,37 @@ public class PathFinder {
 
 
     /**
-     * TODO: The problem now is if no path to item actually exists
-     * Essentially, IDS or any other pathfinding algorithm will loop until the goal state is reached.
-     * But this is simply not possible if the goal cannot even be reached in the first place.
+     * DFS algorithm to check for all reachable spaces in the game. Useful for level checking
+     * to ensure all mandatory items are reachable.
+     * @param pacActor the pacman actor
+     * @return         the list of reachable locations
      */
-    public LinkedList<Location> idsFull(PacActor pacActor) {
-        // all hash actors, including pacman and all mandatory items
-        assignActorMap(pacActor);
+    public ArrayList<Location> dfsGreedyCheck(PacActor pacActor) {
+        // keep track of the stack and visited locations
+        LinkedList<Location> stack = new LinkedList<>();
+        stack.addFirst(pacActor.getLocation());
+        HashMap<HashLocation, Boolean> visited = new HashMap<>();
 
-        LinkedList<Location> result = new LinkedList<>();
-        while (hashActors.size() > 1) {
-            LocationPath path = idsSinglePath(pacActor);
-            result.addAll(path.getPath());
+        // until the stack is empty
+        while (! stack.isEmpty()) {
+            Location location = stack.removeFirst();
+            proceedMove(pacActor, location);
+
+            // if location is not yet visited, mark as visited
+            if (! HashLocation.contain(visited, location)) {
+                HashLocation.put(visited, location, true);
+
+                // and add its child nodes to stack
+                ArrayList<Location> nextLocations = getAllMoves(pacActor);
+                for (Location next : nextLocations)
+                    stack.addFirst(next);
+            }
         }
-        undoAll(pacActor);
-        return result;
+        // return the key set of the visited map
+        return (ArrayList<Location>)
+                visited.keySet()
+                       .stream()
+                       .map(HashLocation::location)
+                       .collect(Collectors.toList());
     }
-
-
-//    public LinkedList<Location> dfsGreedyCheck(PacActor pacActor) {
-//        LinkedList<Location> stack =
-//    }
 }
