@@ -18,6 +18,11 @@ import java.util.Properties;
  * 		-  If lose, then the current behavior is completely valid
  * 		-  If win, then it should move on to the next level
  * 		-  If level checking fails, right now is fine -> it goes to editor (BUT MUST REPORT TO LOG)
+ * <p></p>
+ * TODO: list of things left to finish
+ * 		-  Save/Load file
+ * 		-  XML Parser
+ * 		-  Level up
  */
 public class Main {
 	public static void main(String[] args) {

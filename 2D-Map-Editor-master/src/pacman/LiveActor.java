@@ -6,6 +6,8 @@ import ch.aplu.jgamegrid.*;
 import java.util.LinkedList;
 import java.util.Random;
 
+import static java.lang.Math.abs;
+
 
 /**
  * Abstract LiveActor class for any actors in the game that are animate objects. Like Item class, it will
@@ -252,5 +254,20 @@ public abstract class LiveActor extends GameActor implements Movable {
         next = new Location((next.getX() % gridXMax + gridXMax) % gridXMax,
                 (next.getY() % gridYMax + gridYMax) % gridYMax);
         return next;
+    }
+
+
+    /**
+     * Get the direction to face to, given the next location of the live actor.
+     * @param next the next location to go to
+     * @return     the direction to be facing (in degrees)
+     */
+    protected int getDirectionFromNext(Location next) {
+        int direction = this.getIntDirection();
+        int xDiff = this.getX() - next.getX();
+        int yDiff = this.getY() - next.getY();
+        if      (xDiff != 0) direction = Location.WEST.getDirection()  * (xDiff / abs(xDiff));
+        else if (yDiff != 0) direction = Location.NORTH.getDirection() * (yDiff / abs(yDiff));
+        return direction;
     }
 }

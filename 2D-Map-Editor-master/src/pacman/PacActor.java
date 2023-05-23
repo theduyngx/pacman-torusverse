@@ -63,33 +63,18 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     @Override
     public void keyRepeated(int keyCode) {
-        if (isAuto) return;
-        if (isRemoved())  // Already removed
-            return;
-        Location next = null;
+        if (isAuto || isRemoved()) return;
+        Location next;
         switch (keyCode) {
-            case KeyEvent.VK_LEFT -> {
-                next = getLocation().getNeighbourLocation(Location.WEST);
-                setDirection(Location.WEST);
-            }
-            case KeyEvent.VK_UP -> {
-                next = getLocation().getNeighbourLocation(Location.NORTH);
-                setDirection(Location.NORTH);
-            }
-            case KeyEvent.VK_RIGHT -> {
-                next = getLocation().getNeighbourLocation(Location.EAST);
-                setDirection(Location.EAST);
-            }
-            case KeyEvent.VK_DOWN -> {
-                next = getLocation().getNeighbourLocation(Location.SOUTH);
-                setDirection(Location.SOUTH);
-            }
+            case KeyEvent.VK_LEFT   -> setDirection(Location.WEST);
+            case KeyEvent.VK_UP     -> setDirection(Location.NORTH);
+            case KeyEvent.VK_RIGHT  -> setDirection(Location.EAST);
+            case KeyEvent.VK_DOWN   -> setDirection(Location.SOUTH);
         }
 
         // torus-effect
         next = nextLocation();
-        if (next != null && canMove(next))
-            moveWithVisited(next);
+        if (canMove(next)) moveWithVisited(next);
     }
 
     /**
@@ -130,6 +115,8 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     public void moveApproach() {
         if (movesNext.isEmpty()) return;
         Location next = movesNext.removeFirst();
+        int direction = getDirectionFromNext(next);
+        setDirection(direction);
         moveWithVisited(next);
         addVisitedList(next);
     }
