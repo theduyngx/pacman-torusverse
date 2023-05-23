@@ -50,7 +50,7 @@ public class Wizard extends Monster {
             int currIndex = this.getRandomizer().nextInt(LIST_START, directionValues.size());
             int currDirection = directionValues.get(currIndex);
 
-            if (this.canMove(currDirection, stepSize)) {
+            if (this.canMove(stepSize)) {
                 finalLoc = this.getLocation().getAdjacentLocation(currDirection, stepSize);
                 break;
             }
@@ -61,7 +61,7 @@ public class Wizard extends Monster {
                 Location beyondWallLocation = this.getLocation().getAdjacentLocation(currDirection,
                         stepSize+BEYOND_WALL);
                 // Must also check if the location right before the wall is walkable
-                if (this.canMove(beyondWallLocation) && this.canMove(currDirection, stepSize-BEYOND_WALL)) {
+                if (this.canMove(beyondWallLocation) && this.canMove(stepSize-BEYOND_WALL)) {
                     finalLoc = beyondWallLocation;
                     break;
                 }

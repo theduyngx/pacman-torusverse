@@ -48,7 +48,7 @@ public class TX5 extends Monster {
         Location next = nextLocation();
 
         // Only go to this direction if you can move here, and if it wasn't visited yet
-        if (this.canMove(this.getDirection(), stepSize) && this.notVisited(next)) finalLoc = next;
+        if (this.canMove(stepSize) && this.notVisited(next)) finalLoc = next;
 
         // If it can't move here, has to move to a random spot
         else {
@@ -58,28 +58,28 @@ public class TX5 extends Monster {
             next = nextLocation();
 
             // Check if we can turn this direction
-            if (this.canMove(this.getDirection(), stepSize))
+            if (this.canMove(stepSize))
                 finalLoc = next;
 
             else {
                 // Try move forward
                 this.setDirection(oldDirection);
                 next = nextLocation();
-                if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+                if (this.canMove(stepSize)) finalLoc = next;
 
                 // Try turn the other direction
                 else {
                     this.setDirection(oldDirection);
                     this.turn(sign*LEFT_TURN_ANGLE);
                     next = nextLocation();
-                    if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+                    if (this.canMove(stepSize)) finalLoc = next;
 
                     // Just move backwards
                     else {
                         this.setDirection(oldDirection);
                         this.turn(BACK_TURN_ANGLE);
                         next = nextLocation();
-                        if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+                        if (this.canMove(stepSize)) finalLoc = next;
                     }
                 }
             }

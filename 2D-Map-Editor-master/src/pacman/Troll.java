@@ -40,27 +40,27 @@ public class Troll extends Monster {
         this.turn(sign*RIGHT_TURN_ANGLE);
         Location next = nextLocation();
 
-        if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+        if (this.canMove(stepSize)) finalLoc = next;
 
         // If collision occurs going first given direction, try other direction
         else {
             // Try to move forward
             this.setDirection(oldDirection);
             next = nextLocation();
-            if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+            if (this.canMove(stepSize)) finalLoc = next;
 
             else {
                 // Check if you can go the opposite turn, either left or right
                 this.turn(sign * LEFT_TURN_ANGLE);
                 next = nextLocation();
-                if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+                if (this.canMove(stepSize)) finalLoc = next;
 
                 // If nothing really worked, just go backwards
                 else {
                     this.setDirection(oldDirection);
                     this.turn(BACK_TURN_ANGLE);
                     next = nextLocation();
-                    if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+                    if (this.canMove(stepSize)) finalLoc = next;
                 }
             }
         }

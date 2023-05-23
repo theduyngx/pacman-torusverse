@@ -88,12 +88,12 @@ public class Orion extends Monster {
         int minDistance = Integer.MAX_VALUE;
         ArrayList<Location> possibleLocations = new ArrayList<>();
         for (Location.CompassDirection dir : Location.CompassDirection.values()) {
-            if (dir.getDirection()%CHECK_NON_DIAGONAL == NON_DIAGONAL) {
+            if (dir.getDirection() % CHECK_NON_DIAGONAL == NON_DIAGONAL) {
                 Location currLocation = orionLocation.getAdjacentLocation(dir.getDirection(), stepSize);
                 int distanceToGold = currLocation.getDistanceTo(this.currDestination.location());
 
                 // Track visited locations with visited list to prevent going to same 2 locations repeatedly
-                if (this.canMove(dir.getDirection(), stepSize) &&
+                if (this.canMove(stepSize) &&
                     this.notVisited(currLocation) && distanceToGold <= minDistance)
                 {
                     // Keep track of all possible tying directions
@@ -120,7 +120,7 @@ public class Orion extends Monster {
                 int currIndex = this.getRandomizer().nextInt(LIST_START, directionValues.size());
                 int currentDir = directionValues.get(currIndex);
                 Location newLocation = this.getLocation().getAdjacentLocation(currentDir, stepSize);
-                if (this.canMove(currentDir, stepSize) && currentDir%CHECK_NON_DIAGONAL == NON_DIAGONAL) {
+                if (this.canMove(stepSize) && currentDir % CHECK_NON_DIAGONAL == NON_DIAGONAL) {
                     finalLoc = newLocation;
                     break;
                 }

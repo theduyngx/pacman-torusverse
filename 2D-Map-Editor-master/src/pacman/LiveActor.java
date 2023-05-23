@@ -5,7 +5,6 @@ import ch.aplu.jgamegrid.*;
 
 import java.util.LinkedList;
 import java.util.Random;
-
 import static java.lang.Math.abs;
 
 
@@ -175,8 +174,6 @@ public abstract class LiveActor extends GameActor implements Movable {
      */
     @Override
     public boolean canMove(Location location) {
-        PacManGameGrid grid = manager.getGame().getGrid();
-        assert grid != null;
         return (! HashLocation.contain(manager.getWalls(), location));
     }
 
@@ -185,12 +182,11 @@ public abstract class LiveActor extends GameActor implements Movable {
      * Check whether a live actor can move a specified direction and units. This is to adjust
      * for actors that cannot fly, so movement can be obstructed by any wall on the way to
      * the end point
-     * @param directionValue specified direction
-     * @param stepSize       number of units in direction
-     * @return               boolean indicating whether actor can move there.
-     * @see                  Location
+     * @param stepSize number of units in direction
+     * @return         boolean indicating whether actor can move there.
+     * @see            Location
      */
-    protected boolean canMove(double directionValue, int stepSize) {
+    protected boolean canMove(int stepSize) {
         for (int i=0; i < stepSize; i++) {
             Location nextLocation = nextLocation();
             if (!canMove(nextLocation))
@@ -247,11 +243,11 @@ public abstract class LiveActor extends GameActor implements Movable {
      * @return the next location of live actor
      */
     protected Location nextLocation() {
-        int gridXMax = getManager().getGame().getGrid().getXRight();
-        int gridYMax = getManager().getGame().getGrid().getYBottom();
+        int gridXMax = Game.NUM_HORIZONTAL_CELLS;
+        int gridYMax = Game.NUM_VERTICAL_CELLS;
         Location next = this.getLocation().getAdjacentLocation(this.getDirection(), getStepSize());
         next = new Location((next.getX() % gridXMax + gridXMax) % gridXMax,
-                (next.getY() % gridYMax + gridYMax) % gridYMax);
+                            (next.getY() % gridYMax + gridYMax) % gridYMax);
         return next;
     }
 
@@ -265,8 +261,8 @@ public abstract class LiveActor extends GameActor implements Movable {
         int direction = this.getIntDirection();
         int xDiff = this.getX() - next.getX();
         int yDiff = this.getY() - next.getY();
-        if      (xDiff != 0) direction = Location.WEST.getDirection()  * (xDiff / abs(xDiff));
-        else if (yDiff != 0) direction = Location.NORTH.getDirection() * (yDiff / abs(yDiff));
+        if (xDiff != 0) direction = Location.WEST.getDirection()  * (xDiff / abs(xDiff));
+        if (yDiff != 0) direction = Location.NORTH.getDirection() * (yDiff / abs(yDiff));
         return direction;
     }
 }

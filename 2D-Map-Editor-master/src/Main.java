@@ -15,31 +15,34 @@ import java.util.Properties;
 /**
  * TODO: Move level checking inside Controller
  * Idea: There will be yet another boolean in Game called win/lose
- * 		-  If lose, then the current behavior is completely valid
- * 		-  If win, then it should move on to the next level
+ * 		-  If lost, then the current behavior is completely valid
+ * 		-  If won, then it should move on to the next level
  * 		-  If level checking fails, right now is fine -> it goes to editor (BUT MUST REPORT TO LOG)
  * <p></p>
  * TODO: list of things left to finish
  * 		-  Save/Load file
  * 		-  XML Parser
- * 		-  Level up
+ * 		-  Level up: Game checking will return a list of xmlFile strings which are XML file names;
+ * 		   this will be sorted lexicographically and passed to Controller which will keep on incrementing
+ * 		   until it finishes the final level.
  */
 public class Main {
 	public static void main(String[] args) {
 
-		boolean checkPass;
+		boolean checkPass = false;
 		GameCallback gameCallback = new GameCallback();
 		String path = "test";
-		File filePath = new File(path);
-		if (filePath.isDirectory())
+		File file = new File(path);
+		if (file.isDirectory())
 			checkPass = gameCheck(path, gameCallback);
 
-		checkPass = true;
+		checkPass = false;
 		if (checkPass) {
 			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test6.properties";
 			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
 			assert properties != null;
-			Game game = new Game(properties, gameCallback);
+			String xmlFile = "test/sample_map1.xml";
+			Game game = new Game(properties, gameCallback, xmlFile);
 
 			/// NOTE: this part of level checking should be within the level checking itself
 			/// then the unreachable must be printed and moved to object manager for log update accordingly
@@ -60,7 +63,6 @@ public class Main {
 		File directory = new File(path);
 		String[] dirNameSplit = directory.getName().split("/");
 		String dirName = dirNameSplit[dirNameSplit.length - 1];
-
 		File[] gameMaps = directory.listFiles();
 		if (gameMaps == null)
 			return false;

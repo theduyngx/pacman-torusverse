@@ -24,9 +24,6 @@ public class XMLParser {
     public static final int IS_WALL = 1;
 
     // static constants for XML Parsing
-    public static final String DIMENSION = "size";
-    public static final String LENGTH = "length";
-    public static final String WIDTH = "width";
     public static final String ROW = "row";
     public static final String CELL = "cell";
     public static final String WALL_TILE = "WallTile";
@@ -48,11 +45,11 @@ public class XMLParser {
      * pacActor, monsters, items, and portals
      * @param xmlFile   file containing all locations
      */
-    public void parseXML(String xmlFile, ObjectManager manager) throws ParserConfigurationException, SAXException,
-            IOException {
+    public void parseXML(String xmlFile, ObjectManager manager)
+            throws ParserConfigurationException, SAXException, IOException {
         // Instantiate the Factory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        //an instance of builder to parse the specified xml file
+        // an instance of builder to parse the specified xml file
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(new File(xmlFile));
         doc.getDocumentElement().normalize();
@@ -61,22 +58,6 @@ public class XMLParser {
         ArrayList<String> colors = new ArrayList<>();
         ArrayList<Location> locations = new ArrayList<>();
 
-        // Get the needed files from the document
-        NodeList dimensions = doc.getElementsByTagName(DIMENSION);
-        int length;
-        int width;
-        // Load the dimensions from the XML file
-        for (int i=0; i<dimensions.getLength(); i++) {
-            // Get the length and width from the dimensions XML tag
-            Node node = dimensions.item(i);
-            Element eElement  = (Element) node;
-            String strLength = eElement.getElementsByTagName(LENGTH).item(0).getTextContent();
-            length = Integer.parseInt(strLength);
-
-            String strWidth = eElement.getElementsByTagName(WIDTH).item(0).getTextContent();
-            width = Integer.parseInt(strWidth);
-        }
-
         // Now loop through every single cell and stores its location
         NodeList rows = doc.getElementsByTagName(ROW);
         for (int i=0; i < rows.getLength(); i++) {
@@ -84,53 +65,51 @@ public class XMLParser {
             Element eElement = (Element) currRow;
             NodeList cellTags = eElement.getElementsByTagName(CELL);
 
-            for (int j=0; j<cellTags.getLength(); j++) {
-                Location currLoc = new Location(i, j);
+            for (int j=0; j < cellTags.getLength(); j++) {
+                Location currLocation = new Location(j, i);
                 String currCell = cellTags.item(j).getTextContent();
 
                 // Now add onto ObjectManager based on the type of tile
                 switch (currCell) {
                     case GOLD_TILE:
-                        HashLocation.put(manager.getItems(), currLoc, new Gold());
+                        HashLocation.put(manager.getItems(), currLocation, new Gold());
                         break;
                     case PILL_TILE:
-                        HashLocation.put(manager.getItems(), currLoc, new Pill());
+                        HashLocation.put(manager.getItems(), currLocation, new Pill());
                         break;
                     case WALL_TILE:
-                        HashLocation.put(manager.getWalls(), currLoc, IS_WALL);
+                        HashLocation.put(manager.getWalls(), currLocation, IS_WALL);
                         break;
                     case ICE_TILE:
-                        HashLocation.put(manager.getItems(), currLoc, new Ice());
+                        HashLocation.put(manager.getItems(), currLocation, new Ice());
                         break;
                     // This specific case we need to initialize only the location,
                     // random seed and isAuto is instantiated once property file is read
                     case PAC_TILE:
-                        manager.getPacActorLocations().add(currLoc);
-                        manager.instantiatePacActorLoc(currLoc);
+                        manager.getPacActorLocations().add(currLocation);
+                        manager.instantiatePacActorLoc(currLocation);
                         break;
                     case TROLL_TILE:
-                        Troll addTroll = new Troll(manager);
-                        addTroll.setInitLocation(currLoc);
-                        manager.getMonsters().add(addTroll);
+                        Troll troll = new Troll(manager);
+                        troll.setInitLocation(currLocation);
+                        manager.getMonsters().add(troll);
                         break;
                     case TX5_TILE:
-                        TX5 addTX5 = new TX5(manager);
-                        addTX5.setInitLocation(currLoc);
-                        manager.getMonsters().add(addTX5);
+                        TX5 TX5 = new TX5(manager);
+                        TX5.setInitLocation(currLocation);
+                        manager.getMonsters().add(TX5);
                         break;
                     case PATH_TILE:
                         break;
                     // For portals, we want to store them into a hashmap then
                     default:
                         colors.add(currCell);
-                        locations.add(currLoc);
+                        locations.add(currLocation);
                         break;
                 }
             }
         }
-
         // After this, we want to construct the portals for the object manager
         manager.getPortalFactory().makePortals(manager.getPortalMap(), colors, locations);
     }
-
 }

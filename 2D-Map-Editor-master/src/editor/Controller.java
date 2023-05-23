@@ -28,8 +28,10 @@ import pacman.Game;
 
 
 /**
- * Controller of the application.
- * 
+ * Controller of the application. Based on Daniel "MaTachi" Jonsson's code.
+ * @author  The Duy Nguyen
+ * @author  Ramon Javier L. Felipe VI
+ * @author  Jonathan Chen Jie Kong
  * @author  Daniel "MaTachi" Jonsson
  * @version 1
  * @since   v0.0.5
@@ -90,9 +92,10 @@ public class Controller implements ActionListener, GUIInformation {
 			@Override
 			public void done() {
 				if (game.getStart()) {
+					String xmlFile = "test/sample_map1.xml";
 					updateGrid(gridWith, gridHeight);
 					game.setStart(false);
-					game.reset();
+					game.reset(xmlFile);
 				}
 			}
 		};

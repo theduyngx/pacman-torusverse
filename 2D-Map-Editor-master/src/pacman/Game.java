@@ -39,9 +39,8 @@ public class Game extends GameGrid implements Runnable {
     // game grid
     public final static int STRETCH_RATE = 2;
     public final static int CELL_SIZE = 20 * STRETCH_RATE;
-    private final static int NUM_HORIZONTAL_CELLS = 20;
-    private final static int NUM_VERTICAL_CELLS = 11;
-    private final PacManGameGrid grid;
+    public final static int NUM_HORIZONTAL_CELLS = 20;
+    public final static int NUM_VERTICAL_CELLS = 11;
 
     // object manager
     private final ObjectManager manager;
@@ -55,11 +54,10 @@ public class Game extends GameGrid implements Runnable {
      * @param properties properties object read from properties file for instantiating actors and items
      * @see              Properties
      */
-    public Game(Properties properties, GameCallback gameCallback) {
+    public Game(Properties properties, GameCallback gameCallback, String xmlFile) {
         // Setup game
         super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
-        this.grid = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
-        this.manager = new ObjectManager(this, gameCallback);
+        this.manager    = new ObjectManager(gameCallback);
         this.properties = properties;
 
         // set up game window
@@ -67,7 +65,7 @@ public class Game extends GameGrid implements Runnable {
         setTitle(GAME_TITLE);
         bg = getBg();
         setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
-        reset();
+        reset(xmlFile);
     }
 
 
@@ -76,18 +74,16 @@ public class Game extends GameGrid implements Runnable {
      * and object manager. Called in Controller when the game needs to be reset and ready
      * for another play.
      */
-    public void reset() {
+    public void reset(String xmlFile) {
         // remove all actors
         manager.removeAll();
         setTitle(GAME_TITLE);
 
         // parse properties and instantiate objects
-        manager.parseInanimateActor(properties);
-        manager.instantiatePacActor(properties);
-        manager.instantiateObjects(grid);
+        manager.instantiateAll(xmlFile);
+        manager.parseProperties(properties);
 
         // instantiate actors
-        manager.instantiateMonsters(properties);
         putMonsters();
         manager.setMonstersStopMoving();
         putPacActor();
@@ -137,16 +133,6 @@ public class Game extends GameGrid implements Runnable {
         doPause();
     }
 
-
-    /**
-     * Get the game grid.
-     * @return the game grid
-     * @see    PacManGameGrid
-     */
-    public PacManGameGrid getGrid() {
-        return grid;
-    }
-
     /**
      * Get the object manager.
      * @return the object manager
@@ -188,10 +174,10 @@ public class Game extends GameGrid implements Runnable {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 // space
-                if (grid.getCell(location) != InanimateActor.BlockType.ERROR)
+                if (! HashLocation.contain(manager.getWalls(), location))
                     bg.fillCell(location, COLOR_SPACE);
                 // wall -> added to wall map in manager
-                if (grid.getCell(location) == InanimateActor.BlockType.WALL) {
+                else {
                     HashLocation.put(manager.getWalls(), location, 1);
                     bg.fillCell(location, COLOR_WALL);
                 }
