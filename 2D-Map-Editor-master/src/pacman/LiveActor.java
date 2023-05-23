@@ -248,6 +248,12 @@ public abstract class LiveActor extends GameActor implements Movable {
         Location next = this.getLocation().getAdjacentLocation(this.getDirection(), getStepSize());
         next = new Location((next.getX() % gridXMax + gridXMax) % gridXMax,
                             (next.getY() % gridYMax + gridYMax) % gridYMax);
+
+        // portals
+        if (HashLocation.contain(manager.getPortals(), next)) {
+            Portal portal = HashLocation.get(manager.getPortals(), next);
+            next = portal.getPortalPair().getStaticLocation();
+        }
         return next;
     }
 
