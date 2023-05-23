@@ -40,7 +40,13 @@ public class ObjectManager {
 
     // hashmap of each portal color associated with a nested hashmap of each
     // portal and its location
+
+    ////// WIP
     private final HashMap<String, HashMap<HashLocation, Portal>> portalMap;
+    private final HashMap<HashLocation, Portal> portals;
+    //////
+
+
     // the constructor for all the portals
     private final PortalFactory portalFactory;
 
@@ -56,10 +62,11 @@ public class ObjectManager {
      */
     public ObjectManager(GameCallback gameCallback) {
         this.gameCallback      = gameCallback;
+        this.pacActorLocations = new ArrayList<>();
         this.monsters          = new ArrayList<>();
         this.items             = new HashMap<>();
         this.walls             = new HashMap<>();
-        this.pacActorLocations = new ArrayList<>();
+        this.portals           = new HashMap<>();
         this.portalMap         = new HashMap<>();
         this.portalFactory     = PortalFactory.getInstance();
     }
@@ -137,21 +144,28 @@ public class ObjectManager {
         return walls;
     }
 
+
+    /////////////////////// WIP
+
     /**
      * Get the portals map
      * @return a hashmap that maps each portal colors to a nested hashmap of a hashable location
      *         and the designated portals
      * @see Portal
      */
-
     protected HashMap<String, HashMap<HashLocation, Portal>> getPortalMap() { return portalMap; }
+
+    protected HashMap<HashLocation, Portal> getPortals() {
+        return portals;
+    }
+    ///////////////////////
 
     /**
      * Get the portal factory
      * @return a factory for constructing all the portals in the map
      * @see PortalFactory
      */
-    protected PortalFactory getPortalFactory() { return  portalFactory; }
+    protected PortalFactory getPortalFactory() { return portalFactory; }
 
     /**
      * Get the number of pills and gold pieces left in the game. Hence, used to detect winning condition.
@@ -216,6 +230,21 @@ public class ObjectManager {
             exception.printStackTrace();
         }
         numPillsAndGold = getMandatoryItems().size();
+
+        // portal setting
+        for (Map.Entry<String, HashMap<HashLocation, Portal>> entry : portalMap.entrySet()) {
+            HashMap<HashLocation, Portal> locationMap = entry.getValue();
+            Portal portal = null;
+            for (Map.Entry<HashLocation, Portal> mapEntry : locationMap.entrySet()) {
+                Portal currPortal = mapEntry.getValue();
+                HashLocation hashLocation = mapEntry.getKey();
+                if (portal == null) portal = currPortal;
+                else
+                    currPortal.setPortalPair(portal);
+                portals.put(hashLocation, currPortal);
+                currPortal.setStaticLocation(hashLocation.location());
+            }
+        }
     }
 
     /**

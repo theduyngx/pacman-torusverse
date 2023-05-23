@@ -92,7 +92,7 @@ public class Controller implements ActionListener, GUIInformation {
 			@Override
 			public void done() {
 				if (game.getStart()) {
-					String xmlFile = "test/sample_map1.xml";
+					String xmlFile = "test/3_OtherMap.xml";
 					updateGrid(gridWith, gridHeight);
 					game.setStart(false);
 					game.reset(xmlFile);

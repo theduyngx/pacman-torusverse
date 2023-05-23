@@ -88,7 +88,7 @@ public class Game extends GameGrid implements Runnable {
         manager.setMonstersStopMoving();
         putPacActor();
         drawGrid(bg);
-        putItems(bg);
+        putInanimateObjects();
     }
 
     /**
@@ -187,17 +187,19 @@ public class Game extends GameGrid implements Runnable {
 
 
     /**
-     * Putting all items to game. Items once put to the game will exist within the game as well as the
-     * grid, and it will also be visualized to the background.
-     * @param background the background
-     * @see              GGBackground
-     * @see              Item
+     * Putting all inanimate objects to game. As the name suggests, inanimate objects are statically
+     * located, and once put to the game will not be moving.
      */
-    public void putItems(GGBackground background) {
+    public void putInanimateObjects() {
+        // items
         for (Map.Entry<HashLocation, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey().location();
             Item item = entry.getValue();
-            item.putActor(background, this, location);
+            item.putActor(bg, this, location);
+        }
+        // portals
+        for (Map.Entry<HashLocation, Portal> entry : manager.getPortals().entrySet()) {
+            entry.getValue().putActor(bg, this, entry.getKey().location());
         }
     }
 
@@ -207,7 +209,7 @@ public class Game extends GameGrid implements Runnable {
      * @see Monster
      */
     public void putMonsters() {
-        for (int i=0; i<manager.getMonsters().size(); i++) {
+        for (int i=0; i < manager.getMonsters().size(); i++) {
             Monster monster = manager.getMonsters().get(i);
             monster.putActor(this);
         }

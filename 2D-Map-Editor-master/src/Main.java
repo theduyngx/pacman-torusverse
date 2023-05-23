@@ -21,6 +21,7 @@ import java.util.Properties;
  * <p></p>
  * TODO: list of things left to finish
  * 		-  Save/Load file
+ * 	    -  Level Checking - Number of pacman, portal validity, etc.
  * 		-  XML Parser
  * 		-  Level up: Game checking will return a list of xmlFile strings which are XML file names;
  * 		   this will be sorted lexicographically and passed to Controller which will keep on incrementing
@@ -36,12 +37,12 @@ public class Main {
 		if (file.isDirectory())
 			checkPass = gameCheck(path, gameCallback);
 
-		checkPass = false;
+		checkPass = true;
 		if (checkPass) {
 			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test6.properties";
 			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
 			assert properties != null;
-			String xmlFile = "test/sample_map1.xml";
+			String xmlFile = "test/3_OtherMap.xml";
 			Game game = new Game(properties, gameCallback, xmlFile);
 
 			/// NOTE: this part of level checking should be within the level checking itself
