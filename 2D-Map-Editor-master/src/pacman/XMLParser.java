@@ -41,9 +41,8 @@ public class XMLParser {
 
 
     /**
-     * XML Parser that iterates through whole file to extract
-     * pacActor, monsters, items, and portals
-     * @param xmlFile   file containing all locations
+     * XML Parser that iterates through whole file to extract pacActor, monsters, items, and portals.
+     * @param xmlFile file containing all locations
      */
     public void parseXML(String xmlFile, ObjectManager manager)
             throws ParserConfigurationException, SAXException, IOException {

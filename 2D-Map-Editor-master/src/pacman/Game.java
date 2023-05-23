@@ -47,6 +47,11 @@ public class Game extends GameGrid implements Runnable {
     private boolean start = false;
     private final GGBackground bg;
     private final Properties properties;
+    private STATUS status;
+
+    public enum STATUS {
+        WIN, LOSE, NA
+    }
 
 
     /**
@@ -76,6 +81,7 @@ public class Game extends GameGrid implements Runnable {
      */
     public void reset(String xmlFile) {
         // remove all actors
+        status = STATUS.NA;
         manager.removeAll();
         setTitle(GAME_TITLE);
 
@@ -123,14 +129,24 @@ public class Game extends GameGrid implements Runnable {
             bg.setPaintColor(COLOR_LOSE);
             title = LOSE_MESSAGE;
             addActor(manager.getKilledPacActor(), loc);
+            status = STATUS.LOSE;
         }
         else {
             bg.setPaintColor(COLOR_WIN);
             title = WIN_MESSAGE;
+            status = STATUS.WIN;
         }
         setTitle(title);
         manager.getGameCallback().endOfGame(title);
         doPause();
+    }
+
+    /**
+     * Get the game's status - whether the player has won, lost, or neither.
+     * @return the game's status for the player
+     */
+    public STATUS getStatus() {
+        return status;
     }
 
     /**

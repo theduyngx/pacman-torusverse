@@ -28,10 +28,12 @@ public class PortalFactory {
     ) {
         assert(colors.size() == locations.size());
 
+        // using the colors and locations, construct a hashmap of portals paired by key color
         HashMap<String, ArrayList<Portal>> portalsMap = new HashMap<>();
         for (int i=0; i < colors.size(); i++) {
             String color = colors.get(i);
             Location location = locations.get(i);
+
             // For each color, we want to get the associated sprite and store it
             ArrayList<Portal> currList;
             if (! portalsMap.containsKey(color)) {
@@ -40,14 +42,12 @@ public class PortalFactory {
             }
             else currList = portalsMap.get(color);
 
-            // Get the resulting sprite of the color
+            // get the resulting sprite of the color, add that to a new portal
             String sprite = Portal.PortalType.of(color).getColorSprite();
-
-            // Now add that sprite into a new portal to make
             currList.add(new Portal(sprite, location));
         }
 
-        // constructing the portals map
+        // constructing the portals map accordingly
         for (Map.Entry<String, ArrayList<Portal>> entry : portalsMap.entrySet()) {
             ArrayList<Portal> pair = entry.getValue();
             assert pair != null && pair.size() > 0;

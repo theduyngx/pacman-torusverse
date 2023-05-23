@@ -1,9 +1,10 @@
 package pacman;
-import ch.aplu.jgamegrid.Actor;
-import org.xml.sax.SAXException;
 import pacman.utility.GameCallback;
 import pacman.utility.PropertiesLoader;
+
+import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -273,6 +274,10 @@ public class ObjectManager {
         for (Map.Entry<HashLocation, Item> entry : items.entrySet())
             entry.getValue().removeSelf();
         items.clear();
+        for (Map.Entry<HashLocation, Portal> entry : portals.entrySet()) {
+            entry.getValue().removeSelf();
+        }
+        portals.clear();
         walls.clear();
     }
 }

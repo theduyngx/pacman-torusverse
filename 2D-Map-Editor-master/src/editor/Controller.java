@@ -55,20 +55,24 @@ public class Controller implements ActionListener, GUIInformation {
 
 	// the game itself
 	private final Game game;
+	private final String[] levels;
+	private int levelIndex;
 
 	/**
 	 * Controller constructor.
 	 * @param game		the game
 	 * @param gameStart whether game has started or not
 	 */
-	public Controller(Game game, boolean gameStart) {
+	public Controller(Game game, String[] levels, boolean gameStart) {
 		this.tiles  = TileManager.getTilesFromFolder("data/");
 		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		this.grid   = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
 		this.view   = new View(this, camera, grid, tiles);
 		this.game   = game;
+		this.levels = levels;
 		this.game.setStart(gameStart);
+		levelIndex = 0;
 
 		// start game immediately by manually trigger an action
 		if (game.getStart())
@@ -91,12 +95,17 @@ public class Controller implements ActionListener, GUIInformation {
 
 			@Override
 			public void done() {
-				if (game.getStart()) {
-					String xmlFile = "test/3_OtherMap.xml";
-					updateGrid(gridWith, gridHeight);
-					game.setStart(false);
-					game.reset(xmlFile);
+				if (! game.getStart()) return;
+				updateGrid(gridWith, gridHeight);
+				game.setStart(false);
+				if (game.getStatus() == Game.STATUS.WIN) {
+					levelIndex++;
+					if (levelIndex >= levels.length) {
+						// WON THE GAME
+						System.exit(0);
+					}
 				}
+				game.reset(levels[levelIndex]);
 			}
 		};
 
