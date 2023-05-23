@@ -67,6 +67,7 @@ public class Game extends GameGrid implements Runnable {
         setSimulationPeriod(SIMULATION_PERIOD);
         setTitle(GAME_TITLE);
         bg = getBg();
+        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
         reset();
     }
 
@@ -120,13 +121,11 @@ public class Game extends GameGrid implements Runnable {
         manager.instantiateObjects(grid);
 
         // instantiate actors
-        addKeyRepeatListener(manager.getPacActor());
         manager.instantiateMonsters(properties);
-        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
-        drawGrid(bg);
         putMonsters();
         manager.setMonstersStopMoving();
         putPacActor();
+        drawGrid(bg);
         putItems(bg);
     }
 
@@ -144,6 +143,7 @@ public class Game extends GameGrid implements Runnable {
 
         // run the game until win / lose condition satisfies
         PacActor pacActor = manager.getPacActor();
+        addKeyRepeatListener(pacActor);
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
@@ -151,6 +151,7 @@ public class Game extends GameGrid implements Runnable {
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);
+//        removeKeyRepeatListener(pacActor);
 
         // upon game over
         Location loc = pacActor.getLocation();

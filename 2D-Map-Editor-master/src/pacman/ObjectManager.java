@@ -111,12 +111,14 @@ public class ObjectManager {
      */
     protected HashMap<HashLocation, Item> getMandatoryItems() {
         Map<HashLocation, Item> map
-                = items.entrySet().stream().
-                        filter(
-                             e -> !(e.getValue() instanceof Ice)).collect(
-                        Collectors.toMap(
-                            Map.Entry::getKey, Map.Entry::getValue)
-                );
+                = items.entrySet()
+                       .stream()
+                       .filter(e -> !(e.getValue() instanceof Ice))
+                       .collect(
+                               Collectors.toMap(
+                                       Map.Entry::getKey,
+                                       Map.Entry::getValue
+                       ));
         return new HashMap<>(map);
     }
 
@@ -261,10 +263,10 @@ public class ObjectManager {
                     int posY = Integer.parseInt(pos[1]);
                     Location location = new Location(posX, posY);
                     Monster monster = switch(type) {
-                        case TX5    -> new TX5(this);
-                        case Troll  -> new Troll(this);
-                        case Orion  -> new Orion(this);
-                        case Alien  -> new Alien(this);
+                        case TX5    -> new TX5   (this);
+                        case Troll  -> new Troll (this);
+                        case Orion  -> new Orion (this);
+                        case Alien  -> new Alien (this);
                         case Wizard -> new Wizard(this);
                     };
 
