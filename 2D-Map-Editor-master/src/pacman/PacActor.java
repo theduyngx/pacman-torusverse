@@ -14,7 +14,7 @@ import java.util.*;
  * @see GGKeyRepeatListener
  * @see ObjectManager
  */
-public class PacActor extends LiveActor implements GGKeyRepeatListener {
+public class PacActor extends LiveActor implements GGKeyListener {
     // properties
     private static final int NUM_SPRITES = 4;
     private static final String DIRECTORY = PropertiesLoader.PATH + "pacpix.gif";
@@ -57,24 +57,37 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         getRandomizer().setSeed(seed);
     }
 
+
     /**
-     * Method in key listener.
-     * @param keyCode key code represents which key was pressed by player.
+     * Key Pressed so no more repeat keys, no more infinite loop of keyboard register pain.
+     * @param keyEvent the key event
+     * @return         if key is pressed
      */
     @Override
-    public void keyRepeated(int keyCode) {
-        if (isAuto || isRemoved()) return;
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (isAuto || isRemoved()) return false;
         Location next;
-        switch (keyCode) {
+        switch(keyEvent.getKeyCode()) {
             case KeyEvent.VK_LEFT   -> setDirection(Location.WEST);
             case KeyEvent.VK_UP     -> setDirection(Location.NORTH);
             case KeyEvent.VK_RIGHT  -> setDirection(Location.EAST);
             case KeyEvent.VK_DOWN   -> setDirection(Location.SOUTH);
         }
-
         // torus-effect
         next = nextLocation();
         if (canMove(next)) moveWithVisited(next);
+        return true;
+    }
+
+
+    /**
+     * Called when KEY_PRESSED is signaled. So simply return true.
+     * @param keyEvent the key event
+     * @return         always true
+     */
+    @Override
+    public boolean keyReleased(KeyEvent keyEvent) {
+        return true;
     }
 
     /**

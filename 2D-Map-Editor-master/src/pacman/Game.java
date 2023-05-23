@@ -112,9 +112,6 @@ public class Game extends GameGrid implements Runnable {
      * for another play.
      */
     public void reset() {
-        if (manager.getPacActor() != null && ! manager.getPacActor().isRemoved())
-            removeKeyRepeatListener(manager.getPacActor());
-
         // remove all actors
         manager.removeAll();
 
@@ -146,7 +143,7 @@ public class Game extends GameGrid implements Runnable {
 
         // run the game until win / lose condition satisfies
         PacActor pacActor = manager.getPacActor();
-        addKeyRepeatListener(pacActor);
+        addKeyListener(pacActor);
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
@@ -154,7 +151,6 @@ public class Game extends GameGrid implements Runnable {
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);
-//        removeKeyRepeatListener(pacActor);
 
         // upon game over
         Location loc = pacActor.getLocation();
