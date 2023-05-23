@@ -101,7 +101,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             idSprite = 0;
         if (isAuto) {
             if (movesNext.size() == 0) {
-                PathFinding finder = new PathFinding();
+                PathFinder finder = new PathFinder();
                 movesNext = finder.idsSingle(this);
             }
             moveApproach();

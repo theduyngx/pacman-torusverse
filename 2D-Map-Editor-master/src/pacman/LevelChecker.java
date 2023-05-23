@@ -7,11 +7,11 @@ import java.util.LinkedList;
 
 
 public class LevelChecker {
-    private final PathFinding pathFinding;
+    private final PathFinder pathFinder;
     private LinkedList<Location> path;
 
     public LevelChecker() {
-        this.pathFinding = new PathFinding();
+        this.pathFinder = new PathFinder();
     }
 
     public LinkedList<Location> getPath() {
@@ -21,7 +21,7 @@ public class LevelChecker {
     public HashMap<HashLocation, Item> unreachableItems(Game game) {
         PacActor pacActor = game.getManager().getPacActor();
         HashMap<HashLocation, Item> items = game.getManager().getMandatoryItems();
-        path = pathFinding.idsFull(pacActor);
+        path = pathFinder.idsFull(pacActor);
         HashMap<HashLocation, Item> reachable = new HashMap<>();
 
         // get the reachable hash map
