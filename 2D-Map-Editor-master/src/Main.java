@@ -24,7 +24,7 @@ public class Main {
 
 		checkPass = true;
 		if (checkPass) {
-			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test1.properties";
+			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test6.properties";
 			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
 			assert properties != null;
 			Game game = new Game(properties, gameCallback);

@@ -219,10 +219,6 @@ public class ObjectManager {
         pacActor.setSlowDown(LiveActor.SLOW_DOWN);
 
         // parse pacman
-        pacActor.setPropertyMoves(properties.getProperty(
-                pacActor.getName() +
-                PropertiesLoader.MOVE_EXTENSION)
-        );
         pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
                 pacActor.getName() +
                 PropertiesLoader.AUTO_EXTENSION))
