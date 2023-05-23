@@ -42,7 +42,7 @@ public class PacManGameGrid {
         String maze =
 
                         "xxxxxxxxxxxxxxxxxxxx" + // 0
-                        "xi   x        x    x" + // 1
+                        "xi.           x    x" + // 1
                         "xxxxxx xxxxxx x xx x" + // 2
                         "x x              x x" + // 3
                         "x.x xx xx  xx xx x x" + // 4
