@@ -158,8 +158,4 @@ public class View {
 		this.frame.dispose();
 		this.frame = frame;
 	}
-
-	public void dispose() {
-		frame.dispose();
-	}
 }

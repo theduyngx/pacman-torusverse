@@ -86,6 +86,15 @@ public class Controller implements ActionListener, GUIInformation {
 				game.run();
 				return null;
 			}
+
+			@Override
+			public void done() {
+				if (game.getStart()) {
+					updateGrid(gridWith, gridHeight);
+					game.setStart(false);
+					game.reset();
+				}
+			}
 		};
 
 		// execute threads

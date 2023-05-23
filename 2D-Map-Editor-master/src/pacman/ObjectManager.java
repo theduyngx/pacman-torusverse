@@ -1,4 +1,5 @@
 package pacman;
+import ch.aplu.jgamegrid.Actor;
 import pacman.utility.GameCallback;
 import pacman.utility.PropertiesLoader;
 import ch.aplu.jgamegrid.Location;
@@ -25,6 +26,7 @@ public class ObjectManager {
 
     // PacMan
     private PacActor pacActor;
+    private Actor killedPacActor;
     // hashmap of monsters with their initial location as key
     private final ArrayList<Monster> monsters;
     // hashmap of all items with their location as key
@@ -330,5 +332,33 @@ public class ObjectManager {
     protected void setMonstersStartMoving() {
         for (Monster monster: monsters)
             monster.setStopMoving(false);
+    }
+
+
+    /**
+     * Get the killed pacActor; naturally called when the game is over and pacActor was killed.
+     * This is for the Game to the specific actor with given killed sprite onto itself.
+     * @return the killed pacActor
+     */
+    protected Actor getKilledPacActor() {
+        killedPacActor = new Actor(PacActor.KILLED_SPRITE);
+        return killedPacActor;
+    }
+
+
+    /**
+     * Remove all actors from the game and resetting all lists. Called in Game.reset() to
+     * do a full reset on the game's level.
+     */
+    protected void removeAll() {
+        if (pacActor != null) pacActor.removeSelf();
+        if (killedPacActor != null) killedPacActor.removeSelf();
+        for (Monster monster : monsters)
+            monster.removeSelf();
+        monsters.clear();
+        for (Map.Entry<HashLocation, Item> entry : items.entrySet())
+            entry.getValue().removeSelf();
+        items.clear();
+        walls.clear();
     }
 }

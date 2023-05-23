@@ -125,6 +125,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     @Override
     public void moveApproach() {
+        if (movesNext.isEmpty()) return;
         Location next = movesNext.removeFirst();
         moveWithVisited(next);
         addVisitedList(next);

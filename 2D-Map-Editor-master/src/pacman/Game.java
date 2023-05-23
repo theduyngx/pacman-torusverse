@@ -48,6 +48,7 @@ public class Game extends GameGrid implements Runnable {
     private final ObjectManager manager;
     private boolean start = false;
     private final GGBackground bg;
+    private final Properties properties;
 
 
     /**
@@ -60,6 +61,21 @@ public class Game extends GameGrid implements Runnable {
         super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
         this.grid = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
         this.manager = new ObjectManager(this, gameCallback);
+        this.properties = properties;
+
+        // set up game window
+        setSimulationPeriod(SIMULATION_PERIOD);
+        setTitle(GAME_TITLE);
+        addKeyRepeatListener(manager.getPacActor());
+
+        // put actors onto the game
+        bg = getBg();
+        reset();
+    }
+
+    public void reset() {
+        // remove all actors
+        manager.removeAll();
 
         // parse properties and instantiate objects
         manager.parseInanimateActor(properties);
@@ -68,15 +84,7 @@ public class Game extends GameGrid implements Runnable {
 
         // instantiate actors
         manager.instantiateMonsters(properties);
-        addKeyRepeatListener(manager.getPacActor());
         setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
-
-        // set up game window
-        setSimulationPeriod(SIMULATION_PERIOD);
-        setTitle(GAME_TITLE);
-
-        // put actors onto the game
-        bg = getBg();
         drawGrid(bg);
         putMonsters();
         manager.setMonstersStopMoving();
@@ -148,7 +156,7 @@ public class Game extends GameGrid implements Runnable {
         if (hasPacmanBeenHit) {
             bg.setPaintColor(COLOR_LOSE);
             title = LOSE_MESSAGE;
-            addActor(new Actor(PacActor.KILLED_SPRITE), loc);
+            addActor(manager.getKilledPacActor(), loc);
         }
         else {
             bg.setPaintColor(COLOR_WIN);

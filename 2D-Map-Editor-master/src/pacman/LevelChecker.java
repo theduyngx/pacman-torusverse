@@ -18,6 +18,12 @@ public class LevelChecker {
         return path;
     }
 
+
+    /**
+     * Get the unreachable items --> WIP pathfinding inherently cannot find unreachable goals.
+     * @param game the game
+     * @return     the map of unreachable items
+     */
     public HashMap<HashLocation, Item> unreachableItems(Game game) {
         PacActor pacActor = game.getManager().getPacActor();
         HashMap<HashLocation, Item> items = game.getManager().getMandatoryItems();

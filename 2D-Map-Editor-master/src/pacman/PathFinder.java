@@ -22,6 +22,7 @@ public class PathFinder {
     // structure for an action taken (for caching to optimize undo)
     private record Action(Location previous, Location next, Item itemAtNext) {}
 
+
     /**
      * Location path, includes the location itself and its parent, hence forming a path.
      */
@@ -178,9 +179,9 @@ public class PathFinder {
 
 
     /**
-     * TODO: What we must do instead is to KEEP FINDING THE CLOSEST ITEM!!!
-     * Essentially, as soon as IDS finds the closest item, it will return immediately.
-     * This will be repeatedly called.
+     * IDS for a single next path instead of the entire game
+     * @param pacActor the pacman actor
+     * @return         the path to be taken
      */
     public LocationPath idsSinglePath(PacActor pacActor) {
         // all hash actors, including pacman and all mandatory items
@@ -198,7 +199,8 @@ public class PathFinder {
 
 
     /**
-     * IDS for each single next item; used in PacActor's moveApproach method.
+     * IDS to find the locations for pacman to go to for each single next item;
+     * used in PacActor's moveApproach method.
      * @param pacActor the pacman actor
      * @return         the list of next locations to move to
      */

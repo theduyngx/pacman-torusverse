@@ -12,6 +12,13 @@ import java.util.HashMap;
 import java.util.Properties;
 
 
+/**
+ * TODO: Move level checking inside Controller
+ * Idea: There will be yet another boolean in Game called win/lose
+ * 		-  If lose, then the current behavior is completely valid
+ * 		-  If win, then it should move on to the next level
+ * 		-  If level checking fails, right now is fine -> it goes to editor (BUT MUST REPORT TO LOG)
+ */
 public class Main {
 	public static void main(String[] args) {
 
@@ -65,9 +72,9 @@ public class Main {
 				Integer decimalRep = Integer.parseInt(String.valueOf(firstChar));
 
 				// add file to arraylist
-				if (levelTally.containsKey(decimalRep)) {
+				if (levelTally.containsKey(decimalRep))
 					levelTally.get(decimalRep).add(map.getName());
-				} else {
+				else {
 					ArrayList<String> files = new ArrayList<>();
 					files.add(map.getName());
 					levelTally.put(decimalRep, files);
@@ -92,7 +99,8 @@ public class Main {
 			String failLog = String.format("[Game %s - no maps found]", dirName);
 			callback.writeString(failLog);
 			pass = false;
-		} else {
+		}
+		else {
 			// loop through hashmap, check that the array list is greater than 1.
 			for (ArrayList<String> level: levelTally.values()) {
 				if (level.size() > 1) {
