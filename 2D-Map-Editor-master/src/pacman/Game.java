@@ -112,6 +112,9 @@ public class Game extends GameGrid implements Runnable {
      * for another play.
      */
     public void reset() {
+        if (manager.getPacActor() != null && ! manager.getPacActor().isRemoved())
+            removeKeyRepeatListener(manager.getPacActor());
+
         // remove all actors
         manager.removeAll();
 
