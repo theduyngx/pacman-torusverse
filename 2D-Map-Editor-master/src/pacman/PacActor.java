@@ -63,6 +63,9 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     @Override
     public void keyRepeated(int keyCode) {
+        int gridXMax = getManager().getGame().getGrid().getXRight();
+        int gridYMax = getManager().getGame().getGrid().getYBottom();
+
         if (isAuto) return;
         if (isRemoved())  // Already removed
             return;
@@ -85,6 +88,10 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
                 setDirection(Location.SOUTH);
             }
         }
+
+        // torus-effect
+        next = new Location((next.getX() % gridXMax + gridXMax) % gridXMax,
+                (next.getY() % gridYMax + gridYMax) % gridYMax);
         if (next != null && canMove(next))
             moveWithVisited(next);
     }

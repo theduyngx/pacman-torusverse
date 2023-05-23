@@ -220,11 +220,11 @@ public class ObjectManager {
         pacActor.setSeed(seed);
         pacActor.setSlowDown(LiveActor.SLOW_DOWN);
 
-        // parse pacman
-        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
-                pacActor.getName() +
-                PropertiesLoader.AUTO_EXTENSION))
-        );
+        // parse pacman (comment out to test for torus)
+//        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
+//                pacActor.getName() +
+//                PropertiesLoader.AUTO_EXTENSION))
+//        );
         String[] pacManLocations = properties.getProperty(
                 pacActor.getName() +
                 PropertiesLoader.LOCATION_EXTENSION

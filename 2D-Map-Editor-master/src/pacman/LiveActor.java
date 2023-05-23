@@ -191,9 +191,15 @@ public abstract class LiveActor extends GameActor implements Movable {
      * @see                  Location
      */
     protected boolean canMove(double directionValue, int stepSize) {
+        int gridXMax = getManager().getGame().getGrid().getXRight();
+        int gridYMax = getManager().getGame().getGrid().getYBottom();
         Location nextLocation = this.getLocation();
         for (int i=0; i<stepSize; i++) {
             nextLocation = nextLocation.getNeighbourLocation(directionValue);
+
+            // torus-verse implementation
+            nextLocation = new Location((nextLocation.getX() % gridXMax + gridXMax) % gridXMax,
+                    (nextLocation.getY() % gridYMax + gridYMax) % gridYMax);
             if (!canMove(nextLocation))
                 return false;
         }
