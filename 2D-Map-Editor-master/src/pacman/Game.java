@@ -148,6 +148,12 @@ public class Game extends GameGrid implements Runnable {
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
+
+            ///
+//            System.out.println(manager.getNumPillsAndGold());
+//            System.out.println(manager.getItems().size());
+            ///
+
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);

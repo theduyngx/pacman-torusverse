@@ -353,6 +353,7 @@ public class ObjectManager {
      * do a full reset on the game's level.
      */
     protected void removeAll() {
+        numPillsAndGold = 0;
         if (pacActor != null) pacActor.removeSelf();
         if (killedPacActor != null) killedPacActor.removeSelf();
         for (Monster monster : monsters)
