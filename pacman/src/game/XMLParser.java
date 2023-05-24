@@ -86,7 +86,6 @@ public class XMLParser {
                     // random seed and isAuto is instantiated once property file is read
                     case PAC_TILE:
                         manager.getPacActorLocations().add(currLocation);
-                        manager.instantiatePacActorLoc(currLocation);
                         break;
                     case TROLL_TILE:
                         Troll troll = new Troll(manager);

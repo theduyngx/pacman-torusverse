@@ -218,15 +218,8 @@ public class ObjectManager {
             exception.printStackTrace();
         }
         numPillsAndGold = getMandatoryItems().size();
-    }
-
-    /**
-     * Instantiate the pacActor's location based on a given Location instance
-     * @param loc Location pacActor will spawn ins
-     */
-    protected void instantiatePacActorLoc(Location loc) {
         pacActor = new PacActor(this);
-        pacActor.setInitLocation(loc);
+        pacActor.setInitLocation(pacActorLocations.get(0));
     }
 
 
@@ -277,6 +270,7 @@ public class ObjectManager {
         for (Map.Entry<HashLocation, Portal> entry : portals.entrySet())
             entry.getValue().removeSelf();
         portals.clear();
+        pacActorLocations.clear();
         walls.clear();
     }
 }

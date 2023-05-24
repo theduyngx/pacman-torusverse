@@ -2,12 +2,17 @@ package editor;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import game.Monster;
 import grid.Camera;
 import grid.Grid;
+
+import static game.Monster.SECOND_TO_MILLISECONDS;
 
 
 /**

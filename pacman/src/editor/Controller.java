@@ -7,24 +7,23 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import grid.Camera;
-import grid.Grid;
-import grid.GridCamera;
-import grid.GridModel;
-import grid.GridView;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+
+import grid.*;
 import game.Game;
+import game.LevelChecker;
+import game.utility.GameCallback;
 
 
 /**
@@ -57,22 +56,29 @@ public class Controller implements ActionListener, GUIInformation {
 	private final Game game;
 	private final String[] levels;
 	private int levelIndex;
+	private final LevelChecker levelChecker;
 
 	/**
 	 * Controller constructor.
-	 * @param game		the game
-	 * @param gameStart whether game has started or not
 	 */
-	public Controller(Game game, String[] levels, boolean gameStart) {
+	public Controller(Properties properties, String[] levels, GameCallback gameCallback) {
 		this.tiles  = TileManager.getTilesFromFolder("data/");
 		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		this.grid   = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
 		this.view   = new View(this, camera, grid, tiles);
-		this.game   = game;
+		this.game   = new Game(properties, gameCallback);
 		this.levels = levels;
-		this.game.setStart(gameStart);
-		levelIndex = 0;
+		levelIndex  = 0;
+		assert levels.length > 0;
+		game.reset(levels[levelIndex]);
+
+		/// NOTE: this part of level checking should be within the level checking itself
+		/// then the unreachable must be printed and moved to object manager for log update accordingly
+		levelChecker = new LevelChecker(gameCallback);
+		levelChecker.setXmlFile(levels[levelIndex]);
+		boolean setStart = levelChecker.checkLevel(game);
+		game.setStart(setStart);
 
 		// start game immediately by manually trigger an action
 		if (game.getStart())
@@ -85,7 +91,10 @@ public class Controller implements ActionListener, GUIInformation {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// swing worker game running in the background
+		/*
+		 * Swing Worker thread to run the game in the background. It should be noted that the game will
+		 * only actually run when it really needs to.
+		 */
 		SwingWorker<Void, Void> gameWorker = new SwingWorker<>() {
 			@Override
 			protected Void doInBackground() {
@@ -93,19 +102,32 @@ public class Controller implements ActionListener, GUIInformation {
 				return null;
 			}
 
+			/**
+			 * When the game has finished running. This is the logic where level transitioning and
+			 * level checking occurs.
+			 */
 			@Override
 			public void done() {
 				if (! game.getStart()) return;
-				updateGrid(gridWith, gridHeight);
 				game.setStart(false);
-				if (game.getStatus() == Game.STATUS.WIN) {
+
+				// check game's status (win or lose)
+				boolean update = game.getStatus() == Game.STATUS.LOSE;
+				if (! update) {
 					levelIndex++;
 					if (levelIndex >= levels.length) {
 						// WON THE GAME
 						System.exit(0);
 					}
 				}
+
+				// reset the game and update the frame
 				game.reset(levels[levelIndex]);
+				boolean setStart = levelChecker.checkLevel(game);
+				game.setStart(setStart);
+				if (update || !setStart) updateGrid(gridWith, gridHeight);
+				else
+					actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}
 		};
 
