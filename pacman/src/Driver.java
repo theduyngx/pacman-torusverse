@@ -9,19 +9,15 @@ import java.util.Properties;
 
 
 /**
- * TODO: Move level checking inside Controller
- * Idea: There will be yet another boolean in Game called win/lose
- * 		-  If lost, then the current behavior is completely valid
- * 		-  If won, then it should move on to the next level
- * 		-  If level checking fails, right now is fine -> it goes to editor (BUT MUST REPORT TO LOG)
- * <p></p>
- * TODO: list of things left to finish
- * 		-  Save/Load file
- * 	    -  Level Checking - Number of pacman, portal validity, etc.
- * 		-  XML Parser
- * 		-  Level up: Game checking will return a list of xmlFile strings which are XML file names;
- * 		   this will be sorted lexicographically and passed to Controller which will keep on incrementing
- * 		   until it finishes the final level.
+ * Main entry to program. It deals with instantiating the Game and the Controller. In instantiating
+ * Game, it will check for Game's validity. The Controller will be responsible for checking Level's
+ * validity of Game.
+ * @see    Controller
+ * @see	   Game
+ *
+ * @author The Duy Nguyen            - 1100548 (theduyn@student.unimelb.edu.au)
+ * @author Ramon Javier L. Felipe VI - 1233281 (rfelipe@student.unimelb.edu.au)
+ * @author Jonathan Chen Jie Kong    - 1263651 (jonathanchen@student.unimelb.edu.au)
  */
 public class Driver {
 	public static void main(String[] args) {

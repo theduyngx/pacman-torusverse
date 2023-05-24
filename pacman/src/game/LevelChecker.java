@@ -3,7 +3,6 @@ package game;
 import ch.aplu.jgamegrid.Location;
 import game.utility.GameCallback;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,16 +22,30 @@ public class LevelChecker {
     private final GameCallback gameCallback;
     private String xmlFile;
 
+    /**
+     * LevelChecker constructor. Requires game callback to report for errors.
+     * @param gameCallback the game callback
+     */
     public LevelChecker(GameCallback gameCallback) {
         this.gameCallback = gameCallback;
     }
 
+    /**
+     * Set the XML file path for the current level.
+     * @param xmlFile the XML file path
+     */
     public void setXmlFile(String xmlFile) {
         this.xmlFile = xmlFile;
     }
 
 
-    public boolean numItemsValid(Game game) {
+    /**
+     * Check for the validity of the number of mandatory items. Specifically, there must be at least
+     * 2 items present for the level checking to succeed.
+     * @param game the game
+     * @return     True if valid, False if not
+     */
+    private boolean numItemsValid(Game game) {
         HashMap<HashLocation, Item> mandatoryItems = game.getManager().getMandatoryItems();
         boolean valid = mandatoryItems.size() > MIN_NUM_MANDATORY;
         if (! valid) {
@@ -49,7 +62,7 @@ public class LevelChecker {
      * @param game the game
      * @return     the map of unreachable items
      */
-    public HashMap<HashLocation, Item> unreachableItems(Game game) {
+    private HashMap<HashLocation, Item> unreachableItems(Game game) {
         // relevant objects and instantiations
         PacActor pacActor = game.getManager().getPacActor();
         HashMap<HashLocation, Item> items = game.getManager().getMandatoryItems();
@@ -77,7 +90,7 @@ public class LevelChecker {
      * @param game the game
      * @return     True if all mandatory items are reachable, and False if otherwise
      */
-    public boolean reachableMandatoryItems(Game game) {
+    private boolean reachableMandatoryItems(Game game) {
         HashMap<HashLocation, Item> unreachable = unreachableItems(game);
         boolean isReachable = unreachable.size() == 0;
 
@@ -124,7 +137,13 @@ public class LevelChecker {
     }
 
 
-    public boolean pacActorValid(Game game) {
+    /**
+     * Check for pacman actor's validity. Specifically, it will check if there is not yet a pacman
+     * actor put to the game, or if there are more than 1.
+     * @param game the game
+     * @return     True if valid, False if not
+     */
+    private boolean pacActorValid(Game game) {
         // no PacActor on grid
         ArrayList<Location> locations = game.getManager().getPacActorLocations();
         if (locations.size() == 0) {
@@ -147,7 +166,14 @@ public class LevelChecker {
     }
 
 
-    public boolean portalsValid(Game game) {
+    /**
+     * Check for the validity of portals. Specifically, it will check if portals are paired up
+     * correctly (each portal must be paired with 1 and only 1 other portal, each pair can only
+     * use up a single portal color).
+     * @param game the game
+     * @return     True if valid, False if not
+     */
+    private boolean portalsValid(Game game) {
         boolean valid = true;
 
         // get a list, of list of portal pairs
@@ -193,12 +219,16 @@ public class LevelChecker {
         return valid;
     }
 
+    /**
+     * The method used publicly by the Controller to check for level validity of the game.
+     * @param game the game
+     * @return     True if valid, False if not
+     */
     public boolean checkLevel(Game game) {
         // pacman check
-        boolean valid = pacActorValid(game) &&
-                        portalsValid(game) &&
-                        numItemsValid(game) &&
-                        reachableMandatoryItems(game);
-        return valid;
+        return pacActorValid(game) &&
+               portalsValid(game)  &&
+               numItemsValid(game) &&
+               reachableMandatoryItems(game);
     }
 }
