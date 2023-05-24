@@ -1,5 +1,6 @@
 package game;
 
+import editor.Tile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -31,19 +32,7 @@ public class XMLParser {
     public static final int DIMENSIONS = 2;
     public static final String ROW = "row";
     public static final String CELL = "cell";
-    public static final int INSTANCE_INDEX =0;
-    public static final String WALL_TILE = "WallTile";
-    public static final String PILL_TILE = "PillTile";
-    public static final String GOLD_TILE = "GoldTile";
-    public static final String ICE_TILE = "IceTile";
-    public static final String PAC_TILE = "PacTile";
-    public static final String TROLL_TILE = "TrollTile";
-    public static final String TX5_TILE = "TX5Tile";
-    public static final String PORTAL_WHITE_TILE = "PortalWhiteTile";
-    public static final String PORTAL_YELLOW_TILE = "PortalYellowTile";
-    public static final String PORTAL_DARK_GOLD_TILE = "PortalDarkGoldTile";
-    public static final String PORTAL_DARK_GREY_TILE = "PortalDarkGrayTile";
-    public static final String PATH_TILE = "PathTile";
+    public static final int INSTANCE_INDEX = 0;
 
 
     /**
@@ -63,12 +52,6 @@ public class XMLParser {
         ArrayList<String> colors = new ArrayList<>();
         ArrayList<Location> portalLocations = new ArrayList<>();
 
-        // Create the dimensions, was not used since
-        // dimensions are already instantiated before parsing
-        // int[] dimList = getDimensions(doc);
-        // int width = dimList[WIDTH_INDEX];
-        // int length = dimList[LENGTH_INDEX];
-
         // Now loop through every single cell and stores its location
         NodeList rows = doc.getElementsByTagName(ROW);
         for (int i=0; i< rows.getLength(); i++) {
@@ -82,34 +65,34 @@ public class XMLParser {
 
                 // Now add onto ObjectManager based on the type of tile
                 switch (currCell) {
-                    case GOLD_TILE:
+                    case Tile.GOLD_TILE:
                         HashLocation.put(manager.getItems(), currLocation, new Gold());
                         break;
-                    case PILL_TILE:
+                    case Tile.PILL_TILE:
                         HashLocation.put(manager.getItems(), currLocation, new Pill());
                         break;
-                    case WALL_TILE:
+                    case Tile.WALL_TILE:
                         HashLocation.put(manager.getWalls(), currLocation, IS_WALL);
                         break;
-                    case ICE_TILE:
+                    case Tile.ICE_TILE:
                         HashLocation.put(manager.getItems(), currLocation, new Ice());
                         break;
                     // This specific case we need to initialize only the location,
                     // random seed and isAuto is instantiated once property file is read
-                    case PAC_TILE:
+                    case Tile.PAC_TILE:
                         manager.getPacActorLocations().add(currLocation);
                         break;
-                    case TROLL_TILE:
+                    case Tile.TROLL_TILE:
                         Troll troll = new Troll(manager);
                         troll.setInitLocation(currLocation);
                         manager.getMonsters().add(troll);
                         break;
-                    case TX5_TILE:
+                    case Tile.TX5_TILE:
                         TX5 TX5 = new TX5(manager);
                         TX5.setInitLocation(currLocation);
                         manager.getMonsters().add(TX5);
                         break;
-                    case PATH_TILE:
+                    case Tile.PATH_TILE:
                         break;
                     // For portals, we want to store them into a hashmap then
                     default:

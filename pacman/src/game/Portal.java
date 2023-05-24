@@ -2,6 +2,7 @@ package game;
 
 import ch.aplu.jgamegrid.GGBackground;
 import ch.aplu.jgamegrid.Location;
+import editor.Tile;
 
 import java.util.HashMap;
 
@@ -20,10 +21,10 @@ public class Portal extends InanimateActor {
      * The portal type, enumerated by its color.
      */
     public enum PortalColor {
-        White(XMLParser.PORTAL_WHITE_TILE),
-        Yellow(XMLParser.PORTAL_YELLOW_TILE),
-        DarkGold(XMLParser.PORTAL_DARK_GOLD_TILE),
-        DarkGrey(XMLParser.PORTAL_DARK_GREY_TILE);
+        White(Tile.PORTAL_WHITE_TILE),
+        Yellow(Tile.PORTAL_YELLOW_TILE),
+        DarkGold(Tile.PORTAL_DARK_GOLD_TILE),
+        DarkGrey(Tile.PORTAL_DARK_GREY_TILE);
         public final String color;
 
         /**

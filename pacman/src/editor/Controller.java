@@ -229,20 +229,7 @@ public class Controller implements ActionListener, GUIInformation {
 					Element row = new Element("row");
 					for (int x = 0; x < width; x++) {
 						char tileChar = model.getTile(x,y);
-						String type = switch(tileChar) {
-							case 'b' -> "WallTile";
-							case 'c' -> "PillTile";
-							case 'd' -> "GoldTile";
-							case 'e' -> "IceTile";
-							case 'f' -> "PacTile";
-							case 'g' -> "TrollTile";
-							case 'h' -> "TX5Tile";
-							case 'i' -> "PortalWhiteTile";
-							case 'j' -> "PortalYellowTile";
-							case 'k' -> "PortalDarkGoldTile";
-							case 'l' -> "PortalDarkGrayTile";
-							default  -> "PathTile";
-						};
+						String type = Tile.convertToCharTile(tileChar);
 						Element e = new Element("cell");
 						row.addContent(e.setText(type));
 					}
@@ -286,21 +273,7 @@ public class Controller implements ActionListener, GUIInformation {
 					for (int x = 0; x < cells.size(); x++) {
 						Element cell = (Element) cells.get(x);
 						String cellValue = cell.getText();
-						char tileNr = switch (cellValue) {
-							case "PathTile" -> 'a';
-							case "WallTile" -> 'b';
-							case "PillTile" -> 'c';
-							case "GoldTile" -> 'd';
-							case "IceTile" -> 'e';
-							case "PacTile" -> 'f';
-							case "TrollTile" -> 'g';
-							case "TX5Tile" -> 'h';
-							case "PortalWhiteTile" -> 'i';
-							case "PortalYellowTile" -> 'j';
-							case "PortalDarkGoldTile" -> 'k';
-							case "PortalDarkGrayTile" -> 'l';
-							default -> '0';
-						};
+						char tileNr = Tile.convertToStringTile(cellValue);
 						model.setTile(x, y, tileNr);
 					}
 				}
