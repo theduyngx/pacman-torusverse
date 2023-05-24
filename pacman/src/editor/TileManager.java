@@ -19,11 +19,10 @@ import java.util.TreeMap;
  *
  */
 public class TileManager {
-
 	/**
 	 * Returns a list with Tiles, constructed with images from the given folderPath.
-	 * @param folderPath Path to image folder.
-	 * @return List<Tile> List of tiles.
+	 * @param  folderPath Path to image folder.
+	 * @return 			  List of tiles.
 	 */
 	public static List<Tile> getTilesFromFolder(final String folderPath) {
 		List<Tile> tiles = new ArrayList<>();

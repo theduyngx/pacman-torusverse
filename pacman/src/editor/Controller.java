@@ -2,23 +2,12 @@ package editor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 
 import grid.*;
 import game.Game;
@@ -49,8 +38,7 @@ public class Controller implements ActionListener, GUIInformation {
 	// the grid and view of the editor
 	private GridView grid;
 	private View view;
-	private int gridWith = MAP_WIDTH;
-	private int gridHeight = MAP_HEIGHT;
+	private final GridManager gridManager;
 
 	// the game itself
 	private final Game game;
@@ -69,6 +57,7 @@ public class Controller implements ActionListener, GUIInformation {
 		this.view   = new View(this, camera, grid, tiles);
 		this.game   = game;
 		this.levels = levels;
+		gridManager = new GridManager(this);
 		levelIndex  = 0;
 		assert levels.size() > 0;
 		this.game.reset(levels.get(levelIndex));
@@ -124,7 +113,7 @@ public class Controller implements ActionListener, GUIInformation {
 					boolean setStart = levelChecker.checkLevel(game);
 					game.setStart(setStart);
 					if (update) game.setStart(false);
-					if (update || !setStart) loadCurrGrid();
+					if (update || !setStart) gridManager.loadCurrGrid(levels.get(levelIndex));
 					actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 				}
 			}
@@ -141,18 +130,18 @@ public class Controller implements ActionListener, GUIInformation {
 
 		// save the current grid
 		if (e.getActionCommand().equals("save")) {
-			saveFile();
+			gridManager.saveFile(levels.get(levelIndex));
 			game.reset(levels.get(levelIndex));
 		}
 		// load a grid will add to the list of levels
 		else if (e.getActionCommand().equals("load")) {
-			String level = loadFile();
+			String level = gridManager.loadFile(levels.get(levelIndex));
 			if (level != null)
 				game.reset(levels.get(levelIndex));
 		}
 		// resetting the current grid to its default, un-saved state
 		else if (e.getActionCommand().equals("update"))
-			loadCurrGrid();
+			gridManager.loadCurrGrid(levels.get(levelIndex));
 		// starting test mode
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
 			boolean setStart = levelChecker.checkLevel(game);
@@ -176,6 +165,21 @@ public class Controller implements ActionListener, GUIInformation {
 		view.setSize(width, height);
 	}
 
+	/**
+	 * Get the main model.
+	 * @return the model
+	 */
+	protected Grid getModel() {
+		return model;
+	}
+
+	/**
+	 * Get the main grid view.
+	 * @return the grid view
+	 */
+	public GridView getGrid() {
+		return grid;
+	}
 
 	/**
 	 * Document listener registering changes made to a text file document. This is used to
@@ -183,133 +187,18 @@ public class Controller implements ActionListener, GUIInformation {
 	 */
 	DocumentListener updateSizeFields = new DocumentListener() {
 		public void changedUpdate(DocumentEvent e) {
-			gridWith   = view.getWidth();
-			gridHeight = view.getHeight();
+			view.getWidth();
+			view.getHeight();
 		}
-
 		public void removeUpdate(DocumentEvent e) {
-			gridWith   = view.getWidth();
-			gridHeight = view.getHeight();
+			view.getWidth();
+			view.getHeight();
 		}
-
 		public void insertUpdate(DocumentEvent e) {
-			gridWith   = view.getWidth();
-			gridHeight = view.getHeight();
+			view.getWidth();
+			view.getHeight();
 		}
 	};
-
-
-	/**
-	 * Method triggered when save file action is performed. This is to save an editor grid to local
-	 * user file.
-	 */
-	private void saveFile() {
-		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"xml files", "xml");
-		chooser.setFileFilter(filter);
-		File workingDirectory = new File(levels.get(levelIndex));
-		chooser.setCurrentDirectory(workingDirectory);
-
-		int returnVal = chooser.showSaveDialog(null);
-		try {
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				Element level = new Element("level");
-				Document doc = new Document(level);
-				doc.setRootElement(level);
-
-				Element size = new Element("size");
-				int height = model.getHeight();
-				int width = model.getWidth();
-				size.addContent(new Element("width").setText(String.valueOf(width)));
-				size.addContent(new Element("height").setText(String.valueOf(height)));
-				doc.getRootElement().addContent(size);
-
-				for (int y = 0; y < height; y++) {
-					Element row = new Element("row");
-					for (int x = 0; x < width; x++) {
-						char tileChar = model.getTile(x,y);
-						String type = Tile.convertToCharTile(tileChar);
-						Element e = new Element("cell");
-						row.addContent(e.setText(type));
-					}
-					doc.getRootElement().addContent(row);
-				}
-				XMLOutputter xmlOutput = new XMLOutputter();
-				xmlOutput.setFormat(Format.getPrettyFormat());
-				xmlOutput.output(doc, new FileWriter(chooser.getSelectedFile()));
-			}
-		} catch (FileNotFoundException e1) {
-			JOptionPane.showMessageDialog(null, "Invalid file!", "error",
-					JOptionPane.ERROR_MESSAGE);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	/**
-	 * Load the specified file to grid.
-	 */
-	public void loadSpecificFile(File selectedFile) {
-		SAXBuilder builder = new SAXBuilder();
-		if (selectedFile.canRead() && selectedFile.exists()) {
-			try {
-				Document document;
-				document = builder.build(selectedFile);
-				Element rootNode = document.getRootElement();
-
-				List sizeList = rootNode.getChildren("size");
-				Element sizeElem = (Element) sizeList.get(0);
-				gridHeight = Integer.parseInt(sizeElem.getChildText("height"));
-				gridWith = Integer.parseInt(sizeElem.getChildText("width"));
-				resetGrid(gridWith, gridHeight);
-
-				List rows = rootNode.getChildren("row");
-				for (int y = 0; y < rows.size(); y++) {
-					Element cellsElem = (Element) rows.get(y);
-					List cells = cellsElem.getChildren("cell");
-
-					for (int x = 0; x < cells.size(); x++) {
-						Element cell = (Element) cells.get(x);
-						String cellValue = cell.getText();
-						char tileNr = Tile.convertToStringTile(cellValue);
-						model.setTile(x, y, tileNr);
-					}
-				}
-				grid.redrawGrid();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Load the current level's grid.
-	 */
-	public void loadCurrGrid() {
-		File selectedFile = new File(levels.get(levelIndex));
-		loadSpecificFile(selectedFile);
-	}
-
-
-	/**
-	 * Method triggered when save load file action is performed. This is to load an editor grid from
-	 * local user file.
-	 */
-	public String loadFile() {
-		JFileChooser chooser  = new JFileChooser();
-		File workingDirectory = new File(levels.get(levelIndex));
-		File selectedFile;
-		chooser.setCurrentDirectory(workingDirectory);
-		int returnVal = chooser.showOpenDialog(null);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			selectedFile = chooser.getSelectedFile();
-			loadSpecificFile(selectedFile);
-			return selectedFile.getName();
-		}
-		return null;
-	}
 
 	/**
 	 * {@inheritDoc}
