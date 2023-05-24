@@ -4,6 +4,7 @@ import game.utility.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -20,28 +21,30 @@ import java.util.Properties;
  * @author Jonathan Chen Jie Kong    - 1263651 (jonathanchen@student.unimelb.edu.au)
  */
 public class Driver {
-	public static void main(String[] args) {
+	// test properties file
+	public static final String PROPERTIES_FILE = "test.properties";
 
-		boolean checkPass = false;
+	/**
+	 * Main entry to program.
+	 */
+	public static void main(String[] args) {
+		// argument parsing
+
+
+		// get all playable levels
+		ArrayList<String> playableLevels = null;
 		GameCallback gameCallback = new GameCallback();
 		String path = "test";
 		File file = new File(path);
 		if (file.isDirectory())
-			checkPass = gameCheck(path, gameCallback);
+			playableLevels = gameCheck(path, gameCallback);
 
-		checkPass = true;
-		if (checkPass) {
-			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test6.properties";
+		// instantiate the Game and let the Controller handle the program
+		if (playableLevels != null) {
+			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + PROPERTIES_FILE;
 			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
-			String[] levels = new String[]{
-					"test/sample_map2.xml",
-					"test/sample_map1.xml",
-					"test/3_OtherMap.xml",
-					"test/map_level1.xml",
-					"test/1SpecMap.xml"
-			};
 			Game game = new Game(properties, gameCallback);
-			new Controller(game, levels, gameCallback);
+			new Controller(game, playableLevels, gameCallback);
 		}
 	}
 
@@ -51,13 +54,13 @@ public class Driver {
 	 * @param callback the game callback
 	 * @return 		   whether the gameCheck fail or succeed
 	 */
-	public static boolean gameCheck(String path, GameCallback callback) {
+	public static ArrayList<String> gameCheck(String path, GameCallback callback) {
 		File directory = new File(path);
 		String[] dirNameSplit = directory.getName().split("/");
 		String dirName = dirNameSplit[dirNameSplit.length - 1];
 		File[] gameMaps = directory.listFiles();
 		if (gameMaps == null)
-			return false;
+			return null;
 		HashMap<Integer, ArrayList<String>> levelTally = new HashMap<>();
 
 		// build a hashmap with the key as levels and filename as value
@@ -80,7 +83,15 @@ public class Driver {
 				}
 			}
 		}
-		return gameCheckLog(levelTally, dirName, callback);
+		if (gameCheckLog(levelTally, dirName, callback)) {
+			// sort the levels lexicographically
+			ArrayList<String> playableLevels = new ArrayList<>();
+			for (ArrayList<String> levels: levelTally.values())
+				playableLevels.add(levels.get(0));
+			Collections.sort(playableLevels);
+			return playableLevels;
+		}
+		return null;
 	}
 
 	/**
@@ -90,7 +101,8 @@ public class Driver {
 	 * @return           whether the directory has fail any game check
 	 */
 	private static boolean gameCheckLog(HashMap<Integer, ArrayList<String>> levelTally, String dirName,
-										GameCallback callback) {
+										GameCallback callback)
+	{
 		boolean pass = true;
 
 		// check the hashmap for check failure and print the corresponding issues

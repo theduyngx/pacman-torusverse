@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
@@ -53,14 +54,14 @@ public class Controller implements ActionListener, GUIInformation {
 
 	// the game itself
 	private final Game game;
-	private final String[] levels;
+	private final ArrayList<String> levels;
 	private int levelIndex;
 	private final LevelChecker levelChecker;
 
 	/**
 	 * Controller constructor.
 	 */
-	public Controller(Game game, String[] levels, GameCallback gameCallback) {
+	public Controller(Game game, ArrayList<String> levels, GameCallback gameCallback) {
 		this.tiles  = TileManager.getTilesFromFolder("data/");
 		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
@@ -69,13 +70,13 @@ public class Controller implements ActionListener, GUIInformation {
 		this.game   = game;
 		this.levels = levels;
 		levelIndex  = 0;
-		assert levels.length > 0;
-		this.game.reset(levels[levelIndex]);
+		assert levels.size() > 0;
+		this.game.reset(levels.get(levelIndex));
 
 		/// NOTE: this part of level checking should be within the level checking itself
 		/// then the unreachable must be printed and moved to object manager for log update accordingly
 		levelChecker = new LevelChecker(gameCallback);
-		levelChecker.setXmlFile(levels[levelIndex]);
+		levelChecker.setXmlFile(levels.get(levelIndex));
 		boolean setStart = levelChecker.checkLevel(this.game);
 		this.game.setStart(setStart);
 
@@ -116,10 +117,10 @@ public class Controller implements ActionListener, GUIInformation {
 				boolean levelUp = game.getStatus() == Game.STATUS.WIN;
 				if (levelUp) levelIndex++;
 
-				if (levelIndex >= levels.length) game.win();
+				if (levelIndex >= levels.size()) game.win();
 				else {
 					// reset the game and update the frame
-					game.reset(levels[levelIndex]);
+					game.reset(levels.get(levelIndex));
 					boolean setStart = levelChecker.checkLevel(game);
 					game.setStart(setStart);
 					if (update) game.setStart(false);
@@ -303,7 +304,7 @@ public class Controller implements ActionListener, GUIInformation {
 	 * Load the current level's grid.
 	 */
 	public void loadCurrGrid() {
-		File selectedFile = new File(levels[levelIndex]);
+		File selectedFile = new File(levels.get(levelIndex));
 		loadSpecificFile(selectedFile);
 	}
 
