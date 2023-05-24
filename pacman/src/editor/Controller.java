@@ -125,7 +125,7 @@ public class Controller implements ActionListener, GUIInformation {
 				game.reset(levels[levelIndex]);
 				boolean setStart = levelChecker.checkLevel(game);
 				game.setStart(setStart);
-				if (update || !setStart) updateGrid(gridWith, gridHeight);
+				if (update || !setStart) loadCurrGrid();
 				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}
 		};
@@ -142,7 +142,7 @@ public class Controller implements ActionListener, GUIInformation {
 		// check for the action performed
 		if 		(e.getActionCommand().equals("save"		 )) saveFile();
 		else if (e.getActionCommand().equals("load"		 )) loadFile();
-		else if (e.getActionCommand().equals("update"	 )) updateGrid(gridWith, gridHeight);
+		else if (e.getActionCommand().equals("update"	 )) loadCurrGrid();
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
 			boolean setStart = levelChecker.checkLevel(game);
 			game.setStart(setStart);
@@ -155,7 +155,7 @@ public class Controller implements ActionListener, GUIInformation {
 	 * @param width	 the grid's width
 	 * @param height the grid's height
 	 */
-	public void updateGrid(int width, int height) {
+	public void resetGrid(int width, int height) {
 		view.close();
 		this.tiles 	= TileManager.getTilesFromFolder("data/");
 		this.model 	= new GridModel(width, height, tiles.get(0).getCharacter());
@@ -251,62 +251,77 @@ public class Controller implements ActionListener, GUIInformation {
 
 
 	/**
+	 * Load the specified file to grid.
+	 */
+	public void loadSpecificFile(File selectedFile) {
+		SAXBuilder builder = new SAXBuilder();
+		if (selectedFile.canRead() && selectedFile.exists()) {
+			try {
+				Document document;
+				document = builder.build(selectedFile);
+				Element rootNode = document.getRootElement();
+
+				List sizeList = rootNode.getChildren("size");
+				Element sizeElem = (Element) sizeList.get(0);
+				gridHeight = Integer.parseInt(sizeElem.getChildText("height"));
+				gridWith = Integer.parseInt(sizeElem.getChildText("width"));
+				resetGrid(gridWith, gridHeight);
+
+				List rows = rootNode.getChildren("row");
+				for (int y = 0; y < rows.size(); y++) {
+					Element cellsElem = (Element) rows.get(y);
+					List cells = cellsElem.getChildren("cell");
+
+					for (int x = 0; x < cells.size(); x++) {
+						Element cell = (Element) cells.get(x);
+						String cellValue = cell.getText();
+						char tileNr = switch (cellValue) {
+							case "PathTile" -> 'a';
+							case "WallTile" -> 'b';
+							case "PillTile" -> 'c';
+							case "GoldTile" -> 'd';
+							case "IceTile" -> 'e';
+							case "PacTile" -> 'f';
+							case "TrollTile" -> 'g';
+							case "TX5Tile" -> 'h';
+							case "PortalWhiteTile" -> 'i';
+							case "PortalYellowTile" -> 'j';
+							case "PortalDarkGoldTile" -> 'k';
+							case "PortalDarkGrayTile" -> 'l';
+							default -> '0';
+						};
+						model.setTile(x, y, tileNr);
+					}
+				}
+				grid.redrawGrid();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Load the current level's grid.
+	 */
+	public void loadCurrGrid() {
+		File selectedFile = new File(levels[levelIndex]);
+		loadSpecificFile(selectedFile);
+	}
+
+
+	/**
 	 * Method triggered when save load file action is performed. This is to load an editor grid from
 	 * local user file.
 	 */
 	public void loadFile() {
-		SAXBuilder builder = new SAXBuilder();
-		try {
-			JFileChooser chooser  = new JFileChooser();
-			File workingDirectory = new File(System.getProperty("user.dir")+"\\maps");
-			File selectedFile;
-			chooser.setCurrentDirectory(workingDirectory);
-
-			int returnVal = chooser.showOpenDialog(null);
-			Document document;
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				selectedFile = chooser.getSelectedFile();
-				if (selectedFile.canRead() && selectedFile.exists()) {
-					document = builder.build(selectedFile);
-					Element rootNode = document.getRootElement();
-
-					List sizeList = rootNode.getChildren("size");
-					Element sizeElem = (Element) sizeList.get(0);
-					int height = Integer.parseInt(sizeElem.getChildText("height"));
-					int width = Integer.parseInt(sizeElem.getChildText("width"));
-					updateGrid(width, height);
-
-					List rows = rootNode.getChildren("row");
-					for (int y = 0; y < rows.size(); y++) {
-						Element cellsElem = (Element) rows.get(y);
-						List cells = cellsElem.getChildren("cell");
-
-						for (int x = 0; x < cells.size(); x++) {
-							Element cell = (Element) cells.get(x);
-							String cellValue = cell.getText();
-							char tileNr = switch (cellValue) {
-								case "PathTile" 		  -> 'a';
-								case "WallTile" 		  -> 'b';
-								case "PillTile" 		  -> 'c';
-								case "GoldTile" 		  -> 'd';
-								case "IceTile" 			  -> 'e';
-								case "PacTile" 			  -> 'f';
-								case "TrollTile" 		  -> 'g';
-								case "TX5Tile" 			  -> 'h';
-								case "PortalWhiteTile"    -> 'i';
-								case "PortalYellowTile"   -> 'j';
-								case "PortalDarkGoldTile" -> 'k';
-								case "PortalDarkGrayTile" -> 'l';
-								default 				  -> '0';
-							};
-							model.setTile(x, y, tileNr);
-						}
-					}
-					grid.redrawGrid();
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		JFileChooser chooser  = new JFileChooser();
+		File workingDirectory = new File(System.getProperty("user.dir") + "\\maps");
+		File selectedFile;
+		chooser.setCurrentDirectory(workingDirectory);
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			selectedFile = chooser.getSelectedFile();
+			loadSpecificFile(selectedFile);
 		}
 	}
 

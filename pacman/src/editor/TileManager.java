@@ -4,16 +4,18 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 /**
  * This class supports the Tile list with methods.
- * @author Daniel "MaTachi" Jonsson
+ * @author  Daniel "MaTachi" Jonsson
  * @version 1
- * @since v0.0.5
+ * @since   v0.0.5
  *
  */
 public class TileManager {
@@ -24,19 +26,15 @@ public class TileManager {
 	 * @return List<Tile> List of tiles.
 	 */
 	public static List<Tile> getTilesFromFolder(final String folderPath) {
-		
 		List<Tile> tiles = new ArrayList<>();
 		File folder = new File(folderPath);
 		File[] listOfFiles = folder.listFiles();
 		int character = 'a';
 		Map<String, File> map = new TreeMap<>();
 
-		///
 		assert listOfFiles != null;
-		///
-		for (File f : listOfFiles) {
+		for (File f : listOfFiles)
 			map.put(f.getName(), f);
-		}
 		for (File f : map.values()) {
 
 			// check for valid path
