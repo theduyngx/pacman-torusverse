@@ -17,11 +17,6 @@ public class PropertiesLoader {
     // properties entry extension (for representing an object's location in properties file)
     public static final String AUTO_EXTENSION = ".isAuto";
 
-    // PacMan auto-mode movement properties
-    public static final String RIGHT_DIR = "R";
-    public static final String LEFT_DIR = "L";
-    public static final String MOVE_DIR = "M";
-
 
     public static Properties loadPropertiesFile(String propertiesFile) {
         try (InputStream input = new FileInputStream(propertiesFile)) {
