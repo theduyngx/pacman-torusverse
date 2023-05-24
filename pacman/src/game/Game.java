@@ -57,8 +57,9 @@ public class Game extends GameGrid implements Runnable {
 
     /**
      * Game class constructor.
-     * @param properties properties object read from properties file for instantiating actors and items
-     * @see              Properties
+     * @param properties   properties object read from properties file for instantiating actors and items
+     * @param gameCallback the game callback for updating log
+     * @see   GameCallback
      */
     public Game(Properties properties, GameCallback gameCallback) {
         // Setup game
@@ -244,6 +245,7 @@ public class Game extends GameGrid implements Runnable {
             monster.putActor(this);
         }
         // pacman
-        manager.getPacActor().putActor(this);
+        if (manager.getPacActorLocations().size() > 0)
+            manager.getPacActor().putActor(this);
     }
 }

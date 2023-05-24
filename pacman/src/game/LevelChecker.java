@@ -234,7 +234,6 @@ public class LevelChecker {
         boolean pacActorBool  = pacActorValid(game);
         boolean portalsBool   = portalsValid(game);
         boolean numItemsBool  = numItemsValid(game);
-        boolean reachableBool = reachableMandatoryItems(game);
-        return pacActorBool && portalsBool && numItemsBool && reachableBool;
+        return pacActorBool && portalsBool && numItemsBool && reachableMandatoryItems(game);
     }
 }

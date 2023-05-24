@@ -119,13 +119,13 @@ public class ObjectManager {
     protected HashMap<HashLocation, Item> getMandatoryItems() {
         Map<HashLocation, Item> map
                 = items.entrySet()
-                       .stream()
-                       .filter(e -> !(e.getValue() instanceof Ice))
-                       .collect(
-                               Collectors.toMap(
-                                       Map.Entry::getKey,
-                                       Map.Entry::getValue
-                       ));
+                .stream()
+                .filter(e -> !(e.getValue() instanceof Ice))
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue
+                        ));
         return new HashMap<>(map);
     }
 
@@ -218,8 +218,8 @@ public class ObjectManager {
             exception.printStackTrace();
         }
         numPillsAndGold = getMandatoryItems().size();
+        pacActor = new PacActor(this);
         if (pacActorLocations.size() > 0) {
-            pacActor = new PacActor(this);
             pacActor.setInitLocation(pacActorLocations.get(0));
         }
     }
