@@ -33,6 +33,7 @@ public class Game extends GameGrid implements Runnable {
     private final static int SIMULATION_PERIOD = 100;
     private final static int KEY_REPEATED_PERIOD = 150;
     private final static String GAME_TITLE = "[PacMan in the TorusVerse]";
+    public final static String RUN_TITLE = "[PacMan in the TorusVerse] Current score: ";
     private final static int DELAY_RUN = 10;
     private final static int DELAY_AFTER_RUN = 120;
 
@@ -89,10 +90,10 @@ public class Game extends GameGrid implements Runnable {
         manager.parseProperties(properties);
 
         // instantiate actors
-        putLiveActors();
-        manager.setMonstersStopMoving();
         drawGrid(bg);
         putInanimateObjects();
+        putLiveActors();
+        manager.setMonstersStopMoving();
     }
 
     /**
@@ -113,12 +114,13 @@ public class Game extends GameGrid implements Runnable {
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
 
         ///
-        int max = manager.getNumPillsAndGold();
+        int max = 0;
+//        max = manager.getNumPillsAndGold() - 2;
         ///
 
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
-            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= max -2;
+            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= max;
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);
@@ -127,22 +129,30 @@ public class Game extends GameGrid implements Runnable {
         Location loc = pacActor.getLocation();
         manager.setMonstersStopMoving();
         pacActor.removeSelf();
-        String title;
         if (hasPacmanBeenHit) {
             bg.setPaintColor(COLOR_LOSE);
-            title = LOSE_MESSAGE;
-            addActor(manager.getKilledPacActor(), loc);
             status = STATUS.LOSE;
+            setTitle(LOSE_MESSAGE);
+            addActor(manager.getKilledPacActor(), loc);
+            manager.getGameCallback().endOfGame(LOSE_MESSAGE);
         }
         else {
             bg.setPaintColor(COLOR_WIN);
-            title = WIN_MESSAGE;
             status = STATUS.WIN;
         }
-        setTitle(title);
-        manager.getGameCallback().endOfGame(title);
         doPause();
     }
+
+
+    /**
+     * Called when the player has truly won the game.
+     */
+    public void win() {
+        manager.getGameCallback().endOfGame(WIN_MESSAGE);
+        setTitle(WIN_MESSAGE);
+        doPause();
+    }
+
 
     /**
      * Get the game's status - whether the player has won, lost, or neither.
