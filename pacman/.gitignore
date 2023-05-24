@@ -28,3 +28,4 @@
 out
 test/
 *.iml
+*.properties
