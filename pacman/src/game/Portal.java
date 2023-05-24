@@ -13,13 +13,13 @@ import java.util.HashMap;
 public class Portal extends InanimateActor {
     private final Location staticLocation;
     private Portal portalPair;
-    private static final String PORTAL_NAME = "portal"; // might need for callback
+    private final PortalColor color;
 
 
     /**
      * The portal type, enumerated by its color.
      */
-    public enum PortalType {
+    public enum PortalColor {
         White(XMLParser.PORTAL_WHITE_TILE),
         Yellow(XMLParser.PORTAL_YELLOW_TILE),
         DarkGold(XMLParser.PORTAL_DARK_GOLD_TILE),
@@ -30,13 +30,13 @@ public class Portal extends InanimateActor {
          * Portal type constructor.
          * @param portalColor the portal color
          */
-        PortalType(String portalColor) {
+        PortalColor(String portalColor) {
             this.color = portalColor;
         }
-        private static final HashMap<String, PortalType> map = new HashMap<>(values().length, 1);
+        private static final HashMap<String, PortalColor> map = new HashMap<>(values().length, 1);
 
         static {
-            for (PortalType c: values()) map.put(c.color, c);
+            for (PortalColor c: values()) map.put(c.color, c);
         }
 
         /**
@@ -57,8 +57,8 @@ public class Portal extends InanimateActor {
          * @param color specified color
          * @return      portal type
          */
-        public static PortalType of(String color) {
-            PortalType result = map.get(color);
+        public static PortalColor of(String color) {
+            PortalColor result = map.get(color);
             if (result == null)
                 throw new IllegalArgumentException("Invalid color name " + color);
             return result;
@@ -70,9 +70,10 @@ public class Portal extends InanimateActor {
      * Constructor for the Portal when no pair exists yet
      * @param sprite    Portal Sprite displayed in the game
      */
-    public Portal(String sprite, Location location) {
+    public Portal(String sprite, Location location, PortalColor color) {
         super(sprite);
         this.staticLocation = location;
+        this.color = color;
     }
 
     /**
@@ -89,6 +90,15 @@ public class Portal extends InanimateActor {
      */
     public Location getStaticLocation() {
         return staticLocation;
+    }
+
+
+    /**
+     * Get the Portal's color.
+     * @return the portal's color
+     */
+    public PortalColor getColor() {
+        return color;
     }
 
     /**

@@ -43,8 +43,9 @@ public class PortalFactory {
             else currList = portalsMap.get(color);
 
             // get the resulting sprite of the color, add that to a new portal
-            String sprite = Portal.PortalType.of(color).getColorSprite();
-            currList.add(new Portal(sprite, location));
+            Portal.PortalColor portalColor = Portal.PortalColor.of(color);
+            String sprite = portalColor.getColorSprite();
+            currList.add(new Portal(sprite, location, portalColor));
         }
 
         // constructing the portals map accordingly
