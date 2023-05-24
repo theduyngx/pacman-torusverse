@@ -52,11 +52,13 @@ public class PortalFactory {
         for (Map.Entry<String, ArrayList<Portal>> entry : portalsMap.entrySet()) {
             ArrayList<Portal> pair = entry.getValue();
             assert pair != null && pair.size() > 0;
-            Portal p1 = pair.get(0);
-            Portal p2 = pair.get(1);
-            p1.setPortalPair(p2);
-            HashLocation.put(portals, p1.getStaticLocation(), p1);
-            HashLocation.put(portals, p2.getStaticLocation(), p2);
+            Portal first = null;
+            for (Portal portal : pair) {
+                if (first == null) first = portal;
+                else portal.setPortalPair(first);
+                HashLocation.put(portals, portal.getStaticLocation(), portal);
+                HashLocation.put(portals, portal.getStaticLocation(), portal);
+            }
         }
     }
 
