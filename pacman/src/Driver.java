@@ -28,6 +28,7 @@ public class Driver {
 	 * Main entry to program.
 	 */
 	public static void main(String[] args) {
+		/// NOTE:
 		// argument parsing
 
 
@@ -37,9 +38,10 @@ public class Driver {
 		String path = "test";
 		File file = new File(path);
 		if (file.isDirectory())
-			playableLevels = gameCheck(path, gameCallback);
+			playableLevels = gameCheck(file, gameCallback);
 
 		// instantiate the Game and let the Controller handle the program
+		/// NOTE: REMOVE PROPERTIES_PATH AFTER!!! - TESTING WON'T ALLOW THIS
 		if (playableLevels != null) {
 			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + PROPERTIES_FILE;
 			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
@@ -50,25 +52,30 @@ public class Driver {
 
 	/**
 	 * Check the validity of a game folder
-	 * @param path 	   the path of the directory
-	 * @param callback the game callback
-	 * @return 		   whether the gameCheck fail or succeed
+	 * @param directory the path of the directory
+	 * @param callback  the game callback
+	 * @return 		    whether the gameCheck fail or succeed
 	 */
-	public static ArrayList<String> gameCheck(String path, GameCallback callback) {
-		File directory = new File(path);
-		String[] dirNameSplit = directory.getName().split("/");
+	public static ArrayList<String> gameCheck(File directory, GameCallback callback) {
+		String[] dirNameSplit = directory.getName().split("(/)|(\\\\)");
 		String dirName = dirNameSplit[dirNameSplit.length - 1];
 		File[] gameMaps = directory.listFiles();
-		if (gameMaps == null)
+
+		// no game maps found
+		if (gameMaps == null) {
+			String failLog = String.format("[Game %s - no maps found]", dirName);
+			callback.writeString(failLog);
 			return null;
+		}
 		HashMap<Integer, ArrayList<String>> levelTally = new HashMap<>();
 
 		// build a hashmap with the key as levels and filename as value
 		for (File map: gameMaps) {
-			String[] mapNameSplit = map.getName().split("/");
+			String[] mapNameSplit = map.getName().split("(/)|(\\\\)");
 			String mapName = mapNameSplit[mapNameSplit.length - 1];
 			char firstChar = mapName.charAt(0);
 
+			/// NOTE: CHECK FOR .TXT FILES
 			// add filename to hashmap given that it is valid
 			if (Character.isDigit(firstChar)) {
 				Integer decimalRep = Integer.parseInt(String.valueOf(firstChar));
@@ -78,17 +85,24 @@ public class Driver {
 					levelTally.get(decimalRep).add(map.getName());
 				else {
 					ArrayList<String> files = new ArrayList<>();
-					files.add(map.getName());
+					files.add(map.getPath());
 					levelTally.put(decimalRep, files);
 				}
 			}
 		}
+		// sort the levels lexicographically
 		if (gameCheckLog(levelTally, dirName, callback)) {
-			// sort the levels lexicographically
 			ArrayList<String> playableLevels = new ArrayList<>();
-			for (ArrayList<String> levels: levelTally.values())
+			for (ArrayList<String> levels : levelTally.values())
+				/// NOTE: keep the full file name + path
 				playableLevels.add(levels.get(0));
 			Collections.sort(playableLevels);
+
+			///
+			for (String level : playableLevels)
+				System.out.println(level);
+			///
+
 			return playableLevels;
 		}
 		return null;

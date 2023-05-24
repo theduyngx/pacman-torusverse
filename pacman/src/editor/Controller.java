@@ -139,10 +139,21 @@ public class Controller implements ActionListener, GUIInformation {
 			}
 		}
 
-		// check for the action performed
-		if 		(e.getActionCommand().equals("save"		 )) saveFile();
-		else if (e.getActionCommand().equals("load"		 )) loadFile();
-		else if (e.getActionCommand().equals("update"	 )) loadCurrGrid();
+		// save the current grid
+		if (e.getActionCommand().equals("save")) {
+			saveFile();
+			game.reset(levels.get(levelIndex));
+		}
+		// load a grid will add to the list of levels
+		else if (e.getActionCommand().equals("load")) {
+			String level = loadFile();
+			if (level != null)
+				game.reset(levels.get(levelIndex));
+		}
+		// resetting the current grid to its default, un-saved state
+		else if (e.getActionCommand().equals("update"))
+			loadCurrGrid();
+		// starting test mode
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
 			boolean setStart = levelChecker.checkLevel(game);
 			game.setStart(setStart);
@@ -197,7 +208,7 @@ public class Controller implements ActionListener, GUIInformation {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"xml files", "xml");
 		chooser.setFileFilter(filter);
-		File workingDirectory = new File(System.getProperty("user.dir")+"\\maps");
+		File workingDirectory = new File(levels.get(levelIndex));
 		chooser.setCurrentDirectory(workingDirectory);
 
 		int returnVal = chooser.showSaveDialog(null);
@@ -313,16 +324,18 @@ public class Controller implements ActionListener, GUIInformation {
 	 * Method triggered when save load file action is performed. This is to load an editor grid from
 	 * local user file.
 	 */
-	public void loadFile() {
+	public String loadFile() {
 		JFileChooser chooser  = new JFileChooser();
-		File workingDirectory = new File(System.getProperty("user.dir") + "\\maps");
+		File workingDirectory = new File(levels.get(levelIndex));
 		File selectedFile;
 		chooser.setCurrentDirectory(workingDirectory);
 		int returnVal = chooser.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			selectedFile = chooser.getSelectedFile();
 			loadSpecificFile(selectedFile);
+			return selectedFile.getName();
 		}
+		return null;
 	}
 
 	/**
