@@ -15,11 +15,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-public class GridManager {
+
+/**
+ * Grid File Manager class which deals with loading, saving grids from local user files.
+ */
+public class GridFileManager {
     private final Controller controller;
-    public GridManager(Controller controller) {
+
+    /**
+     * Class constructor.
+     * @param controller the main controller
+     */
+    public GridFileManager(Controller controller) {
         this.controller = controller;
     }
+
 
     /**
      * Method triggered when save file action is performed. This is to save an editor grid to local
@@ -83,16 +93,16 @@ public class GridManager {
                 document = builder.build(selectedFile);
                 Element rootNode = document.getRootElement();
 
-                List sizeList = rootNode.getChildren("size");
+                List<?> sizeList = rootNode.getChildren("size");
                 Element sizeElem = (Element) sizeList.get(0);
                 int gridHeight = Integer.parseInt(sizeElem.getChildText("height"));
                 int gridWith = Integer.parseInt(sizeElem.getChildText("width"));
                 controller.resetGrid(gridWith, gridHeight);
 
-                List rows = rootNode.getChildren("row");
+                List<?> rows = rootNode.getChildren("row");
                 for (int y = 0; y < rows.size(); y++) {
                     Element cellsElem = (Element) rows.get(y);
-                    List cells = cellsElem.getChildren("cell");
+                    List<?> cells = cellsElem.getChildren("cell");
 
                     for (int x = 0; x < cells.size(); x++) {
                         Element cell = (Element) cells.get(x);
@@ -115,7 +125,6 @@ public class GridManager {
         File selectedFile = new File(path);
         loadSpecificFile(selectedFile);
     }
-
 
     /**
      * Method triggered when save load file action is performed. This is to load an editor grid from

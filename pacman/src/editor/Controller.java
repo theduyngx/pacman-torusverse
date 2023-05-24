@@ -38,7 +38,7 @@ public class Controller implements ActionListener, GUIInformation {
 	// the grid and view of the editor
 	private GridView grid;
 	private View view;
-	private final GridManager gridManager;
+	private final GridFileManager gridManager;
 
 	// the game itself
 	private final Game game;
@@ -57,7 +57,7 @@ public class Controller implements ActionListener, GUIInformation {
 		this.view   = new View(this, camera, grid, tiles);
 		this.game   = game;
 		this.levels = levels;
-		gridManager = new GridManager(this);
+		gridManager = new GridFileManager(this);
 		levelIndex  = 0;
 		assert levels.size() > 0;
 		this.game.reset(levels.get(levelIndex));
