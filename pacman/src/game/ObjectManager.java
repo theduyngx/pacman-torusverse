@@ -218,8 +218,10 @@ public class ObjectManager {
             exception.printStackTrace();
         }
         numPillsAndGold = getMandatoryItems().size();
-        pacActor = new PacActor(this);
-        pacActor.setInitLocation(pacActorLocations.get(0));
+        if (pacActorLocations.size() > 0) {
+            pacActor = new PacActor(this);
+            pacActor.setInitLocation(pacActorLocations.get(0));
+        }
     }
 
 

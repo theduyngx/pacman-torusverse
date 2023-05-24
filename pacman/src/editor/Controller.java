@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -61,29 +60,30 @@ public class Controller implements ActionListener, GUIInformation {
 	/**
 	 * Controller constructor.
 	 */
-	public Controller(Properties properties, String[] levels, GameCallback gameCallback) {
+	public Controller(Game game, String[] levels, GameCallback gameCallback) {
 		this.tiles  = TileManager.getTilesFromFolder("data/");
 		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		this.grid   = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
 		this.view   = new View(this, camera, grid, tiles);
-		this.game   = new Game(properties, gameCallback);
+		this.game   = game;
 		this.levels = levels;
 		levelIndex  = 0;
 		assert levels.length > 0;
-		game.reset(levels[levelIndex]);
+		this.game.reset(levels[levelIndex]);
 
 		/// NOTE: this part of level checking should be within the level checking itself
 		/// then the unreachable must be printed and moved to object manager for log update accordingly
 		levelChecker = new LevelChecker(gameCallback);
 		levelChecker.setXmlFile(levels[levelIndex]);
-		boolean setStart = levelChecker.checkLevel(game);
-		game.setStart(setStart);
+		boolean setStart = levelChecker.checkLevel(this.game);
+		this.game.setStart(setStart);
 
 		// start game immediately by manually trigger an action
-		if (game.getStart())
+		if (this.game.getStart())
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 	}
+
 
 	/**
 	 * Listener awaiting actions to be performed.
@@ -126,8 +126,7 @@ public class Controller implements ActionListener, GUIInformation {
 				boolean setStart = levelChecker.checkLevel(game);
 				game.setStart(setStart);
 				if (update || !setStart) updateGrid(gridWith, gridHeight);
-				else
-					actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}
 		};
 
@@ -145,8 +144,9 @@ public class Controller implements ActionListener, GUIInformation {
 		else if (e.getActionCommand().equals("load"		 )) loadFile();
 		else if (e.getActionCommand().equals("update"	 )) updateGrid(gridWith, gridHeight);
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
-			game.setStart(true);
-			view.setFrame(game.getFrame());
+			boolean setStart = levelChecker.checkLevel(game);
+			game.setStart(setStart);
+			if (setStart) view.setFrame(game.getFrame());
 		}
 	}
 

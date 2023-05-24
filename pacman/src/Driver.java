@@ -1,4 +1,5 @@
 import editor.Controller;
+import game.Game;
 import game.utility.*;
 
 import java.io.File;
@@ -43,7 +44,8 @@ public class Driver {
 					"test/map_level1.xml",
 					"test/1SpecMap.xml"
 			};
-			new Controller(properties, levels, gameCallback);
+			Game game = new Game(properties, gameCallback);
+			new Controller(game, levels, gameCallback);
 		}
 	}
 
