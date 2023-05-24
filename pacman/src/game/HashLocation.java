@@ -10,7 +10,7 @@ import java.util.HashMap;
  * maps that use location as keys for fast accessing.
  * @see Location
  */
-public record HashLocation(Location location) {
+public record HashLocation(Location location) implements Comparable<HashLocation> {
     // properties
     public int getX() {
         return location.getX();
@@ -103,5 +103,32 @@ public record HashLocation(Location location) {
         boolean ret = map.containsKey(hashLocation);
         map.remove(hashLocation);
         return ret;
+    }
+
+
+    /**
+     * Compare hash location, where x-coordinate is first priority and y-coordinate is second.
+     * Used to sort the locations.
+     * @param other the hash location to be compared.
+     * @return      -1 if precedes, 1 if proceeds, and 0 if equals
+     */
+    @Override
+    public int compareTo(HashLocation other) {
+        if (this.location.getX() == other.location.getX()) {
+            if (this.location.getY() < other.location.getY())
+                return -1;
+            else if (this.location().getY() > other.location().getY())
+                return 1;
+            else
+                return 0;
+        }
+        else {
+            if (this.location.getX() < other.location.getX())
+                return -1;
+            else if (this.location().getX() > other.location().getX())
+                return 1;
+            else
+                return 0;
+        }
     }
 }

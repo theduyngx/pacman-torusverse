@@ -1,10 +1,5 @@
 import editor.Controller;
-import game.Game;
-import game.HashLocation;
-import game.Item;
-import game.LevelChecker;
-import game.utility.GameCallback;
-import game.utility.PropertiesLoader;
+import game.utility.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,22 +36,14 @@ public class Driver {
 		if (checkPass) {
 			String propertiesPath = PropertiesLoader.PROPERTIES_PATH + "test6.properties";
 			Properties properties = PropertiesLoader.loadPropertiesFile(propertiesPath);
-			assert properties != null;
 			String[] levels = new String[]{
 					"test/sample_map2.xml",
 					"test/sample_map1.xml",
-					"test/map_level1.xml",
 					"test/3_OtherMap.xml",
+					"test/map_level1.xml",
 					"test/1SpecMap.xml"
 			};
-			Game game = new Game(properties, gameCallback, levels[0]);
-
-			/// NOTE: this part of level checking should be within the level checking itself
-			/// then the unreachable must be printed and moved to object manager for log update accordingly
-			LevelChecker levelChecker = new LevelChecker();
-			HashMap<HashLocation, Item> unreachable = levelChecker.unreachableItems(game);
-			boolean setStart = (unreachable.size() == 0);
-			new Controller(game, levels, setStart);
+			new Controller(properties, levels, gameCallback);
 		}
 	}
 

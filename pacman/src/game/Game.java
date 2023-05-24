@@ -59,7 +59,7 @@ public class Game extends GameGrid implements Runnable {
      * @param properties properties object read from properties file for instantiating actors and items
      * @see              Properties
      */
-    public Game(Properties properties, GameCallback gameCallback, String xmlFile) {
+    public Game(Properties properties, GameCallback gameCallback) {
         // Setup game
         super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
         this.manager    = new ObjectManager(gameCallback);
@@ -70,7 +70,6 @@ public class Game extends GameGrid implements Runnable {
         setTitle(GAME_TITLE);
         bg = getBg();
         setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
-        reset(xmlFile);
     }
 
 
@@ -112,9 +111,14 @@ public class Game extends GameGrid implements Runnable {
         PacActor pacActor = manager.getPacActor();
         addKeyListener(pacActor);
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
+
+        ///
+        int max = manager.getNumPillsAndGold();
+        ///
+
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
-            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
+            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= max -2;
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);
