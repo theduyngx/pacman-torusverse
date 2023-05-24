@@ -87,7 +87,7 @@ public class ObjectManager {
      * Get all the recorded PacMan locations. Used for checking for errors regarding the number
      * of PacMan locations recorded
      * @return ArrayList of PacMan Locations
-     * @see PacActor
+     * @see    PacActor
      */
     protected ArrayList<Location> getPacActorLocations() { return pacActorLocations; }
 

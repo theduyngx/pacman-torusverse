@@ -158,7 +158,7 @@ public class PacActor extends LiveActor implements GGKeyListener {
             getGameCallback().pacManEatPillsAndItems(location, item.getName());
             item.removeItem(manager);
         }
-        String title = "[PacMan in the Multiverse] Current score: " + score;
+        String title = Game.RUN_TITLE + score;
         getGameGrid().setTitle(title);
     }
 

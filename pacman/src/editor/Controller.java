@@ -112,21 +112,20 @@ public class Controller implements ActionListener, GUIInformation {
 				game.setStart(false);
 
 				// check game's status (win or lose)
-				boolean update = game.getStatus() == Game.STATUS.LOSE;
-				if (! update) {
-					levelIndex++;
-					if (levelIndex >= levels.length) {
-						// WON THE GAME
-						System.exit(0);
-					}
-				}
+				boolean update  = game.getStatus() == Game.STATUS.LOSE;
+				boolean levelUp = game.getStatus() == Game.STATUS.WIN;
+				if (levelUp) levelIndex++;
 
-				// reset the game and update the frame
-				game.reset(levels[levelIndex]);
-				boolean setStart = levelChecker.checkLevel(game);
-				game.setStart(setStart);
-				if (update || !setStart) loadCurrGrid();
-				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+				if (levelIndex >= levels.length) game.win();
+				else {
+					// reset the game and update the frame
+					game.reset(levels[levelIndex]);
+					boolean setStart = levelChecker.checkLevel(game);
+					game.setStart(setStart);
+					if (update) game.setStart(false);
+					if (update || !setStart) loadCurrGrid();
+					actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+				}
 			}
 		};
 

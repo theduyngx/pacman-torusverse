@@ -31,11 +31,16 @@ public class LevelChecker {
     }
 
     /**
-     * Set the XML file path for the current level.
+     * Set the XML file path for the current level. It will only be used for updating to callback,
+     * so it will only retain the file name, and not any path to it.
      * @param xmlFile the XML file path
      */
     public void setXmlFile(String xmlFile) {
-        this.xmlFile = xmlFile;
+        String[] deliminators = new String[]{"\\", "/"};
+        for (String deliminator : deliminators) {
+            int index = xmlFile.lastIndexOf(deliminator);
+            this.xmlFile = xmlFile.substring(index + 1);
+        }
     }
 
 
@@ -47,7 +52,7 @@ public class LevelChecker {
      */
     private boolean numItemsValid(Game game) {
         HashMap<HashLocation, Item> mandatoryItems = game.getManager().getMandatoryItems();
-        boolean valid = mandatoryItems.size() > MIN_NUM_MANDATORY;
+        boolean valid = mandatoryItems.size() >= MIN_NUM_MANDATORY;
         if (! valid) {
             String error = String.format("[Level %s – less than 2 Gold and Pill]", xmlFile);
             gameCallback.writeString(error);
@@ -226,9 +231,10 @@ public class LevelChecker {
      */
     public boolean checkLevel(Game game) {
         // pacman check
-        return pacActorValid(game) &&
-               portalsValid(game)  &&
-               numItemsValid(game) &&
-               reachableMandatoryItems(game);
+        boolean pacActorBool  = pacActorValid(game);
+        boolean portalsBool   = portalsValid(game);
+        boolean numItemsBool  = numItemsValid(game);
+        boolean reachableBool = reachableMandatoryItems(game);
+        return pacActorBool && portalsBool && numItemsBool && reachableBool;
     }
 }
