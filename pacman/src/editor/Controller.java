@@ -137,24 +137,27 @@ public class Controller implements ActionListener, GUIInformation {
 				// check game's status (win or lose)
 				boolean update  = game.getStatus() == Game.STATUS.LOSE;
 				boolean levelUp = game.getStatus() == Game.STATUS.WIN;
+				boolean hasWon  = false;
 
 				// for folder maps, freeze upon winning the game
-				if (gameType == GameType.IS_FOLDER) {
-					if (levelUp) levelIndex++;
-					if (levelIndex >= levels.size()) game.win();
+				if (gameType == GameType.IS_FOLDER && levelUp) {
+					hasWon = (++levelIndex >= levels.size());
+					if (hasWon) game.win();
 				}
-				// reset the game and update the frame
-				level = levels.get(levelIndex);
-				game.reset(level);
-				boolean setStart = levelChecker.checkLevel(game);
+				if (! hasWon) {
+					// reset the game and update the frame
+					level = levels.get(levelIndex);
+					game.reset(level);
+					boolean setStart = levelChecker.checkLevel(game);
 
-				// set start to game, and the editor's view accordingly
-				game.setStart(setStart);
-				if ((update || !setStart) || (gameType == GameType.IS_FILE && levelUp)) {
-					game.setStart(false);
-					gridManager.loadCurrGrid(level);
+					// set start to game, and the editor's view accordingly
+					game.setStart(setStart);
+					if ((update || !setStart) || (gameType == GameType.IS_FILE && levelUp)) {
+						game.setStart(false);
+						gridManager.loadCurrGrid(level);
+					}
+					actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 				}
-				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}
 		};
 
