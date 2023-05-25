@@ -38,6 +38,8 @@ public class Game extends GameGrid implements Runnable {
     private final static int DELAY_AFTER_RUN = 120;
 
     // game grid
+    public final static int DEFAULT_WIDTH = 20;
+    public final static int DEFAULT_HEIGHT = 11;
     public final static int STRETCH_RATE = 2;
     public final static int CELL_SIZE = 20 * STRETCH_RATE;
 
@@ -49,12 +51,20 @@ public class Game extends GameGrid implements Runnable {
     private final Dimension dimension;
     private STATUS status;
 
+
+    /**
+     * The game's enumerated status - win, lose, or neither.
+     */
     public enum STATUS {
         WIN, LOSE, NA
     }
 
-    public record Dimension(int width, int height) {
-    }
+    /**
+     * The game's dimensions.
+     * @param width  grid's width
+     * @param height grid's height
+     */
+    public record Dimension(int width, int height) {}
 
 
     /**
@@ -229,9 +239,8 @@ public class Game extends GameGrid implements Runnable {
             item.putActor(bg, this, location);
         }
         // portals
-        for (Map.Entry<HashLocation, Portal> entry : manager.getPortals().entrySet()) {
+        for (Map.Entry<HashLocation, Portal> entry : manager.getPortals().entrySet())
             entry.getValue().putActor(bg, this, entry.getKey().location());
-        }
     }
 
     /**

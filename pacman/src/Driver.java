@@ -40,7 +40,9 @@ public class Driver {
 		// get the dimensions
 		try {
 			// instantiate the Game and let the Controller handle the program
-			Game.Dimension dimension = XMLParser.getDimensions(path);
+			Game.Dimension dimension = (playableLevels != null)
+					? XMLParser.getDimensions(playableLevels.get(0))
+					: new Game.Dimension(Game.DEFAULT_WIDTH, Game.DEFAULT_HEIGHT);
 			Properties properties = PropertiesLoader.loadPropertiesFile(PROPERTIES_FILE);
 			Game game = new Game(dimension, properties, gameCallback);
 			Controller controller = new Controller(game, gameChecker.getGameType(), playableLevels, gameCallback);

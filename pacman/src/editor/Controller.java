@@ -72,7 +72,7 @@ public class Controller implements ActionListener, GUIInformation {
 		this.tiles    = TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
 		this.model    = new GridModel(width, height, tiles.get(0).getCharacter());
 		this.camera   = new GridCamera(model, width, height);
-		this.grid     = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
+		this.grid     = new GridView(this, camera, tiles);
 		this.view     = new View(this, camera, grid, tiles, width, height);
 		this.game     = game;
 		this.level    = "";
@@ -89,7 +89,6 @@ public class Controller implements ActionListener, GUIInformation {
 	public void handle() {
 		// game type handling
 		boolean setStart = false;
-		boolean triggerAction = false;
 		if (gameType != GameType.IS_NULL) {
 			levelIndex = 0;
 			level = levels.get(levelIndex);
@@ -98,15 +97,13 @@ public class Controller implements ActionListener, GUIInformation {
 			// level checking to whether to start the game
 			levelChecker.setXmlFile(level);
 			setStart = levelChecker.checkLevel(this.game) && gameType == GameType.IS_FOLDER;
-			triggerAction = true;
-			gridManager.loadCurrGrid(level);
 		}
+		gridManager.loadCurrGrid(level);
 		if (gameType == GameType.IS_FILE) view.open();
 
 		// start game immediately by manually trigger an action
 		this.game.setStart(setStart);
-		if (triggerAction)
-			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+		actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 	}
 
 
