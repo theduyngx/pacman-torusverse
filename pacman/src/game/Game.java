@@ -40,18 +40,20 @@ public class Game extends GameGrid implements Runnable {
     // game grid
     public final static int STRETCH_RATE = 2;
     public final static int CELL_SIZE = 20 * STRETCH_RATE;
-    public final static int NUM_HORIZONTAL_CELLS = 20;
-    public final static int NUM_VERTICAL_CELLS = 11;
 
     // object manager
     private final ObjectManager manager;
     private boolean start = false;
     private final GGBackground bg;
     private final Properties properties;
+    private final Dimension dimension;
     private STATUS status;
 
     public enum STATUS {
         WIN, LOSE, NA
+    }
+
+    public record Dimension(int width, int height) {
     }
 
 
@@ -61,11 +63,12 @@ public class Game extends GameGrid implements Runnable {
      * @param gameCallback the game callback for updating log
      * @see   GameCallback
      */
-    public Game(Properties properties, GameCallback gameCallback) {
+    public Game(Dimension dimension, Properties properties, GameCallback gameCallback) {
         // Setup game
-        super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
-        this.manager    = new ObjectManager(gameCallback);
+        super(dimension.width, dimension.height, CELL_SIZE, false);
+        this.manager    = new ObjectManager(this, gameCallback);
         this.properties = properties;
+        this.dimension  = dimension;
 
         // set up game window
         setSimulationPeriod(SIMULATION_PERIOD);
@@ -149,6 +152,10 @@ public class Game extends GameGrid implements Runnable {
     }
 
 
+    public Dimension getDimension() {
+        return dimension;
+    }
+
     /**
      * Get the game's status - whether the player has won, lost, or neither.
      * @return the game's status for the player
@@ -193,8 +200,8 @@ public class Game extends GameGrid implements Runnable {
         bg.setPaintColor(COLOR_BACKGROUND);
 
         // draw the maze (its border and items)
-        for (int y = 0; y < NUM_VERTICAL_CELLS; y++) {
-            for (int x = 0; x < NUM_HORIZONTAL_CELLS; x++) {
+        for (int y = 0; y < dimension.height; y++) {
+            for (int x = 0; x < dimension.width; x++) {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 // space
