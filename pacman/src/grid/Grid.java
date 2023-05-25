@@ -1,6 +1,6 @@
 package grid;
-
 import java.beans.PropertyChangeListener;
+
 
 /**
  * An interface for a class that stores tiles as characters in a two dimensions.
@@ -9,9 +9,6 @@ import java.beans.PropertyChangeListener;
  * @since v0.0.5
  */
 public interface Grid {
-	int GRID_WIDTH = 20;
-	int GRID_HEIGHT = 11;
-	
 	/**
 	 * Returns the width of the map.
 	 * @return int The width of the total map.

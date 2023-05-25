@@ -44,11 +44,6 @@ public class Pill extends Item {
         hide();
     }
 
-    @Override
-    public Item deepCopy() {
-        return new Ice();
-    }
-
     /**
      * Overridden method to signal manager, although since pill has no effect on monsters, it will do nothing.
      * @param manager the object manager

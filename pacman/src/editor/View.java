@@ -1,6 +1,5 @@
 package editor;
 import grid.Camera;
-import grid.Grid;
 
 import java.awt.*;
 import java.util.List;
@@ -9,16 +8,19 @@ import javax.swing.border.Border;
 
 
 /**
- * The view of the application. Slight modifications were made by students.
- * 
+ * The view of the application. Based on Daniel "MaTachi" Jonsson's code.
+ * @author  The Duy Nguyen
+ * @author  Ramon Javier L. Felipe VI
+ * @author  Jonathan Chen Jie Kong
  * @author  Daniel "MaTachi" Jonsson
  * @version 1
  * @since   v0.0.5
- * 
  */
 public class View {
 	// JFrame
 	private JFrame frame;
+	private final int width;
+	private final int height;
 
 	// Settings to the right.
 	private JTextField txtWidth;
@@ -31,9 +33,11 @@ public class View {
 	 * Constructs the View.
 	 * @param controller The controller.
 	 */
-	public View(Controller controller, Camera camera, JPanel grid, List<? extends Tile> tiles) {
-		grid.setPreferredSize(new Dimension(Grid.GRID_WIDTH * Tile.TILE_WIDTH,
-				Grid.GRID_HEIGHT * Tile.TILE_HEIGHT));
+	public View(Controller controller, Camera camera, JPanel grid, List<? extends Tile> tiles,
+				int width, int height) {
+		this.width  = width;
+		this.height = height;
+		grid.setPreferredSize(new Dimension(width * Tile.TILE_WIDTH, height * Tile.TILE_HEIGHT));
 		/* Create the panels */
 		createBottomPanel(controller, tiles);
 		createTopPanel(controller, camera, grid);
@@ -92,16 +96,16 @@ public class View {
 	 */
 	private void createTopPanel(Controller controller, Camera camera, JPanel grid) {
 		// create the camera, mouse labels
-		CameraInformationLabel cameraInformationLabel = new CameraInformationLabel(camera);
+		CameraInformationLabel   cameraInformationLabel = new CameraInformationLabel(camera);
 		GridMouseInformationLabel mouseInformationLabel = new GridMouseInformationLabel(grid);
 		JLabel lblWidth = new JLabel("Width(min:32):");
 		JLabel lblHeight = new JLabel("Height(min:20):");
 
 		// create buttons and texts
-		txtWidth = new JTextField(Controller.MAP_WIDTH + "", 3);
+		txtWidth = new JTextField(String.valueOf(width), 3);
 		txtWidth.getDocument().addDocumentListener(controller.updateSizeFields);
 		txtWidth.setEnabled(false);
-		txtHeight = new JTextField(Controller.MAP_HEIGHT + "", 3);
+		txtHeight = new JTextField(String.valueOf(height), 3);
 		txtHeight.getDocument().addDocumentListener(controller.updateSizeFields);
 		txtHeight.setEnabled(false);
 		JButton updateSize = new JButton("Reset");
@@ -145,7 +149,7 @@ public class View {
 	public int getWidth() {
 		String value = txtWidth.getText();
 		if (value.equals(""))
-			value = Controller.MAP_WIDTH + "";
+			value = String.valueOf(width);
 		return Integer.parseInt(value);
 	}
 
@@ -156,7 +160,7 @@ public class View {
 	public int getHeight() {
 		String value = txtHeight.getText();
 		if (value.equals(""))
-			value = Controller.MAP_WIDTH + "";
+			value = String.valueOf(height);
 		return Integer.parseInt(value);
 	}
 

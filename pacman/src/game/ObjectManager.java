@@ -1,4 +1,5 @@
 package game;
+import game.Game.Dimension;
 import game.utility.GameCallback;
 import game.utility.PropertiesLoader;
 
@@ -51,11 +52,13 @@ public class ObjectManager {
     // current number of pills and gold pieces, which indicate whether player has won or not
     private int numMandatoryItems = 0;
     private boolean isMultiverse = false;
+    private final Game game;
 
     /**
      * Constructor for ObjectManager.
      */
-    public ObjectManager(GameCallback gameCallback) {
+    public ObjectManager(Game game, GameCallback gameCallback) {
+        this.game              = game;
         this.gameCallback      = gameCallback;
         this.pacActorLocations = new ArrayList<>();
         this.monsters          = new ArrayList<>();
@@ -63,6 +66,10 @@ public class ObjectManager {
         this.walls             = new HashMap<>();
         this.portals           = new HashMap<>();
         this.portalFactory     = PortalFactory.getInstance();
+    }
+
+    public Dimension getDimension() {
+        return game.getDimension();
     }
 
     /**
@@ -190,8 +197,8 @@ public class ObjectManager {
      */
     public void parseProperties(Properties properties) {
         // random seed
-        int seed = Integer.parseInt(properties.getProperty("seed"));
-        isMultiverse = properties.getProperty("version").contains("multiverse");
+        int seed = Integer.parseInt(properties.getProperty(PropertiesLoader.SEED));
+        isMultiverse = properties.getProperty(PropertiesLoader.VERSION).contains(PropertiesLoader.IS_MULTIVERSE);
         // parse pacman (comment out to test for torus)
         pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
                 pacActor.getName() + PropertiesLoader.AUTO_EXTENSION))
@@ -211,9 +218,8 @@ public class ObjectManager {
      * @param xmlFile the specified XML file
      */
     public void instantiateAll(String xmlFile) {
-        XMLParser parser = new XMLParser();
         try {
-            parser.parseXML(xmlFile, this);
+            XMLParser.parseXML(xmlFile, this);
         } catch (ParserConfigurationException | IOException | SAXException exception) {
             exception.printStackTrace();
         }

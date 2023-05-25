@@ -26,10 +26,6 @@ import game.utility.GameCallback;
  * @see		Game
  */
 public class Controller implements ActionListener, GUIInformation {
-	// width and height of the map grid editor
-	public static final int MAP_WIDTH = 20;
-	public static final int MAP_HEIGHT = 11;
-
 	// model, tile, camera
 	private Grid model;
 	private Tile selectedTile;
@@ -68,11 +64,16 @@ public class Controller implements ActionListener, GUIInformation {
 	 * @see   GameCallback
 	 */
 	public Controller(Game game, GameType gameType, ArrayList<String> levels, GameCallback gameCallback) {
+		// dimensions for grid
+		int width  = game.getDimension().width();
+		int height = game.getDimension().height();
+
+		// instantiations
 		this.tiles    = TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
-		this.model    = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
-		this.camera   = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
-		this.grid     = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
-		this.view     = new View(this, camera, grid, tiles);
+		this.model    = new GridModel(width, height, tiles.get(0).getCharacter());
+		this.camera   = new GridCamera(model, width, height);
+		this.grid     = new GridView(this, camera, tiles);
+		this.view     = new View(this, camera, grid, tiles, width, height);
 		this.game     = game;
 		this.level    = "";
 		this.levels   = levels;
@@ -88,7 +89,6 @@ public class Controller implements ActionListener, GUIInformation {
 	public void handle() {
 		// game type handling
 		boolean setStart = false;
-		boolean triggerAction = false;
 		if (gameType != GameType.IS_NULL) {
 			levelIndex = 0;
 			level = levels.get(levelIndex);
@@ -97,16 +97,13 @@ public class Controller implements ActionListener, GUIInformation {
 			// level checking to whether to start the game
 			levelChecker.setXmlFile(level);
 			setStart = levelChecker.checkLevel(this.game) && gameType == GameType.IS_FOLDER;
-			triggerAction = true;
-			gridManager.loadCurrGrid(level);
 		}
+		gridManager.loadCurrGrid(level);
 		if (gameType == GameType.IS_FILE) view.open();
 
 		// start game immediately by manually trigger an action
 		this.game.setStart(setStart);
-		if (triggerAction)
-			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
-
+		actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 	}
 
 
@@ -156,7 +153,6 @@ public class Controller implements ActionListener, GUIInformation {
 				if ((update || !setStart) || (gameType == GameType.IS_FILE && levelUp)) {
 					game.setStart(false);
 					gridManager.loadCurrGrid(level);
-					view.open();
 				}
 				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}
@@ -171,19 +167,11 @@ public class Controller implements ActionListener, GUIInformation {
 			}
 		}
 
-		// save the current grid
-		if (e.getActionCommand().equals("save")) {
-			String path = gridManager.saveFile(level);
-			if (path != null) level = path;
-		}
-		// load a grid will add to the list of levels
-		else if (e.getActionCommand().equals("load")) {
-			String path = gridManager.loadFile(level);
-			if (path != null) level = path;
-		}
-		// resetting the current grid to its default, un-saved state
-		else if (e.getActionCommand().equals("update"))
-			gridManager.loadCurrGrid(level);
+		// save, load, reset
+		if 		(e.getActionCommand().equals("save"  )) gridManager.saveFile(level);
+		else if (e.getActionCommand().equals("load"  )) gridManager.loadFile(level);
+		else if (e.getActionCommand().equals("update")) gridManager.loadCurrGrid(level);
+
 		// starting test mode
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
 			boolean setStart = levelChecker.checkLevel(game);
@@ -201,9 +189,9 @@ public class Controller implements ActionListener, GUIInformation {
 		view.close();
 		this.tiles 	= TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
 		this.model 	= new GridModel(width, height, tiles.get(0).getCharacter());
-		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
+		this.camera = new GridCamera(model, width, height);
 		this.grid 	= new GridView(this, camera, tiles); // Every tile is 30x30 pixels
-		this.view 	= new View(this, camera, grid, tiles);
+		this.view 	= new View(this, camera, grid, tiles, width, height);
 		view.setSize(width, height);
 	}
 
@@ -221,8 +209,17 @@ public class Controller implements ActionListener, GUIInformation {
 	 * @return the grid view
 	 * @see	   GridView
 	 */
-	public GridView getGrid() {
+	protected GridView getGrid() {
 		return grid;
+	}
+
+	/**
+	 * Get the main view.
+	 * @return the view
+	 * @see	   View
+	 */
+	protected View getView() {
+		return view;
 	}
 
 	/**
@@ -230,14 +227,17 @@ public class Controller implements ActionListener, GUIInformation {
 	 * update the loaded file (perhaps).
 	 */
 	DocumentListener updateSizeFields = new DocumentListener() {
+		@Override
 		public void changedUpdate(DocumentEvent e) {
 			view.getWidth();
 			view.getHeight();
 		}
+		@Override
 		public void removeUpdate(DocumentEvent e) {
 			view.getWidth();
 			view.getHeight();
 		}
+		@Override
 		public void insertUpdate(DocumentEvent e) {
 			view.getWidth();
 			view.getHeight();

@@ -36,9 +36,7 @@ public class GridFileManager {
      * Method triggered when save file action is performed. This is to save an editor grid to local
      * user file.
      */
-    protected String saveFile(String path) {
-        String savePath = null;
-
+    protected void saveFile(String path) {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "xml files", "xml");
@@ -76,7 +74,6 @@ public class GridFileManager {
                 }
                 XMLOutputter xmlOutput = new XMLOutputter();
                 xmlOutput.setFormat(Format.getPrettyFormat());
-                savePath = chooser.getSelectedFile().getPath();
                 xmlOutput.output(doc, new FileWriter(chooser.getSelectedFile()));
             }
         } catch (FileNotFoundException e1) {
@@ -85,7 +82,7 @@ public class GridFileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return savePath;
+        controller.getView().open();
     }
 
 
@@ -123,6 +120,7 @@ public class GridFileManager {
                 e.printStackTrace();
             }
         }
+        controller.getView().open();
     }
 
     /**
@@ -137,7 +135,7 @@ public class GridFileManager {
      * Method triggered when save load file action is performed. This is to load an editor grid from
      * local user file.
      */
-    public String loadFile(String path) {
+    public void loadFile(String path) {
         JFileChooser chooser  = new JFileChooser();
         File workingDirectory = new File(path);
         File selectedFile;
@@ -146,8 +144,6 @@ public class GridFileManager {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             selectedFile = chooser.getSelectedFile();
             loadSpecificFile(selectedFile);
-            return selectedFile.getName();
         }
-        return null;
     }
 }

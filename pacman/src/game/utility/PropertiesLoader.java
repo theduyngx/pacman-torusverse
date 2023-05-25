@@ -7,15 +7,14 @@ import java.util.Properties;
 
 
 public class PropertiesLoader {
+    // properties related paths
     public static final String PATH = "sprites/";
     public static final String PROPERTIES_PATH = "properties/";
-
-    // properties location entry extension (for representing an object's location in properties file)
-    public static final String LOCATION_EXTENSION = ".location";
-    // properties move entry extension (for representing PacMan's move sequence in properties file)
-    public static final String MOVE_EXTENSION = ".move";
     // properties entry extension (for representing an object's location in properties file)
     public static final String AUTO_EXTENSION = ".isAuto";
+    public static final String SEED = "seed";
+    public static final String VERSION = "version";
+    public static final String IS_MULTIVERSE = "multiverse";
 
 
     public static Properties loadPropertiesFile(String propertiesFile) {

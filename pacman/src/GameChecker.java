@@ -96,7 +96,6 @@ public class GameChecker {
             String mapName = mapNameSplit[mapNameSplit.length - 1];
             char firstChar = mapName.charAt(0);
 
-            /// NOTE: CHECK FOR .TXT FILES
             // add filename to hashmap given that it is valid
             if (Character.isDigit(firstChar)) {
                 Integer decimalRep = Integer.parseInt(String.valueOf(firstChar));
@@ -119,6 +118,12 @@ public class GameChecker {
                 if (validFileType(name))
                     playableLevels.add(name);
             }
+            // if no map within valid folder
+            if (playableLevels.isEmpty()) {
+                callbackNoMap(path, callback);
+                return null;
+            }
+            // otherwise, return the list of maps
             Collections.sort(playableLevels);
             return playableLevels;
         }
@@ -145,7 +150,7 @@ public class GameChecker {
         }
         else {
             // loop through hashmap, check that the array list is greater than 1.
-            for (ArrayList<String> level: levelTally.values()) {
+            for (ArrayList<String> level : levelTally.values())
                 if (level.size() > 1) {
                     String dupFiles = String.join("; ", level);
                     String failLog = String.format(
@@ -154,7 +159,6 @@ public class GameChecker {
                     pass = false;
                     gameType = GameType.IS_NULL;
                 }
-            }
         }
         return pass;
     }

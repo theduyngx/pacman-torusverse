@@ -244,8 +244,8 @@ public abstract class LiveActor extends GameActor implements Movable {
      * @return the next location of live actor
      */
     protected Location nextLocation() {
-        int gridXMax = Game.NUM_HORIZONTAL_CELLS;
-        int gridYMax = Game.NUM_VERTICAL_CELLS;
+        int gridXMax = manager.getDimension().width();
+        int gridYMax = manager.getDimension().height();
         Location next = this.getLocation().getAdjacentLocation(this.getDirection(), getStepSize());
         next = new Location((next.getX() % gridXMax + gridXMax) % gridXMax,
                             (next.getY() % gridYMax + gridYMax) % gridYMax);
