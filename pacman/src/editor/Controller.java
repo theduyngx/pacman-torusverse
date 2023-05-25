@@ -82,20 +82,23 @@ public class Controller implements ActionListener, GUIInformation {
 
 		// game type handling
 		boolean setStart = false;
+		boolean triggerAction = false;
 		if (gameType != GameType.IS_NULL) {
 			levelIndex = 0;
 			level = levels.get(levelIndex);
 			this.game.reset(level);
 
-			/// NOTE: this part of level checking should be within the level checking itself
-			/// then the unreachable must be printed and moved to object manager for log update accordingly
+			// level checking to whether to start the game
 			levelChecker.setXmlFile(level);
-			setStart = levelChecker.checkLevel(this.game);
+			setStart = levelChecker.checkLevel(this.game) && gameType == GameType.IS_FOLDER;
+			triggerAction = true;
+			gridManager.loadCurrGrid(level);
 		}
+		if (gameType == GameType.IS_FILE) view.open();
 
 		// start game immediately by manually trigger an action
 		this.game.setStart(setStart);
-		if (this.game.getStart())
+		if (triggerAction)
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 	}
 
@@ -123,27 +126,32 @@ public class Controller implements ActionListener, GUIInformation {
 			 */
 			@Override
 			public void done() {
-				if (! game.getStart()) return;
-				game.setStart(false);
-
 				// game type handling
-				if (gameType == GameType.IS_NULL || gameType == GameType.IS_FILE) return;
+				if (gameType == GameType.IS_NULL) return;
+				if (! game.getStart()) return;
 
 				// check game's status (win or lose)
 				boolean update  = game.getStatus() == Game.STATUS.LOSE;
 				boolean levelUp = game.getStatus() == Game.STATUS.WIN;
-				if (levelUp) levelIndex++;
-				if (levelIndex >= levels.size()) game.win();
-				else {
-					level = levels.get(levelIndex);
-					// reset the game and update the frame
-					game.reset(level);
-					boolean setStart = levelChecker.checkLevel(game);
-					game.setStart(setStart);
-					if (update) game.setStart(false);
-					if (update || !setStart) gridManager.loadCurrGrid(level);
-					actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+
+				// for folder maps, freeze upon winning the game
+				if (gameType == GameType.IS_FOLDER) {
+					if (levelUp) levelIndex++;
+					if (levelIndex >= levels.size()) game.win();
 				}
+				// reset the game and update the frame
+				level = levels.get(levelIndex);
+				game.reset(level);
+				boolean setStart = levelChecker.checkLevel(game);
+
+				// set start to game, and the editor's view accordingly
+				game.setStart(setStart);
+				if (update) game.setStart(false);
+				if (update || !setStart) {
+					gridManager.loadCurrGrid(level);
+					view.open();
+				}
+				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}
 		};
 
@@ -160,22 +168,17 @@ public class Controller implements ActionListener, GUIInformation {
 		if (e.getActionCommand().equals("save")) {
 			String path = gridManager.saveFile(level);
 			if (path != null) level = path;
-			game.reset(level);
 		}
 		// load a grid will add to the list of levels
 		else if (e.getActionCommand().equals("load")) {
 			String path = gridManager.loadFile(level);
-			if (path != null) {
-				level = path;
-//				game.reset(level);
-			}
+			if (path != null) level = path;
 		}
 		// resetting the current grid to its default, un-saved state
 		else if (e.getActionCommand().equals("update"))
 			gridManager.loadCurrGrid(level);
 		// starting test mode
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
-//			game.reset(level);
 			boolean setStart = levelChecker.checkLevel(game);
 			game.setStart(setStart);
 			if (setStart) view.setFrame(game.getFrame());

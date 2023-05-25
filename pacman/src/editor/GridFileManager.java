@@ -44,6 +44,8 @@ public class GridFileManager {
                 "xml files", "xml");
         chooser.setFileFilter(filter);
         File workingDirectory = new File(path);
+        if (workingDirectory.isFile())
+            workingDirectory = workingDirectory.getParentFile();
         chooser.setCurrentDirectory(workingDirectory);
 
         int returnVal = chooser.showSaveDialog(null);
