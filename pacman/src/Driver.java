@@ -1,7 +1,11 @@
 import editor.Controller;
 import game.Game;
+import game.XMLParser;
 import game.utility.*;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -33,10 +37,17 @@ public class Driver {
 		GameChecker gameChecker = new GameChecker();
 		ArrayList<String> playableLevels = gameChecker.gameCheck(path, gameCallback);
 
-		// instantiate the Game and let the Controller handle the program
-		Properties properties = PropertiesLoader.loadPropertiesFile(PROPERTIES_FILE);
-		Game game = new Game(properties, gameCallback);
-		Controller controller = new Controller(game, gameChecker.getGameType(), playableLevels, gameCallback);
-		controller.handle();
+		// get the dimensions
+		try {
+			// instantiate the Game and let the Controller handle the program
+			Game.Dimension dimension = XMLParser.getDimensions(path);
+			Properties properties = PropertiesLoader.loadPropertiesFile(PROPERTIES_FILE);
+			Game game = new Game(dimension, properties, gameCallback);
+			Controller controller = new Controller(game, gameChecker.getGameType(), playableLevels, gameCallback);
+			controller.handle();
+
+		} catch (ParserConfigurationException | IOException | SAXException exception) {
+			exception.printStackTrace();
+		}
 	}
 }
