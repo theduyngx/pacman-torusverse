@@ -5,6 +5,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -62,8 +65,9 @@ public class GameChecker {
         gameType = GameType.IS_NULL;
 
         // directory is, in fact, a directory folder
-        if (directory.isDirectory())
+        if (directory.isDirectory()) {
             gameType = GameType.IS_FOLDER;
+        }
 
         // if it is a file instead - must check that it is XML file
         else if (directory.isFile() && validFileType(path)) {
@@ -94,12 +98,21 @@ public class GameChecker {
         for (File map: gameMaps) {
             String[] mapNameSplit = map.getName().split("(/)|(\\\\)");
             String mapName = mapNameSplit[mapNameSplit.length - 1];
-            char firstChar = mapName.charAt(0);
+
+            // changes 1 - start
+            Pattern pattern = Pattern.compile("^\\d+");
+            Matcher matcher = pattern.matcher(mapName);
+            String numString = " ";
+            if (matcher.find()) {
+                numString = matcher.group();
+            }
+            char firstChar = numString.charAt(0);
+            // changes 1 - end
 
             /// NOTE: CHECK FOR .TXT FILES
             // add filename to hashmap given that it is valid
             if (Character.isDigit(firstChar)) {
-                Integer decimalRep = Integer.parseInt(String.valueOf(firstChar));
+                Integer decimalRep = Integer.parseInt(numString); // changes from first char
 
                 // add file to arraylist
                 if (levelTally.containsKey(decimalRep))
@@ -113,13 +126,14 @@ public class GameChecker {
         }
         // sort the levels lexicographically
         if (gameCheckLog(levelTally, dirName, callback)) {
+            // changes 2 - start
+            TreeMap<Integer, ArrayList<String>> sorted = new TreeMap<>();
+            sorted.putAll(levelTally);
             ArrayList<String> playableLevels = new ArrayList<>();
-            for (ArrayList<String> levels : levelTally.values()) {
-                String name = levels.get(0);
-                if (validFileType(name))
-                    playableLevels.add(name);
+            for (HashMap.Entry<Integer, ArrayList<String>> entry : sorted.entrySet()) {
+                playableLevels.add(entry.getValue().get(0));
             }
-            Collections.sort(playableLevels);
+            // changes 2 - end
             return playableLevels;
         }
         callbackNoMap(dirName, callback);
