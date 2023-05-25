@@ -26,10 +26,6 @@ import game.utility.GameCallback;
  * @see		Game
  */
 public class Controller implements ActionListener, GUIInformation {
-	// width and height of the map grid editor
-	public static final int MAP_WIDTH = 20;
-	public static final int MAP_HEIGHT = 11;
-
 	// model, tile, camera
 	private Grid model;
 	private Tile selectedTile;
@@ -68,11 +64,16 @@ public class Controller implements ActionListener, GUIInformation {
 	 * @see   GameCallback
 	 */
 	public Controller(Game game, GameType gameType, ArrayList<String> levels, GameCallback gameCallback) {
+		// dimensions for grid
+		int width  = game.getDimension().width();
+		int height = game.getDimension().height();
+
+		// instantiations
 		this.tiles    = TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
-		this.model    = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
-		this.camera   = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
+		this.model    = new GridModel(width, height, tiles.get(0).getCharacter());
+		this.camera   = new GridCamera(model, width, height);
 		this.grid     = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
-		this.view     = new View(this, camera, grid, tiles);
+		this.view     = new View(this, camera, grid, tiles, width, height);
 		this.game     = game;
 		this.level    = "";
 		this.levels   = levels;
@@ -191,9 +192,9 @@ public class Controller implements ActionListener, GUIInformation {
 		view.close();
 		this.tiles 	= TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
 		this.model 	= new GridModel(width, height, tiles.get(0).getCharacter());
-		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
+		this.camera = new GridCamera(model, width, height);
 		this.grid 	= new GridView(this, camera, tiles); // Every tile is 30x30 pixels
-		this.view 	= new View(this, camera, grid, tiles);
+		this.view 	= new View(this, camera, grid, tiles, width, height);
 		view.setSize(width, height);
 	}
 
@@ -229,14 +230,17 @@ public class Controller implements ActionListener, GUIInformation {
 	 * update the loaded file (perhaps).
 	 */
 	DocumentListener updateSizeFields = new DocumentListener() {
+		@Override
 		public void changedUpdate(DocumentEvent e) {
 			view.getWidth();
 			view.getHeight();
 		}
+		@Override
 		public void removeUpdate(DocumentEvent e) {
 			view.getWidth();
 			view.getHeight();
 		}
+		@Override
 		public void insertUpdate(DocumentEvent e) {
 			view.getWidth();
 			view.getHeight();
