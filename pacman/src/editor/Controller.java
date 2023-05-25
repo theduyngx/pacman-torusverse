@@ -79,7 +79,13 @@ public class Controller implements ActionListener, GUIInformation {
 		this.gameType = gameType;
 		levelChecker  = new LevelChecker(gameCallback);
 		gridManager   = new GridFileManager(this);
+	}
 
+
+	/**
+	 * Initial call to controller to allow it to start handling the program.
+	 */
+	public void handle() {
 		// game type handling
 		boolean setStart = false;
 		boolean triggerAction = false;
@@ -100,6 +106,7 @@ public class Controller implements ActionListener, GUIInformation {
 		this.game.setStart(setStart);
 		if (triggerAction)
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+
 	}
 
 

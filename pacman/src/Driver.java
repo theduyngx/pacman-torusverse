@@ -36,6 +36,7 @@ public class Driver {
 		// instantiate the Game and let the Controller handle the program
 		Properties properties = PropertiesLoader.loadPropertiesFile(PROPERTIES_FILE);
 		Game game = new Game(properties, gameCallback);
-		new Controller(game, gameChecker.getGameType(), playableLevels, gameCallback);
+		Controller controller = new Controller(game, gameChecker.getGameType(), playableLevels, gameCallback);
+		controller.handle();
 	}
 }
