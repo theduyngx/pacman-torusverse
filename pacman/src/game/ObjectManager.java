@@ -190,8 +190,8 @@ public class ObjectManager {
      */
     public void parseProperties(Properties properties) {
         // random seed
-        int seed = Integer.parseInt(properties.getProperty("seed"));
-        isMultiverse = properties.getProperty("version").contains("multiverse");
+        int seed = Integer.parseInt(properties.getProperty(PropertiesLoader.SEED));
+        isMultiverse = properties.getProperty(PropertiesLoader.VERSION).contains(PropertiesLoader.IS_MULTIVERSE);
         // parse pacman (comment out to test for torus)
         pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
                 pacActor.getName() + PropertiesLoader.AUTO_EXTENSION))
