@@ -143,9 +143,9 @@ public class GameChecker {
             callbackNoMap(dirName, callback);
             pass = false;
         }
-        else {
+        else
             // loop through hashmap, check that the array list is greater than 1.
-            for (ArrayList<String> level: levelTally.values()) {
+            for (ArrayList<String> level: levelTally.values())
                 if (level.size() > 1) {
                     String dupFiles = String.join("; ", level);
                     String failLog = String.format(
@@ -154,8 +154,6 @@ public class GameChecker {
                     pass = false;
                     gameType = GameType.IS_NULL;
                 }
-            }
-        }
         return pass;
     }
 }

@@ -3,6 +3,7 @@ package grid;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+
 /**
  * An implementation of the interface Grid. It stores characters two-dimensionally.
  * @author  Daniel "MaTachi" Jonsson

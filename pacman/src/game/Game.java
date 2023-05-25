@@ -19,15 +19,15 @@ import java.util.Properties;
  */
 public class Game extends GameGrid implements Runnable {
     // draw grid colors
-    public final static Color COLOR_LOSE = Color.red;
-    public final static Color COLOR_WIN = Color.yellow;
-    public final static Color COLOR_BACKGROUND = Color.white;
-    public final static Color COLOR_WALL = Color.gray;
-    public final static Color COLOR_SPACE = Color.lightGray;
+    private final static Color COLOR_LOSE = Color.red;
+    private final static Color COLOR_WIN = Color.yellow;
+    private final static Color COLOR_BACKGROUND = Color.white;
+    private final static Color COLOR_WALL = Color.gray;
+    protected final static Color COLOR_SPACE = Color.lightGray;
 
     // win/lose messages
-    public final static String LOSE_MESSAGE = "GAME OVER";
-    public final static String WIN_MESSAGE = "YOU WIN";
+    private final static String LOSE_MESSAGE = "GAME OVER";
+    private final static String WIN_MESSAGE = "YOU WIN";
 
     // game running constants
     private final static int SIMULATION_PERIOD = 100;
@@ -40,8 +40,8 @@ public class Game extends GameGrid implements Runnable {
     // game grid
     public final static int DEFAULT_WIDTH = 20;
     public final static int DEFAULT_HEIGHT = 11;
-    public final static int STRETCH_RATE = 2;
-    public final static int CELL_SIZE = 20 * STRETCH_RATE;
+    protected final static int STRETCH_RATE = 2;
+    private final static int CELL_SIZE = 20 * STRETCH_RATE;
 
     // object manager
     private final ObjectManager manager;
