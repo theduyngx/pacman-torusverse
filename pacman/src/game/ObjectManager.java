@@ -49,7 +49,7 @@ public class ObjectManager {
     private final GameCallback gameCallback;
 
     // current number of pills and gold pieces, which indicate whether player has won or not
-    private int numPillsAndGold = 0;
+    private int numMandatoryItems = 0;
     private boolean isMultiverse = false;
 
     /**
@@ -159,8 +159,8 @@ public class ObjectManager {
      * Get the number of pills and gold pieces left in the game. Hence, used to detect winning condition.
      * @return the number of pills and gold pieces left in the game
      */
-    protected int getNumPillsAndGold() {
-        return numPillsAndGold;
+    protected int getNumMandatoryItems() {
+        return numMandatoryItems;
     }
 
     /**
@@ -180,7 +180,7 @@ public class ObjectManager {
      */
     protected void decrementNumPillAndGold(Item item) {
         if (item instanceof Gold || item instanceof Pill)
-            numPillsAndGold--;
+            numMandatoryItems--;
     }
 
 
@@ -217,7 +217,7 @@ public class ObjectManager {
         } catch (ParserConfigurationException | IOException | SAXException exception) {
             exception.printStackTrace();
         }
-        numPillsAndGold = getMandatoryItems().size();
+        numMandatoryItems = getMandatoryItems().size();
         pacActor = new PacActor(this);
         if (pacActorLocations.size() > 0) {
             pacActor.setInitLocation(pacActorLocations.get(0));
@@ -260,7 +260,7 @@ public class ObjectManager {
      * do a full reset on the game's level.
      */
     protected void removeAll() {
-        numPillsAndGold = 0;
+        numMandatoryItems = 0;
         if (pacActor != null) pacActor.removeSelf();
         if (killedPacActor != null) killedPacActor.removeSelf();
         for (Monster monster : monsters)

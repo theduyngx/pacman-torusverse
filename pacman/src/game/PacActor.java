@@ -101,7 +101,7 @@ public class PacActor extends LiveActor implements GGKeyListener {
         if (idSprite == NUM_SPRITES)
             idSprite = 0;
         if (isAuto) {
-            if (movesNext.size() == 0) {
+            if (movesNext.size() == 0 && getManager().getNumMandatoryItems() > 0) {
                 PathFinder finder = new PathFinder();
                 movesNext = finder.idsSingle(this);
             }
