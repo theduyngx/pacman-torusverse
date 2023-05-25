@@ -57,6 +57,11 @@ public class GridView extends JPanel implements PropertyChangeListener {
 		instantiateMap(gridController);
 	}
 
+
+	/**
+	 * Instantiate the grid map.
+	 * @param controller the main controller
+	 */
 	private void instantiateMap(GridController controller) {
 		for (int y = 0; y < camera.getHeight(); y++) {
 			for (int x = 0; x < camera.getWidth(); x++) {
@@ -73,27 +78,23 @@ public class GridView extends JPanel implements PropertyChangeListener {
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("movedCamera")) {
+		if (evt.getPropertyName().equals("movedCamera"))
 			redrawGrid();
-		} else if (evt.getPropertyName().equals("changedTile")) {
+		else if (evt.getPropertyName().equals("changedTile"))
 			redrawTile((Point) evt.getNewValue());
-		}
 	}
 	
 	/**
 	 * Redraw the whole grid.
 	 */
 	public void redrawGrid() {
-		for (int y = 0; y < Grid.GRID_HEIGHT; y++) {
-			for (int x = 0; x < Grid.GRID_WIDTH; x++) {
-				for (Tile t : tiles) {
+		for (int y = 0; y < camera.getHeight(); y++)
+			for (int x = 0; x < camera.getWidth(); x++)
+				for (Tile t : tiles)
 					if (camera.getTile(x, y) == t.getCharacter()) {
 						map[y][x].setTile(t);
 						map[y][x].grabFocus();
 					}
-				}
-			}
-		}
 		this.repaint();
 	}
 	
@@ -102,18 +103,15 @@ public class GridView extends JPanel implements PropertyChangeListener {
 	 * @param position The tile's position in the grid.
 	 */
 	private void redrawTile(Point position) {
-		for (Tile t : tiles) {
-			if (camera.getTile(position.x, position.y) == t.getCharacter()) {
+		for (Tile t : tiles)
+			if (camera.getTile(position.x, position.y) == t.getCharacter())
 				map[position.y][position.x].setTile(t);
-			}
-		}
 	}
 	
 	/**
 	 * How the tiles are represented graphically.
 	 */
 	private static class GridTile extends JPanel {
-		
 		@Serial
 		private static final long serialVersionUID = 8127828009105626334L;
 		

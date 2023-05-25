@@ -76,9 +76,8 @@ public class GridModel implements Grid {
 	 */
 	public char[][] getMap() {
 		char[][] tmpMap = new char[map.length][map[0].length];
-		for (int y = 0; y < map.length; y++) {
+		for (int y = 0; y < map.length; y++)
 			System.arraycopy(map[y], 0, tmpMap[y], 0, map[0].length);
-		}
 		return tmpMap;
 	}
 	

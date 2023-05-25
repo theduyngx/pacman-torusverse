@@ -78,8 +78,8 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	}
 	
 	private void updateTile(int xCor, int yCor) {
-		xCor = Math.max(0, Math.min(xCor, Grid.GRID_WIDTH-1));
-		yCor = Math.max(0, Math.min(yCor, Grid.GRID_HEIGHT-1));
+		xCor = Math.max(0, Math.min(xCor, camera.getWidth()-1));
+		yCor = Math.max(0, Math.min(yCor, camera.getHeight()-1));
 		if (guiInformation.getSelectedTile() != null) {
 			camera.setTile(xCor, yCor, guiInformation.getSelectedTile().getCharacter());
 		}
