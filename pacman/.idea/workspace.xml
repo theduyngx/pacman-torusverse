@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e35acb5-5db9-4165-9d9c-6afd58101d61" name="Changes" comment="Pulled from Duy's branch" />
+    <list default="true" id="4e35acb5-5db9-4165-9d9c-6afd58101d61" name="Changes" comment="Deleted original pacman file" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,28 +104,21 @@
       <option name="project" value="LOCAL" />
       <updated>1684904898355</updated>
     </task>
-    <task id="LOCAL-00009" summary="Reformatted File to Duy's format">
-      <created>1685037099549</created>
+    <task id="LOCAL-00009" summary="Deleted original pacman file">
+      <created>1685037664731</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1685037099549</updated>
+      <updated>1685037664731</updated>
     </task>
-    <task id="LOCAL-00010" summary="Reformatted File to Duy's format">
-      <created>1685037112255</created>
+    <task id="LOCAL-00010" summary="Deleted original pacman file">
+      <created>1685037679578</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1685037112255</updated>
+      <updated>1685037679578</updated>
     </task>
-    <task id="LOCAL-00011" summary="Pulled from Duy's branch">
-      <created>1685037182581</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1685037182581</updated>
-    </task>
-    <option name="localTasksCounter" value="12" />
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -137,8 +130,7 @@
     <MESSAGE value="Linked PortalFactory, XMLParser, and ObjectManager" />
     <MESSAGE value="OBJECTMANAGER: Created new properties parser function" />
     <MESSAGE value="XMLParser: Added length and width parser" />
-    <MESSAGE value="Reformatted File to Duy's format" />
-    <MESSAGE value="Pulled from Duy's branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="Pulled from Duy's branch" />
+    <MESSAGE value="Deleted original pacman file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Deleted original pacman file" />
   </component>
 </project>
