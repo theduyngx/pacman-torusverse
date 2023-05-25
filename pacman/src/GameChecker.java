@@ -1,3 +1,4 @@
+import editor.Controller;
 import game.utility.GameCallback;
 
 import java.io.File;
@@ -11,18 +12,47 @@ import java.util.HashMap;
  * TODO: path (argument) handling
  */
 public class GameChecker {
+    public static final String VALID_MAP_FILE = "xml";
+
+    private Controller.GameType gameType;
+
+    public Controller.GameType getGameType() {
+        return gameType;
+    }
+
+    /**
+     * Call to game callback to report no maps found.
+     * @param directory the directory string
+     * @param callback  the game callback
+     */
+    private void callbackNoMap(String directory, GameCallback callback) {
+        String failLog = String.format("[Game %s - no maps found]", directory);
+        callback.writeString(failLog);
+        gameType = Controller.GameType.IS_NULL;
+    }
+
     /**
      * Check the validity of a game folder
      * @param path      the path of the directory
      * @param callback  the game callback
      * @return 		    whether the gameCheck fail or succeed
      */
-    public static ArrayList<String> gameCheck(String path, GameCallback callback) {
-        if (path.isEmpty())
+    public ArrayList<String> gameCheck(String path, GameCallback callback) {
+        if (path.isEmpty()) {
+            callbackNoMap(path, callback);
             return null;
+        }
         File directory = new File(path);
-        if (! directory.isDirectory())
+
+        // check type
+        if (directory.isDirectory())
+            gameType = Controller.GameType.IS_FOLDER;
+        else if (directory.isFile())
+            gameType = Controller.GameType.IS_FILE;
+        else {
+            callbackNoMap(path, callback);
             return null;
+        }
 
         String[] dirNameSplit = directory.getName().split("(/)|(\\\\)");
         String dirName = dirNameSplit[dirNameSplit.length - 1];
@@ -30,8 +60,7 @@ public class GameChecker {
 
         // no game maps found
         if (gameMaps == null) {
-            String failLog = String.format("[Game %s - no maps found]", dirName);
-            callback.writeString(failLog);
+            callbackNoMap(dirName, callback);
             return null;
         }
         HashMap<Integer, ArrayList<String>> levelTally = new HashMap<>();
@@ -60,12 +89,18 @@ public class GameChecker {
         // sort the levels lexicographically
         if (gameCheckLog(levelTally, dirName, callback)) {
             ArrayList<String> playableLevels = new ArrayList<>();
-            for (ArrayList<String> levels : levelTally.values())
-                /// NOTE: keep the full file name + path
-                playableLevels.add(levels.get(0));
+            for (ArrayList<String> levels : levelTally.values()) {
+                String name = levels.get(0);
+                int index = name.lastIndexOf(".");
+                // skip non-XML files
+                String extension = name.substring(index + 1).toLowerCase();
+                if (extension.equals(VALID_MAP_FILE))
+                    playableLevels.add(name);
+            }
             Collections.sort(playableLevels);
             return playableLevels;
         }
+        callbackNoMap(dirName, callback);
         return null;
     }
 
@@ -76,15 +111,14 @@ public class GameChecker {
      * @param dirName    the name of the directory
      * @return           whether the directory has fail any game check
      */
-    private static boolean gameCheckLog(HashMap<Integer, ArrayList<String>> levelTally, String dirName,
+    private boolean gameCheckLog(HashMap<Integer, ArrayList<String>> levelTally, String dirName,
                                         GameCallback callback)
     {
         boolean pass = true;
 
         // check the hashmap for check failure and print the corresponding issues
         if (levelTally.isEmpty()) {
-            String failLog = String.format("[Game %s - no maps found]", dirName);
-            callback.writeString(failLog);
+            callbackNoMap(dirName, callback);
             pass = false;
         }
         else {
@@ -92,9 +126,11 @@ public class GameChecker {
             for (ArrayList<String> level: levelTally.values()) {
                 if (level.size() > 1) {
                     String dupFiles = String.join("; ", level);
-                    String failLog = String.format("[Game %s - multiple maps at same level: %s]", dirName, dupFiles);
+                    String failLog = String.format(
+                            "[Game %s - multiple maps at same level: %s]", dirName, dupFiles);
                     callback.writeString(failLog);
                     pass = false;
+                    gameType = Controller.GameType.IS_NULL;
                 }
             }
         }

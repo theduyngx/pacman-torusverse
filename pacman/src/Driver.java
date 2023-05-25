@@ -30,13 +30,14 @@ public class Driver {
 
 		// get all playable levels
 		GameCallback gameCallback = new GameCallback();
-		ArrayList<String> playableLevels = GameChecker.gameCheck(path, gameCallback);
+		GameChecker gameChecker = new GameChecker();
+		ArrayList<String> playableLevels = gameChecker.gameCheck(path, gameCallback);
 
 		// instantiate the Game and let the Controller handle the program
 		if (playableLevels != null) {
 			Properties properties = PropertiesLoader.loadPropertiesFile(PROPERTIES_FILE);
 			Game game = new Game(properties, gameCallback);
-			new Controller(game, playableLevels, gameCallback);
+			new Controller(game, gameChecker.getGameType(), playableLevels, gameCallback);
 		}
 	}
 }

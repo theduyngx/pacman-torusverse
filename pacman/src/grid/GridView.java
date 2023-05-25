@@ -26,8 +26,7 @@ public class GridView extends JPanel implements PropertyChangeListener {
 	 * A reference to the model. Needed to query data.
 	 */
 	private final Camera camera;
-	private final GridController gridController;
-	
+
 	/**
 	 * References to all tiles.
 	 */
@@ -49,7 +48,7 @@ public class GridView extends JPanel implements PropertyChangeListener {
 		this.tiles = tiles;
 		this.camera = camera;
 		this.camera.addPropertyChangeListener(this);
-		this.gridController = new GridController(camera, guiInformation);
+		GridController gridController = new GridController(camera, guiInformation);
 		this.addMouseListener(gridController);
 		this.addMouseMotionListener(gridController);
 		

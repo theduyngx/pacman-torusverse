@@ -46,10 +46,16 @@ public class Controller implements ActionListener, GUIInformation {
 	private int levelIndex;
 	private final LevelChecker levelChecker;
 
+	public enum GameType {
+		IS_FOLDER,
+		IS_FILE,
+		IS_NULL
+	}
+
 	/**
 	 * Controller constructor.
 	 */
-	public Controller(Game game, ArrayList<String> levels, GameCallback gameCallback) {
+	public Controller(Game game, GameType gameType, ArrayList<String> levels, GameCallback gameCallback) {
 		this.tiles  = TileManager.getTilesFromFolder("data/");
 		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
