@@ -23,3 +23,9 @@
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+
+.idea/
+out
+test/
+*.iml
+*.properties
