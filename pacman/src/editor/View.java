@@ -9,7 +9,7 @@ import javax.swing.border.Border;
 
 
 /**
- * The view of the application.
+ * The view of the application. Slight modifications were made by students.
  * 
  * @author  Daniel "MaTachi" Jonsson
  * @version 1
@@ -39,6 +39,12 @@ public class View {
 		createTopPanel(controller, camera, grid);
 	}
 
+
+	/**
+	 * Create the bottom panel, which includes buttons and borders of the panel frame.
+	 * @param controller the program controller
+	 * @param tiles		 the list of tiles
+	 */
 	private void createBottomPanel(Controller controller, List<? extends Tile> tiles) {
 		palette = new JPanel(new FlowLayout());
 		for (Tile t : tiles) {
@@ -77,13 +83,21 @@ public class View {
 		right.add(startGameButton);
 	}
 
+
+	/**
+	 * Create the top panel for the view.
+	 * @param controller program controller
+	 * @param camera	 the camera
+	 * @param grid		 the editor grid
+	 */
 	private void createTopPanel(Controller controller, Camera camera, JPanel grid) {
+		// create the camera, mouse labels
 		CameraInformationLabel cameraInformationLabel = new CameraInformationLabel(camera);
 		GridMouseInformationLabel mouseInformationLabel = new GridMouseInformationLabel(grid);
-
 		JLabel lblWidth = new JLabel("Width(min:32):");
 		JLabel lblHeight = new JLabel("Height(min:20):");
 
+		// create buttons and texts
 		txtWidth = new JTextField(Controller.MAP_WIDTH + "", 3);
 		txtWidth.getDocument().addDocumentListener(controller.updateSizeFields);
 		txtWidth.setEnabled(false);
@@ -94,6 +108,7 @@ public class View {
 		updateSize.addActionListener(controller);
 		updateSize.setActionCommand("update");
 
+		// create the top panel
 		JPanel top = new JPanel();
 		top.setLayout(new FlowLayout(FlowLayout.LEFT));
 		top.setBorder(border);
@@ -105,6 +120,7 @@ public class View {
 		top.add(txtHeight);
 		top.add(updateSize);
 
+		// create layout
 		JPanel layout = new JPanel(new BorderLayout());
 		JPanel test = new JPanel(new BorderLayout());
 		test.add(top, BorderLayout.NORTH);
@@ -113,15 +129,19 @@ public class View {
 		layout.add(test, BorderLayout.NORTH);
 		layout.add(palette, BorderLayout.CENTER);
 
+		// create the frame
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Map Editor");
 		frame.add(layout);
 		frame.pack();
 		frame.setFocusable(true);
-		frame.setVisible(true);
 	}
 
+	/**
+	 * Get the view's width.
+	 * @return the view's width
+	 */
 	public int getWidth() {
 		String value = txtWidth.getText();
 		if (value.equals(""))
@@ -129,20 +149,39 @@ public class View {
 		return Integer.parseInt(value);
 	}
 
+	/**
+	 * Get the view's height.
+	 * @return the view's height
+	 */
 	public int getHeight() {
 		String value = txtHeight.getText();
 		if (value.equals(""))
 			value = Controller.MAP_WIDTH + "";
 		return Integer.parseInt(value);
 	}
-	
+
+	/**
+	 * Set the view's size by specifying its dimensions.
+	 * @param width  the view's width
+	 * @param height the view's height
+	 */
 	public void setSize(int width, int height){
 		txtWidth.setText(String.valueOf(width));
 		txtHeight.setText(String.valueOf(height));
 	}
 
+	/**
+	 * Close the view (set it invisible).
+	 */
 	public void close() {
 		frame.setVisible(false);
+	}
+
+	/**
+	 * Set view visible.
+	 */
+	public void open() {
+		frame.setVisible(true);
 	}
 
 	/**
