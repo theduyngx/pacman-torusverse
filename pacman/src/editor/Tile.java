@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
  *
  */
 public class Tile {
+	// default tile dimensions
 	public static final int TILE_WIDTH = 32;
 	public static final int TILE_HEIGHT = 32;
 
@@ -50,7 +51,19 @@ public class Tile {
 	public static final char NULL = '0';
 
 
-	// conversions
+	// The character that will be used in the map file when saved.
+	private final char character;
+
+	// The image that will be used in the editor.
+	private final BufferedImage image;
+	private final String filePath;
+
+
+	/**
+	 * Converting the encoded character of the tiles to its XML string format.
+	 * @param tileChar the encoded tile character
+	 * @return		   the XML string format
+	 */
 	protected static String convertToCharTile(char tileChar) {
 		return switch (tileChar) {
 			case WALL_CHAR 				-> WALL_TILE;
@@ -68,6 +81,11 @@ public class Tile {
 		};
 	}
 
+	/**
+	 * Convert the XML string format of a tile to its encoded character format.
+	 * @param tileName the XML string of tile
+	 * @return		   the tile's encoded character
+	 */
 	protected static char convertToStringTile(String tileName) {
 		return switch (tileName) {
 			case PATH_TILE 				-> PATH_CHAR;
@@ -85,19 +103,6 @@ public class Tile {
 			default -> NULL;
 		};
 	}
-
-
-	/**
-	 * The character that will be used in the map file when saved.
-	 */
-	private final char character;
-
-
-	/**
-	 * The image that will be used in the editor.
-	 */
-	private final BufferedImage image;
-	private final String filePath;
 	
 	/**
 	 * Construct a tile.
@@ -110,11 +115,6 @@ public class Tile {
 		this.character = character;
 	}
 
-	@Override
-	public String toString() {
-		return "character: " + character + " - file: " + filePath;
-	}
-
 	/**
 	 * Get the tile as an image.
 	 * @return Image The tile icon.
@@ -122,7 +122,6 @@ public class Tile {
 	public Image getImage() {
 		return deepCopy(image);
 	}
-
 
 	/**
 	 * Get the tile as an icon.
@@ -139,11 +138,26 @@ public class Tile {
 	public char getCharacter() {
 		return character;
 	}
-	
-	private static BufferedImage deepCopy(BufferedImage bi) {
-		ColorModel cm = bi.getColorModel();
+
+
+	/**
+	 * String format for tiles.
+	 * @return the string format
+	 */
+	@Override
+	public String toString() {
+		return "character: " + character + " - file: " + filePath;
+	}
+
+	/**
+	 * Get the deep copy of the tile with all of its properties.
+	 * @param image the buffered image
+	 * @return		the deep copy
+	 */
+	private static BufferedImage deepCopy(BufferedImage image) {
+		ColorModel cm = image.getColorModel();
 		boolean isAlphaPreMultiplied = cm.isAlphaPremultiplied();
-		WritableRaster raster = bi.copyData(null);
+		WritableRaster raster = image.copyData(null);
 		return new BufferedImage(cm, raster, isAlphaPreMultiplied, null);
 	}
 }

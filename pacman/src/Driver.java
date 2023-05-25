@@ -34,7 +34,7 @@ public class Driver {
 
 		// get all playable levels
 		GameCallback gameCallback = new GameCallback();
-		GameChecker gameChecker = new GameChecker();
+		GameChecker gameChecker   = new GameChecker();
 		ArrayList<String> playableLevels = gameChecker.gameCheck(path, gameCallback);
 
 		// get the dimensions
