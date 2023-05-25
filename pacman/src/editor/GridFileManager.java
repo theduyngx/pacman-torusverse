@@ -36,7 +36,9 @@ public class GridFileManager {
      * Method triggered when save file action is performed. This is to save an editor grid to local
      * user file.
      */
-    protected void saveFile(String path) {
+    protected String saveFile(String path) {
+        String savePath = null;
+
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "xml files", "xml");
@@ -72,6 +74,7 @@ public class GridFileManager {
                 }
                 XMLOutputter xmlOutput = new XMLOutputter();
                 xmlOutput.setFormat(Format.getPrettyFormat());
+                savePath = chooser.getSelectedFile().getPath();
                 xmlOutput.output(doc, new FileWriter(chooser.getSelectedFile()));
             }
         } catch (FileNotFoundException e1) {
@@ -80,6 +83,7 @@ public class GridFileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return savePath;
     }
 
 

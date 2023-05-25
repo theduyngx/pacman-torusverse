@@ -23,6 +23,7 @@ import game.utility.GameCallback;
  * @author  Daniel "MaTachi" Jonsson
  * @version 1
  * @since   v0.0.5
+ * @see		Game
  */
 public class Controller implements ActionListener, GUIInformation {
 	// width and height of the map grid editor
@@ -42,9 +43,11 @@ public class Controller implements ActionListener, GUIInformation {
 
 	// the game itself
 	private final Game game;
+	private final GameType gameType;
 	private final ArrayList<String> levels;
 	private int levelIndex;
 	private final LevelChecker levelChecker;
+	private String level;
 
 	/**
 	 * Game type - either the game is opened as a folder, a file, or nothing.
@@ -56,28 +59,42 @@ public class Controller implements ActionListener, GUIInformation {
 	}
 
 	/**
-	 * Controller constructor.
+	 * Constructor for the program Controller.
+	 * @param game 			the game
+	 * @param gameType		type of game open
+	 * @param levels		the list of game levels
+	 * @param gameCallback	the game callback to report to logs
+	 * @see	  GameType
+	 * @see   GameCallback
 	 */
 	public Controller(Game game, GameType gameType, ArrayList<String> levels, GameCallback gameCallback) {
-		this.tiles  = TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
-		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
-		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
-		this.grid   = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
-		this.view   = new View(this, camera, grid, tiles);
-		this.game   = game;
-		this.levels = levels;
-		gridManager = new GridFileManager(this);
-		levelIndex  = 0;
-		this.game.reset(levels.get(levelIndex));
+		this.tiles    = TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
+		this.model    = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
+		this.camera   = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
+		this.grid     = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
+		this.view     = new View(this, camera, grid, tiles);
+		this.game     = game;
+		this.level    = "";
+		this.levels   = levels;
+		this.gameType = gameType;
+		levelChecker  = new LevelChecker(gameCallback);
+		gridManager   = new GridFileManager(this);
 
-		/// NOTE: this part of level checking should be within the level checking itself
-		/// then the unreachable must be printed and moved to object manager for log update accordingly
-		levelChecker = new LevelChecker(gameCallback);
-		levelChecker.setXmlFile(levels.get(levelIndex));
-		boolean setStart = levelChecker.checkLevel(this.game);
-		this.game.setStart(setStart);
+		// game type handling
+		boolean setStart = false;
+		if (gameType != GameType.IS_NULL) {
+			levelIndex = 0;
+			level = levels.get(levelIndex);
+			this.game.reset(level);
+
+			/// NOTE: this part of level checking should be within the level checking itself
+			/// then the unreachable must be printed and moved to object manager for log update accordingly
+			levelChecker.setXmlFile(level);
+			setStart = levelChecker.checkLevel(this.game);
+		}
 
 		// start game immediately by manually trigger an action
+		this.game.setStart(setStart);
 		if (this.game.getStart())
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 	}
@@ -109,19 +126,22 @@ public class Controller implements ActionListener, GUIInformation {
 				if (! game.getStart()) return;
 				game.setStart(false);
 
+				// game type handling
+				if (gameType == GameType.IS_NULL || gameType == GameType.IS_FILE) return;
+
 				// check game's status (win or lose)
 				boolean update  = game.getStatus() == Game.STATUS.LOSE;
 				boolean levelUp = game.getStatus() == Game.STATUS.WIN;
 				if (levelUp) levelIndex++;
-
 				if (levelIndex >= levels.size()) game.win();
 				else {
+					level = levels.get(levelIndex);
 					// reset the game and update the frame
-					game.reset(levels.get(levelIndex));
+					game.reset(level);
 					boolean setStart = levelChecker.checkLevel(game);
 					game.setStart(setStart);
 					if (update) game.setStart(false);
-					if (update || !setStart) gridManager.loadCurrGrid(levels.get(levelIndex));
+					if (update || !setStart) gridManager.loadCurrGrid(level);
 					actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 				}
 			}
@@ -138,20 +158,24 @@ public class Controller implements ActionListener, GUIInformation {
 
 		// save the current grid
 		if (e.getActionCommand().equals("save")) {
-			gridManager.saveFile(levels.get(levelIndex));
-			game.reset(levels.get(levelIndex));
+			String path = gridManager.saveFile(level);
+			if (path != null) level = path;
+			game.reset(level);
 		}
 		// load a grid will add to the list of levels
 		else if (e.getActionCommand().equals("load")) {
-			String level = gridManager.loadFile(levels.get(levelIndex));
-			if (level != null)
-				game.reset(levels.get(levelIndex));
+			String path = gridManager.loadFile(level);
+			if (path != null) {
+				level = path;
+//				game.reset(level);
+			}
 		}
 		// resetting the current grid to its default, un-saved state
 		else if (e.getActionCommand().equals("update"))
-			gridManager.loadCurrGrid(levels.get(levelIndex));
+			gridManager.loadCurrGrid(level);
 		// starting test mode
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
+//			game.reset(level);
 			boolean setStart = levelChecker.checkLevel(game);
 			game.setStart(setStart);
 			if (setStart) view.setFrame(game.getFrame());
@@ -176,6 +200,7 @@ public class Controller implements ActionListener, GUIInformation {
 	/**
 	 * Get the main model.
 	 * @return the model
+	 * @see	   Grid
 	 */
 	protected Grid getModel() {
 		return model;
@@ -184,6 +209,7 @@ public class Controller implements ActionListener, GUIInformation {
 	/**
 	 * Get the main grid view.
 	 * @return the grid view
+	 * @see	   GridView
 	 */
 	public GridView getGrid() {
 		return grid;
@@ -210,6 +236,7 @@ public class Controller implements ActionListener, GUIInformation {
 
 	/**
 	 * {@inheritDoc}
+	 * @see	Tile
 	 */
 	@Override
 	public Tile getSelectedTile() {

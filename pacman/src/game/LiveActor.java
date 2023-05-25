@@ -174,7 +174,8 @@ public abstract class LiveActor extends GameActor implements Movable {
      */
     @Override
     public boolean canMove(Location location) {
-        return (! HashLocation.contain(manager.getWalls(), location));
+        return (! HashLocation.contain(manager.getWalls(), location) &&
+                ! this.getLocation().equals(location));
     }
 
 
@@ -267,7 +268,8 @@ public abstract class LiveActor extends GameActor implements Movable {
         int direction = this.getIntDirection();
         int xDiff = this.getX() - next.getX();
         int yDiff = this.getY() - next.getY();
-        if (xDiff != 0) direction = Location.WEST.getDirection()  * (xDiff / abs(xDiff));
+        if (xDiff >  0) direction = Location.WEST.getDirection();
+        if (xDiff <  0) direction = Location.EAST.getDirection();
         if (yDiff != 0) direction = Location.NORTH.getDirection() * (yDiff / abs(yDiff));
         return direction;
     }
