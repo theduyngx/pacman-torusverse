@@ -146,8 +146,8 @@ public class Controller implements ActionListener, GUIInformation {
 
 				// set start to game, and the editor's view accordingly
 				game.setStart(setStart);
-				if (update) game.setStart(false);
-				if (update || !setStart) {
+				if ((update || !setStart) || (gameType == GameType.IS_FILE && levelUp)) {
+					game.setStart(false);
 					gridManager.loadCurrGrid(level);
 					view.open();
 				}

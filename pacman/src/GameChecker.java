@@ -34,6 +34,19 @@ public class GameChecker {
         gameType = GameType.IS_NULL;
     }
 
+
+    /**
+     * Check whether a file is of valid map file extension, which is XML.
+     * @param path the specified path to file
+     * @return     True if valid, False if not
+     */
+    private static boolean validFileType(String path) {
+        int index = path.lastIndexOf(".");
+        String extension = path.substring(index + 1).toLowerCase();
+        return (extension.equals(VALID_MAP_FILE));
+    }
+
+
     /**
      * Check the validity of a game folder
      * @param path      the path of the directory
@@ -46,12 +59,21 @@ public class GameChecker {
             return null;
         }
         File directory = new File(path);
+        gameType = GameType.IS_NULL;
 
-        // check type
+        // directory is, in fact, a directory folder
         if (directory.isDirectory())
             gameType = GameType.IS_FOLDER;
-        else if (directory.isFile())
+
+        // if it is a file instead - must check that it is XML file
+        else if (directory.isFile() && validFileType(path)) {
             gameType = GameType.IS_FILE;
+            ArrayList<String> files = new ArrayList<>();
+            files.add(path);
+            return files;
+        }
+
+        // otherwise, it cannot be found
         else {
             callbackNoMap(path, callback);
             return null;
@@ -94,10 +116,7 @@ public class GameChecker {
             ArrayList<String> playableLevels = new ArrayList<>();
             for (ArrayList<String> levels : levelTally.values()) {
                 String name = levels.get(0);
-                int index = name.lastIndexOf(".");
-                // skip non-XML files
-                String extension = name.substring(index + 1).toLowerCase();
-                if (extension.equals(VALID_MAP_FILE))
+                if (validFileType(name))
                     playableLevels.add(name);
             }
             Collections.sort(playableLevels);
@@ -109,7 +128,7 @@ public class GameChecker {
 
 
     /**
-     * write the check fails for game checking to the log
+     * Write the check fails for game checking to the log
      * @param levelTally hashmap of files at a particular level
      * @param dirName    the name of the directory
      * @return           whether the directory has fail any game check
