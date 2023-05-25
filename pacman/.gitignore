@@ -26,3 +26,6 @@
 
 .idea/
 out
+test/
+*.iml
+*.properties

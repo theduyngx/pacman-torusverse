@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="212cc60a-ae6c-4f0b-aa61-2bc33a4c3936" name="Changes" comment="Moved Portal Files to correct directory" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2Q8GaUkom2VIDWoAmnQD85dryaK" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/kilik/Documents/COLLEGE/SMD/PROJECT_2/2023-sem1-projectassignment2-wed11-00-team-02/2D-Map-Editor-master",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\kilik\Documents\COLLEGE\SMD\PROJECT_2\2023-sem1-projectassignment2-wed11-00-team-02\2D-Map-Editor-master\src\pacman" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="212cc60a-ae6c-4f0b-aa61-2bc33a4c3936" name="Changes" comment="" />
+      <created>1684727858798</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1684727858798</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Merged with Duy's branch (22/05/2023)">
+      <created>1684730002442</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1684730002442</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Created first version of Portal and PortalFactory">
+      <created>1684732244896</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1684732244896</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Moved Portal Files to correct directory">
+      <created>1684732483356</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1684732483356</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merged with Duy's branch (22/05/2023)" />
+    <MESSAGE value="Created first version of Portal and PortalFactory" />
+    <MESSAGE value="Moved Portal Files to correct directory" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved Portal Files to correct directory" />
+  </component>
+</project>
