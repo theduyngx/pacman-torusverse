@@ -1,4 +1,5 @@
 package game;
+import game.Game.Dimension;
 
 import editor.Tile;
 import org.w3c.dom.Document;
@@ -22,24 +23,22 @@ import ch.aplu.jgamegrid.Location;
  * and their locations and store it in a hashmap
  */
 public class XMLParser {
-    public static final int IS_WALL = 1;
+    private static final int IS_WALL = 1;
 
     // static constants for XML Parsing
-
-    public static final String SIZE = "size";
-    public static final int LENGTH_INDEX = 0;
-    public static final int WIDTH_INDEX = 1;
-    public static final int DIMENSIONS = 2;
-    public static final String ROW = "row";
-    public static final String CELL = "cell";
-    public static final int INSTANCE_INDEX = 0;
+    private static final String SIZE = "size";
+    private static final int WIDTH_INDEX = 0;
+    private static final int HEIGHT_INDEX = 1;
+    private static final String ROW = "row";
+    private static final String CELL = "cell";
+    private static final int INSTANCE_INDEX = 0;
 
 
     /**
      * XML Parser that iterates through whole file to extract pacActor, monsters, items, and portals.
      * @param xmlFile file containing all locations
      */
-    public void parseXML(String xmlFile, ObjectManager manager)
+    public static void parseXML(String xmlFile, ObjectManager manager)
             throws ParserConfigurationException, SAXException, IOException {
         // Instantiate the Factory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -107,21 +106,26 @@ public class XMLParser {
     }
 
     /**
-     * Method to extract the length and width from a given Document object of an XML File;
-     * left for extensibility - if called, this must be called before instantiating the Game.
-     * @param doc   Document object made from XML File
-     * @return      array containing the width and the length of the map
+     * Method to extract the length and width from a given Document object of an XML File.
+     * @param xmlFile XML file path
+     * @return        the dimension
      */
-    public int[] getDimensions(Document doc) {
-        int[] dimList = new int[DIMENSIONS];
+    public static Dimension getDimensions(String xmlFile)
+            throws ParserConfigurationException, IOException, SAXException
+    {
+        // Instantiate the Factory
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        // an instance of builder to parse the specified xml file
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(new File(xmlFile));
+        doc.getDocumentElement().normalize();
+
         // First extract the dimensions
         Node dimsNode = doc.getElementsByTagName(SIZE).item(INSTANCE_INDEX);
         String[] dims = dimsNode.getTextContent().strip().split("\n +");
-        int length = Integer.parseInt(dims[LENGTH_INDEX]);
-        int width = Integer.parseInt(dims[WIDTH_INDEX]);
-        // Then put dimensions into the list
-        dimList[LENGTH_INDEX] = length;
-        dimList[WIDTH_INDEX] = width;
-        return dimList;
+        int width  = Integer.parseInt(dims[WIDTH_INDEX]);
+        int height = Integer.parseInt(dims[HEIGHT_INDEX]);
+        // Then put dimensions
+        return new Dimension(width, height);
     }
 }
