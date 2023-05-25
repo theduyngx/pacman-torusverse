@@ -106,7 +106,6 @@ public class Controller implements ActionListener, GUIInformation {
 		this.game.setStart(setStart);
 		if (triggerAction)
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
-
 	}
 
 
@@ -156,7 +155,6 @@ public class Controller implements ActionListener, GUIInformation {
 				if ((update || !setStart) || (gameType == GameType.IS_FILE && levelUp)) {
 					game.setStart(false);
 					gridManager.loadCurrGrid(level);
-					view.open();
 				}
 				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}
@@ -171,19 +169,11 @@ public class Controller implements ActionListener, GUIInformation {
 			}
 		}
 
-		// save the current grid
-		if (e.getActionCommand().equals("save")) {
-			String path = gridManager.saveFile(level);
-			if (path != null) level = path;
-		}
-		// load a grid will add to the list of levels
-		else if (e.getActionCommand().equals("load")) {
-			String path = gridManager.loadFile(level);
-			if (path != null) level = path;
-		}
-		// resetting the current grid to its default, un-saved state
-		else if (e.getActionCommand().equals("update"))
-			gridManager.loadCurrGrid(level);
+		// save, load, reset
+		if 		(e.getActionCommand().equals("save"  )) gridManager.saveFile(level);
+		else if (e.getActionCommand().equals("load"  )) gridManager.loadFile(level);
+		else if (e.getActionCommand().equals("update")) gridManager.loadCurrGrid(level);
+
 		// starting test mode
 		else if (e.getActionCommand().equals("start_game") || game.getStart()) {
 			boolean setStart = levelChecker.checkLevel(game);
@@ -221,8 +211,17 @@ public class Controller implements ActionListener, GUIInformation {
 	 * @return the grid view
 	 * @see	   GridView
 	 */
-	public GridView getGrid() {
+	protected GridView getGrid() {
 		return grid;
+	}
+
+	/**
+	 * Get the main view.
+	 * @return the view
+	 * @see	   View
+	 */
+	protected View getView() {
+		return view;
 	}
 
 	/**
