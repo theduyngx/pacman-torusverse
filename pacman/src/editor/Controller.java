@@ -46,6 +46,9 @@ public class Controller implements ActionListener, GUIInformation {
 	private int levelIndex;
 	private final LevelChecker levelChecker;
 
+	/**
+	 * Game type - either the game is opened as a folder, a file, or nothing.
+	 */
 	public enum GameType {
 		IS_FOLDER,
 		IS_FILE,
@@ -56,7 +59,7 @@ public class Controller implements ActionListener, GUIInformation {
 	 * Controller constructor.
 	 */
 	public Controller(Game game, GameType gameType, ArrayList<String> levels, GameCallback gameCallback) {
-		this.tiles  = TileManager.getTilesFromFolder("data/");
+		this.tiles  = TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
 		this.model  = new GridModel(MAP_WIDTH, MAP_HEIGHT, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		this.grid   = new GridView(this, camera, tiles); // Every tile is 30x30 pixels
@@ -65,7 +68,6 @@ public class Controller implements ActionListener, GUIInformation {
 		this.levels = levels;
 		gridManager = new GridFileManager(this);
 		levelIndex  = 0;
-		assert levels.size() > 0;
 		this.game.reset(levels.get(levelIndex));
 
 		/// NOTE: this part of level checking should be within the level checking itself
@@ -163,7 +165,7 @@ public class Controller implements ActionListener, GUIInformation {
 	 */
 	public void resetGrid(int width, int height) {
 		view.close();
-		this.tiles 	= TileManager.getTilesFromFolder("data/");
+		this.tiles 	= TileManager.getTilesFromFolder(GridFileManager.DATA_PATH);
 		this.model 	= new GridModel(width, height, tiles.get(0).getCharacter());
 		this.camera = new GridCamera(model, Grid.GRID_WIDTH, Grid.GRID_HEIGHT);
 		this.grid 	= new GridView(this, camera, tiles); // Every tile is 30x30 pixels

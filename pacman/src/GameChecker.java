@@ -1,4 +1,4 @@
-import editor.Controller;
+import editor.Controller.GameType;
 import game.utility.GameCallback;
 
 import java.io.File;
@@ -9,14 +9,17 @@ import java.util.HashMap;
 
 /**
  * GameChecker class checking for the game's validity with various conditions.
- * TODO: path (argument) handling
  */
 public class GameChecker {
     public static final String VALID_MAP_FILE = "xml";
+    private GameType gameType;
 
-    private Controller.GameType gameType;
 
-    public Controller.GameType getGameType() {
+    /**
+     * Get the type of game open - either a folder, a file, or nothing.
+     * @return the game type
+     */
+    public GameType getGameType() {
         return gameType;
     }
 
@@ -28,7 +31,7 @@ public class GameChecker {
     private void callbackNoMap(String directory, GameCallback callback) {
         String failLog = String.format("[Game %s - no maps found]", directory);
         callback.writeString(failLog);
-        gameType = Controller.GameType.IS_NULL;
+        gameType = GameType.IS_NULL;
     }
 
     /**
@@ -46,9 +49,9 @@ public class GameChecker {
 
         // check type
         if (directory.isDirectory())
-            gameType = Controller.GameType.IS_FOLDER;
+            gameType = GameType.IS_FOLDER;
         else if (directory.isFile())
-            gameType = Controller.GameType.IS_FILE;
+            gameType = GameType.IS_FILE;
         else {
             callbackNoMap(path, callback);
             return null;
@@ -130,7 +133,7 @@ public class GameChecker {
                             "[Game %s - multiple maps at same level: %s]", dirName, dupFiles);
                     callback.writeString(failLog);
                     pass = false;
-                    gameType = Controller.GameType.IS_NULL;
+                    gameType = GameType.IS_NULL;
                 }
             }
         }

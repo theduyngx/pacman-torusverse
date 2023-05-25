@@ -20,6 +20,7 @@ import java.util.List;
  * Grid File Manager class which deals with loading, saving grids from local user files.
  */
 public class GridFileManager {
+    public static final String DATA_PATH = "data/";
     private final Controller controller;
 
     /**
