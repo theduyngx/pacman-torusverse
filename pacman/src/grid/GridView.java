@@ -1,15 +1,13 @@
 package grid;
 
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Point;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serial;
 import java.util.List;
 import javax.swing.JPanel;
 
-import editor.GUIInformation;
+import editor.Controller;
 import editor.Tile;
 
 /**
@@ -39,16 +37,16 @@ public class GridView extends JPanel implements PropertyChangeListener {
 	
 	/**
 	 * Creates a grid panel.
-	 * @param guiInformation Information from the GUI that the grid requires.
+	 * @param controller     Information from the GUI that the grid requires.
 	 * @param tiles 		 List of available tiles.
 	 */
-	public GridView(GUIInformation guiInformation, Camera camera, List<? extends Tile> tiles) {
+	public GridView(Controller controller, Camera camera, List<? extends Tile> tiles) {
 		super(new GridLayout(camera.getHeight(), camera.getWidth()));
 		
-		this.tiles = tiles;
+		this.tiles  = tiles;
 		this.camera = camera;
 		this.camera.addPropertyChangeListener(this);
-		GridController gridController = new GridController(camera, guiInformation);
+		GridController gridController = new GridController(camera, controller);
 		this.addMouseListener(gridController);
 		this.addMouseMotionListener(gridController);
 		

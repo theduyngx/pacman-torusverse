@@ -25,7 +25,7 @@ import game.utility.GameCallback;
  * @since   v0.0.5
  * @see		Game
  */
-public class Controller implements ActionListener, GUIInformation {
+public class Controller implements ActionListener {
 	// model, tile, camera
 	private Grid model;
 	private Tile selectedTile;
@@ -247,11 +247,7 @@ public class Controller implements ActionListener, GUIInformation {
 		}
 	};
 
-	/**
-	 * {@inheritDoc}
-	 * @see	Tile
-	 */
-	@Override
+
 	public Tile getSelectedTile() {
 		return selectedTile;
 	}

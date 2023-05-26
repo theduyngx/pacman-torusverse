@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import editor.GUIInformation;
+import editor.Controller;
 import editor.Tile;
 
 
@@ -35,17 +35,17 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	/**
 	 * The class that provides with GUI information.
 	 */
-	private final GUIInformation guiInformation;
+	private final Controller controller;
 
 	/**
 	 * The GridController which the GridView needs.
-	 * @param camera The camera which the GridController will command.
-	 * @param guiInformation The class that the GridController will query for
+	 * @param camera     The camera which the GridController will command.
+	 * @param controller The class that the GridController will query for
 	 * information.
 	 */
-	public GridController(Camera camera, GUIInformation guiInformation) {
+	public GridController(Camera camera, Controller controller) {
 		this.camera = camera;
-		this.guiInformation = guiInformation;
+		this.controller = controller;
 	}
 
 	@Override
@@ -80,8 +80,8 @@ public class GridController implements MouseListener, MouseMotionListener, Actio
 	private void updateTile(int xCor, int yCor) {
 		xCor = Math.max(0, Math.min(xCor, camera.getWidth()-1));
 		yCor = Math.max(0, Math.min(yCor, camera.getHeight()-1));
-		if (guiInformation.getSelectedTile() != null) {
-			camera.setTile(xCor, yCor, guiInformation.getSelectedTile().getCharacter());
+		if (controller.getSelectedTile() != null) {
+			camera.setTile(xCor, yCor, controller.getSelectedTile().getCharacter());
 		}
 	}
 
