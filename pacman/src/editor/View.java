@@ -196,7 +196,7 @@ public class View {
 		frame.toFront();
 		frame.setVisible(true);
 		frame.setEnabled(true);
-		this.frame.dispose();
+		this.frame.setVisible(false);
 		this.frame = frame;
 	}
 }
