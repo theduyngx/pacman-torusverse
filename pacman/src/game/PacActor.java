@@ -141,11 +141,10 @@ public class PacActor extends LiveActor implements GGKeyListener {
      */
     protected void eatItem(ObjectManager manager) {
         Location location = getLocation();
-        HashLocation hashLocation = new HashLocation(location);
 
         // item exists
-        if (manager.getItems().containsKey(hashLocation)) {
-            Item item = manager.getItems().get(hashLocation);
+        if (HashLocation.contain(manager.getItems(), location)) {
+            Item item = HashLocation.get(manager.getItems(), location);
 
             // add score (WIP - this shouldn't even be in here)
             if (! (item instanceof Ice)) nbPills++;

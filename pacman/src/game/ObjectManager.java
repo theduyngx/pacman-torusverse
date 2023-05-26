@@ -44,7 +44,7 @@ public class ObjectManager {
 
 
     // the constructor for all the portals
-    private final PortalFactory portalFactory;
+    private final SingletonPortalFactory portalFactory;
 
     // game callback
     private final GameCallback gameCallback;
@@ -65,9 +65,14 @@ public class ObjectManager {
         this.items             = new HashMap<>();
         this.walls             = new HashMap<>();
         this.portals           = new HashMap<>();
-        this.portalFactory     = PortalFactory.getInstance();
+        this.portalFactory     = SingletonPortalFactory.getInstance();
     }
 
+    /**
+     * Get the game's dimension, which is an object representing the width and height of the
+     * game's grid.
+     * @return the game's dimension
+     */
     public Dimension getDimension() {
         return game.getDimension();
     }
@@ -149,7 +154,7 @@ public class ObjectManager {
     /**
      * Get the portals map
      * @return the map of all portals
-     * @see Portal
+     * @see    Portal
      */
     protected HashMap<HashLocation, Portal> getPortals() {
         return portals;
@@ -158,9 +163,9 @@ public class ObjectManager {
     /**
      * Get the portal factory
      * @return a factory for constructing all the portals in the map
-     * @see PortalFactory
+     * @see    SingletonPortalFactory
      */
-    protected PortalFactory getPortalFactory() { return portalFactory; }
+    protected SingletonPortalFactory getPortalFactory() { return portalFactory; }
 
     /**
      * Get the number of pills and gold pieces left in the game. Hence, used to detect winning condition.
