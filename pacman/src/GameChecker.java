@@ -3,8 +3,10 @@ import game.utility.GameCallback;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -94,11 +96,18 @@ public class GameChecker {
         for (File map: gameMaps) {
             String[] mapNameSplit = map.getName().split("(/)|(\\\\)");
             String mapName = mapNameSplit[mapNameSplit.length - 1];
+
+            // get the level number in front of file
+            Pattern pattern = Pattern.compile("^\\d+");
+            Matcher matcher = pattern.matcher(mapName);
+            String numString = " ";
+            if (matcher.find())
+                numString = matcher.group();
             char firstChar = mapName.charAt(0);
 
             // add filename to hashmap given that it is valid
             if (Character.isDigit(firstChar)) {
-                Integer decimalRep = Integer.parseInt(String.valueOf(firstChar));
+                Integer decimalRep = Integer.parseInt(numString);
 
                 // add file to arraylist
                 if (levelTally.containsKey(decimalRep))
@@ -110,21 +119,18 @@ public class GameChecker {
                 }
             }
         }
-        // sort the levels lexicographically
+        // sort the key (or level number)
         if (gameCheckLog(levelTally, dirName, callback)) {
+            TreeMap<Integer, ArrayList<String>> sorted = new TreeMap<>(levelTally);
             ArrayList<String> playableLevels = new ArrayList<>();
-            for (ArrayList<String> levels : levelTally.values()) {
-                String name = levels.get(0);
-                if (validFileType(name))
-                    playableLevels.add(name);
-            }
+            for (HashMap.Entry<Integer, ArrayList<String>> entry : sorted.entrySet())
+                playableLevels.add(entry.getValue().get(0));
+
             // if no map within valid folder
             if (playableLevels.isEmpty()) {
                 callbackNoMap(path, callback);
                 return null;
             }
-            // otherwise, return the list of maps
-            Collections.sort(playableLevels);
             return playableLevels;
         }
         callbackNoMap(dirName, callback);
