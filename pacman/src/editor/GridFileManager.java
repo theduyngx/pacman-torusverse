@@ -10,7 +10,6 @@ import org.jdom.output.XMLOutputter;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -76,11 +75,7 @@ public class GridFileManager {
                 xmlOutput.setFormat(Format.getPrettyFormat());
                 xmlOutput.output(doc, new FileWriter(chooser.getSelectedFile()));
             }
-        } catch (FileNotFoundException e1) {
-            JOptionPane.showMessageDialog(null, "Invalid file!", "error",
-                    JOptionPane.ERROR_MESSAGE);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
         controller.getView().open();
     }
@@ -116,8 +111,7 @@ public class GridFileManager {
                     }
                 }
                 controller.getGrid().redrawGrid();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
             }
         }
         controller.getView().open();

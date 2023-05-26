@@ -48,8 +48,7 @@ public class Driver {
 			Controller controller = new Controller(game, gameChecker.getGameType(), playableLevels, gameCallback);
 			controller.handle();
 
-		} catch (ParserConfigurationException | IOException | SAXException exception) {
-			exception.printStackTrace();
+		} catch (ParserConfigurationException | IOException | SAXException ignored) {
 		}
 	}
 }
