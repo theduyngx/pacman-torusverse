@@ -11,9 +11,9 @@ import java.util.Map;
  * It utilizes Singleton pattern with a unique, global point of entry.
  * @see Portal
  */
-public class PortalFactory {
-    private static PortalFactory instance;
-    private PortalFactory() {}
+public class SingletonPortalFactory {
+    private static SingletonPortalFactory instance;
+    private SingletonPortalFactory() {}
 
     /**
      * Portal map builder for to create a map of all portals in the game
@@ -63,9 +63,9 @@ public class PortalFactory {
      * Creates instance of PortalFactory for portal creation
      * @return  PortalFactory instance
      */
-    protected static synchronized PortalFactory getInstance() {
+    protected static synchronized SingletonPortalFactory getInstance() {
         if (instance == null)
-            instance = new PortalFactory();
+            instance = new SingletonPortalFactory();
         return instance;
     }
 }

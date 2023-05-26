@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e35acb5-5db9-4165-9d9c-6afd58101d61" name="Changes" comment="Deleted original pacman file">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="4e35acb5-5db9-4165-9d9c-6afd58101d61" name="Changes" comment="Removed unnecessary files" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,16 +29,16 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/kilik/Documents/COLLEGE/SMD/PROJECT_2/2023-sem1-projectassignment2-wed11-00-team-02/pacman&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/kilik/Documents/COLLEGE/SMD/PROJECT_2/2023-sem1-projectassignment2-wed11-00-team-02/pacman",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -106,21 +104,49 @@
       <option name="project" value="LOCAL" />
       <updated>1684904898355</updated>
     </task>
-    <task id="LOCAL-00009" summary="Deleted original pacman file">
-      <created>1685037664731</created>
+    <task id="LOCAL-00009" summary="Reformatted File to Duy's format">
+      <created>1685037099549</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1685037664731</updated>
+      <updated>1685037099549</updated>
     </task>
-    <task id="LOCAL-00010" summary="Deleted original pacman file">
-      <created>1685037679578</created>
+    <task id="LOCAL-00010" summary="Reformatted File to Duy's format">
+      <created>1685037112255</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1685037679578</updated>
+      <updated>1685037112255</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Pulled from Duy's branch">
+      <created>1685037182581</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1685037182581</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Need to rest Pacman branch">
+      <created>1685038252851</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1685038252851</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Need to rest Pacman branch">
+      <created>1685038262039</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1685038262039</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Removed unnecessary files">
+      <created>1685038357793</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1685038357793</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -132,7 +158,10 @@
     <MESSAGE value="Linked PortalFactory, XMLParser, and ObjectManager" />
     <MESSAGE value="OBJECTMANAGER: Created new properties parser function" />
     <MESSAGE value="XMLParser: Added length and width parser" />
-    <MESSAGE value="Deleted original pacman file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Deleted original pacman file" />
+    <MESSAGE value="Reformatted File to Duy's format" />
+    <MESSAGE value="Pulled from Duy's branch" />
+    <MESSAGE value="Need to rest Pacman branch" />
+    <MESSAGE value="Removed unnecessary files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed unnecessary files" />
   </component>
 </project>

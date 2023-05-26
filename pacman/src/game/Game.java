@@ -19,58 +19,72 @@ import java.util.Properties;
  */
 public class Game extends GameGrid implements Runnable {
     // draw grid colors
-    public final static Color COLOR_LOSE = Color.red;
-    public final static Color COLOR_WIN = Color.yellow;
-    public final static Color COLOR_BACKGROUND = Color.white;
-    public final static Color COLOR_WALL = Color.gray;
-    public final static Color COLOR_SPACE = Color.lightGray;
+    private final static Color COLOR_LOSE = Color.red;
+    private final static Color COLOR_WIN = Color.yellow;
+    private final static Color COLOR_BACKGROUND = Color.white;
+    private final static Color COLOR_WALL = Color.gray;
+    protected final static Color COLOR_SPACE = Color.lightGray;
 
     // win/lose messages
-    public final static String LOSE_MESSAGE = "GAME OVER";
-    public final static String WIN_MESSAGE = "YOU WIN";
+    private final static String LOSE_MESSAGE = "GAME OVER";
+    private final static String WIN_MESSAGE = "YOU WIN";
 
     // game running constants
     private final static int SIMULATION_PERIOD = 100;
     private final static int KEY_REPEATED_PERIOD = 150;
     private final static String GAME_TITLE = "[PacMan in the TorusVerse]";
+    public final static String RUN_TITLE = "[PacMan in the TorusVerse] Current score: ";
     private final static int DELAY_RUN = 10;
     private final static int DELAY_AFTER_RUN = 120;
 
     // game grid
-    public final static int STRETCH_RATE = 2;
-    public final static int CELL_SIZE = 20 * STRETCH_RATE;
-    public final static int NUM_HORIZONTAL_CELLS = 20;
-    public final static int NUM_VERTICAL_CELLS = 11;
+    public final static int DEFAULT_WIDTH = 20;
+    public final static int DEFAULT_HEIGHT = 11;
+    protected final static int STRETCH_RATE = 2;
+    private final static int CELL_SIZE = 20 * STRETCH_RATE;
 
     // object manager
     private final ObjectManager manager;
     private boolean start = false;
     private final GGBackground bg;
     private final Properties properties;
+    private final Dimension dimension;
     private STATUS status;
 
+
+    /**
+     * The game's enumerated status - win, lose, or neither.
+     */
     public enum STATUS {
         WIN, LOSE, NA
     }
 
+    /**
+     * The game's dimensions.
+     * @param width  grid's width
+     * @param height grid's height
+     */
+    public record Dimension(int width, int height) {}
+
 
     /**
      * Game class constructor.
-     * @param properties properties object read from properties file for instantiating actors and items
-     * @see              Properties
+     * @param properties   properties object read from properties file for instantiating actors and items
+     * @param gameCallback the game callback for updating log
+     * @see   GameCallback
      */
-    public Game(Properties properties, GameCallback gameCallback, String xmlFile) {
+    public Game(Dimension dimension, Properties properties, GameCallback gameCallback) {
         // Setup game
-        super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
-        this.manager    = new ObjectManager(gameCallback);
+        super(dimension.width, dimension.height, CELL_SIZE, false);
+        this.manager    = new ObjectManager(this, gameCallback);
         this.properties = properties;
+        this.dimension  = dimension;
 
         // set up game window
         setSimulationPeriod(SIMULATION_PERIOD);
         setTitle(GAME_TITLE);
         bg = getBg();
         setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
-        reset(xmlFile);
     }
 
 
@@ -90,10 +104,10 @@ public class Game extends GameGrid implements Runnable {
         manager.parseProperties(properties);
 
         // instantiate actors
-        putLiveActors();
-        manager.setMonstersStopMoving();
         drawGrid(bg);
         putInanimateObjects();
+        putLiveActors();
+        manager.setMonstersStopMoving();
     }
 
     /**
@@ -114,7 +128,7 @@ public class Game extends GameGrid implements Runnable {
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
         do {
             hasPacmanBeenHit     = pacActor.collideMonster();
-            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
+            hasPacmanEatAllPills = manager.getNumMandatoryItems() <= 0;
             delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(DELAY_AFTER_RUN);
@@ -123,21 +137,33 @@ public class Game extends GameGrid implements Runnable {
         Location loc = pacActor.getLocation();
         manager.setMonstersStopMoving();
         pacActor.removeSelf();
-        String title;
         if (hasPacmanBeenHit) {
             bg.setPaintColor(COLOR_LOSE);
-            title = LOSE_MESSAGE;
-            addActor(manager.getKilledPacActor(), loc);
             status = STATUS.LOSE;
+            setTitle(LOSE_MESSAGE);
+            addActor(manager.getKilledPacActor(), loc);
+            manager.getGameCallback().endOfGame(LOSE_MESSAGE);
         }
         else {
             bg.setPaintColor(COLOR_WIN);
-            title = WIN_MESSAGE;
             status = STATUS.WIN;
         }
-        setTitle(title);
-        manager.getGameCallback().endOfGame(title);
         doPause();
+    }
+
+
+    /**
+     * Called when the player has truly won the game.
+     */
+    public void win() {
+        manager.getGameCallback().endOfGame(WIN_MESSAGE);
+        setTitle(WIN_MESSAGE);
+        doPause();
+    }
+
+
+    public Dimension getDimension() {
+        return dimension;
     }
 
     /**
@@ -184,8 +210,8 @@ public class Game extends GameGrid implements Runnable {
         bg.setPaintColor(COLOR_BACKGROUND);
 
         // draw the maze (its border and items)
-        for (int y = 0; y < NUM_VERTICAL_CELLS; y++) {
-            for (int x = 0; x < NUM_HORIZONTAL_CELLS; x++) {
+        for (int y = 0; y < dimension.height; y++) {
+            for (int x = 0; x < dimension.width; x++) {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 // space
@@ -213,9 +239,8 @@ public class Game extends GameGrid implements Runnable {
             item.putActor(bg, this, location);
         }
         // portals
-        for (Map.Entry<HashLocation, Portal> entry : manager.getPortals().entrySet()) {
+        for (Map.Entry<HashLocation, Portal> entry : manager.getPortals().entrySet())
             entry.getValue().putActor(bg, this, entry.getKey().location());
-        }
     }
 
     /**
@@ -230,6 +255,7 @@ public class Game extends GameGrid implements Runnable {
             monster.putActor(this);
         }
         // pacman
-        manager.getPacActor().putActor(this);
+        if (manager.getPacActorLocations().size() > 0)
+            manager.getPacActor().putActor(this);
     }
 }
